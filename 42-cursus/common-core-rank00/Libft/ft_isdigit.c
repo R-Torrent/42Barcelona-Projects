@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 19:13:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/02 19:24:06 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:25:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,5 @@
 
 int	ft_isdigit(int c)
 {
-	if ('0' <= c && c <= '9')
-		return (c);
-	else
-		return (0);
+	return ('0' <= c && c <= '9');
 }

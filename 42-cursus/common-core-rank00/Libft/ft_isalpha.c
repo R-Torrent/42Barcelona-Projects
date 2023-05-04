@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 18:49:40 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/02 19:12:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:25:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,5 @@
 
 int	ft_isalpha(int c)
 {
-	if ('A' <= c && c <= 'Z' || 'a' <= c && c <= 'z')
-		return (c);
-	else
-		return (0);
+	return ('A' <= c && c <= 'Z' || 'a' <= c && c <= 'z');
 }

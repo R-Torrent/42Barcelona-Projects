@@ -6,15 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 19:29:16 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/02 19:32:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:30:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
 
 int	ft_isascii(int c)
 {
-	if ('\0' <= c && c <= '\177')
-		return (c);
-	else
-		return (0);
+	return ('\0' <= c && c <= '\177');
 }

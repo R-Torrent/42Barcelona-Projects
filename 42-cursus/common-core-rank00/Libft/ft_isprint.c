@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 19:32:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/02 19:40:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:27:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,5 @@
 
 int	ft_isprint(int c)
 {
-	if ('\040' <= c && c <= '\176')
-		return (c);
-	else
-		return (0);
+	return ('\040' <= c && c <= '\176')
 }
