@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:33:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/04 15:56:37 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:40:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,28 @@ static void	place_digit(int n, char *str)
 	*str = '0' + n % 10;
 }
 
+static int	count_chars(int n)
+{
+	int	count;
+
+	if (n <= 0)
+		count = 1;
+	else
+		count = 0;
+	while (n)
+	{
+		n /= 10;
+		count++;
+	}
+	return (count);
+}
+
 char	*ft_itoa(int n)
 {
-	int		n1;
 	int		i;
 	char	*p;
 
-	n1 = n;
-	if (n <= 0)
-		i = 1;
-	else
-		i = 0;
-	while (n1)
-	{
-		n1 /= 10;
-		i++;
-	}
+	i = count_chars(n);
 	p = malloc(sizeof (char) * i);
 	if (p)
 	{
