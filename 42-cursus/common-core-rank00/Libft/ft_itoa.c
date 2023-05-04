@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:33:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/03 19:57:06 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/04 15:56:37 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,16 @@ char	*ft_itoa(int n)
 		i++;
 	}
 	p = malloc(sizeof (char) * i);
-	if (n < 0)
+	if (p)
 	{
-		*p = '-';
-		place_digit(n, p + 1);
+		if (n < 0)
+		{
+			*p = '-';
+			place_digit(n, p + 1);
+		}
+		else
+			place_digit(n, p);
+		*(p + i) = '\0';
 	}
-	else
-		place_digit(n, p);
 	return (p);
 }
