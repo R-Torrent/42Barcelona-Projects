@@ -34,7 +34,7 @@ int	ft_atoi(const char *str)
 		if (sign)
 			n = n * 10 - (*str - '0');
 		else
-			n1 = n * 10 + *str - '0';
+			n = n * 10 + *str - '0';
 		str++;
 	}
 	return (n);
