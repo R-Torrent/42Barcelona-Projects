@@ -12,7 +12,17 @@
 
 #include "libft.h"
 
+static int	ft_isupper(int c)
+{
+	return ('A' <= c && c <= 'Z');
+}
+
+static int	ft_islower(int c)
+{
+	return ('a' <= c && c <= 'z');
+}
+
 int	ft_isalpha(int c)
 {
-	return ('A' <= c && c <= 'Z' || 'a' <= c && c <= 'z');
+	return (ft_isupper(c) || ft_islower(c));
 }
