@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 19:49:14 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/05 20:50:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/06 00:37:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	*memmove(void *dst, const void *src, size_t n)
 {
-	unsigned char	*udst;
-	unsigned char	*usrc;
+	unsigned char		*udst;
+	const unsigned char	*usrc;
 
 	udst = dst;
 	usrc = src;

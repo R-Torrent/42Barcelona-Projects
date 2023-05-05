@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 18:56:35 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/05 20:50:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/06 00:31:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	*memcpy(void *dst, const void *src, size_t n)
 {
-	unsigned char	*udst;
-	unsigned char	*usrc;
+	unsigned char		*udst;
+	const unsigned char	*usrc;
 
 	udst = dst;
 	usrc = src;
