@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 02:22:58 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/06 02:33:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/06 03:02:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	*ft_strchr(const char *s, int c)
 {
 	while (*s != (char)c)
-		if (*s++ == '\0')
+		if (!*s++)
 			return (NULL);
 	return ((char *)s);
 }
