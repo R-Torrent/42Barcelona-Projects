@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 19:21:22 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/06 00:35:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/06 01:49:49 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,7 @@ int	memcmp(const void *s1, const void *s2, size_t n)
 	while (n--)
 	{
 		if (*us1 != *us2)
-		{
-			if (*us1 < *us2)
-				return (-1);
-			else
-				return (1);
-		}
+			return (*us1 - *us2);
 		us1++, us2++;
 	}
 	return (0);
