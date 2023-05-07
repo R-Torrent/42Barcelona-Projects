@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/07 11:27:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/07 14:45:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*ft_strrchr(const char *s, int c);
 // functions also found in strings.h
 void	ft_bzero(void *s, size_t n);
 
-// additional 42 functions
+// additional '42' functions
 char	*ft_itoa(int n);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putendl_fd(char *s, int fd);
