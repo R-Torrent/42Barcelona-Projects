@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/06 19:34:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/07 11:27:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,11 @@
 
 /* ************************************************************************** */
 
-# include <stddef.h>
 # include <sys/types.h>
+
+# ifndef NULL
+#  define NULL (void *)0
+# endif
 
 // external declarations from the libc (AKA 'authorized functions')
 void	free(void *ptr);
@@ -45,7 +48,7 @@ int	ft_memcmp(const void *s1, const void *s2, size_t n);
 void	*ft_memmove(void *dst, const void *src, size_t n);
 void	*ft_memset(void *s, int c, size_t n);
 char	*ft_strchr(const char *s, int c);
-char	*ft_strdup(const char *s1);
+char	*ft_strdup(const char *s);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlen(const char *s);
@@ -56,7 +59,7 @@ char	*ft_strrchr(const char *s, int c);
 // functions also found in strings.h
 void	ft_bzero(void *s, size_t n);
 
-// additional functions
+// additional 42 functions
 char	*ft_itoa(int n);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putendl_fd(char *s, int fd);
