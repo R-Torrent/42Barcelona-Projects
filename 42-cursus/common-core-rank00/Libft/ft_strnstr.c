@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 19:14:12 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/07 10:57:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/07 19:29:51 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*ft_strnstr(const char *haystack, const char *needle, size_t n)
 {
-	size_t needle_len;
+	size_t	needle_len;
 
 	needle_len = ft_strlen(needle);
 	if (!needle_len)

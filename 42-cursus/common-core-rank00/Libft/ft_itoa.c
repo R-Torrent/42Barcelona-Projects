@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:33:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/04 17:40:57 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/07 19:25:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,15 @@ static int	count_chars(int n)
 
 char	*ft_itoa(int n)
 {
-	int	nc;
+	int		nc;
 	char	*p0;
 	char	*p;
 
 	nc = count_chars(n);
-	p0 = p = malloc(nc + 1);
+	p0 = malloc(nc + 1);
 	if (p0)
 	{
+		p = p0;
 		if (n < 0)
 			*p++ = '-';
 		place_digit(n, &p);

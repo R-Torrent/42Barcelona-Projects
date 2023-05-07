@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 02:35:08 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/06 19:07:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/07 19:38:39 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 char	*ft_strrchr(const char *s, int c)
 {
-	const char *s_last;
+	const char	*s_last;
 
-	s_last = s = ft_strchr(s, c);
-	while (s && *s)
+	s = ft_strchr(s, c);
+	if (s && !*s)
+		return ((char *)s);
+	while (s)
 	{
 		s_last = s;
 		s = ft_strchr(++s, c);
