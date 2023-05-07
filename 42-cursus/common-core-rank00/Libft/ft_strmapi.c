@@ -6,19 +6,17 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 20:21:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/07 21:41:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/08 01:34:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-typedef char (*t_func1)(unsigned int, char);
-typedef void (*t_func2)(unsigned int, char *);
+static char	(*f_mapi)(unsigned int, char);
 
-
-static t_func2	aux(t_func2)
+static void	f_iteri(unsigned int ui, char *c)
 {
-// *** WORK IN PROGRESS
+	*c = f_mapi(ui, *c);
 }
 
 char	*ft_strmapi(const char *s, char (*f)(unsigned int, char))
@@ -26,7 +24,7 @@ char	*ft_strmapi(const char *s, char (*f)(unsigned int, char))
 	char	*p;
 
 	p = ft_strdup(s);
-	ft_striteri(p, 
-
+	f_mapi = f;
+	ft_striteri(p, f_iteri);
 	return (p);
 }
