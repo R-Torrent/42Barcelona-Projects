@@ -1,4 +1,15 @@
+# Tools and options:
+
+CFLAGS += -Werror -Wextra -Wall
+
+AR = ar -crs
+
+RM = rm -f
+
+# Filenames:
+
 NAME = libft.a
+
 SRC = ft_atoi.c\
 	ft_bzero.c\
 	ft_calloc.c\
@@ -29,19 +40,20 @@ SRC = ft_atoi.c\
 	ft_toupper.c
 
 OBJ = $(SRC:.c=.o)
-CFLAGS += -Werror -Wextra -Wall
+
+# Primary targets:
 
 $(NAME): $(OBJ)
-	ar -crs $(NAME) $(OBJ)
+	$(AR) $@ $^
 
 all: $(NAME)
 
-re: fclean all
-
 clean:
-	rm -f $(OBJ)
+	$(RM) $(OBJ)
 
 fclean: clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
 
-.PHONY: add re clean fclean
+re: fclean all
+
+.PHONY: all clean fclean re
