@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 20:21:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/08 01:34:29 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/08 19:43:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ char	*ft_strmapi(const char *s, char (*f)(unsigned int, char))
 	char	*p;
 
 	p = ft_strdup(s);
-	f_mapi = f;
-	ft_striteri(p, f_iteri);
+	if (p)
+	{
+		f_mapi = f;
+		ft_striteri(p, f_iteri);
+	}
 	return (p);
 }
