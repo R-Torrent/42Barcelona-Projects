@@ -24,6 +24,7 @@ SRC = ft_atoi.c\
 	ft_memcmp.c\
 	ft_memmove.c\
 	ft_memset.c\
+	ft_split.c\
 	ft_strchr.c\
 	ft_strdup.c\
 	ft_striteri.c\
