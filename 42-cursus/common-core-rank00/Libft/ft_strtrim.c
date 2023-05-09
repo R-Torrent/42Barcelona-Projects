@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 01:55:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 11:34:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 20:24:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,7 @@ char	*ft_strtrim(const char *s, const char *set)
 	while (in_set(set, s[i]))
 		i++;
 	if (!s[i])
-	{
-		p = malloc(1);
-		if (p)
-			*p = '\0';
-	}
+		p = ft_calloc(1, 1);
 	else
 	{
 		j = ft_strlen(s) - 1;
