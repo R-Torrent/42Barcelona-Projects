@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 11:52:02 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/07 12:02:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 12:32:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,5 @@
 
 void	ft_bzero(void *s, size_t n)
 {
-	(void)ft_memset(s, 0, n);
+	ft_memset(s, 0, n);
 }
