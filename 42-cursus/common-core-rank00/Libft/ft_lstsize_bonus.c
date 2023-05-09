@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:46:32 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 16:44:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 19:06:10 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int	g_size;
 
 static void	f_aux(void *content)
 {
+	(void)content;
 	g_size++;
 }
 
