@@ -6,16 +6,16 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:16:54 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 16:42:51 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:15:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_bonus.h"
 
-void	ft_lstclear(t_lst **plst, void (*del)(void *))
+void	ft_lstclear(t_list **plst, void (*del)(void *))
 {
-	t_lst	*lst;
-	t_lst	*next;
+	t_list	*lst;
+	t_list	*next;
 
 	lst = *plst;
 	next = lst;
