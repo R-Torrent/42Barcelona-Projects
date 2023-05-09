@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:24:23 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 16:43:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:23:54 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	f_aux(void *content)
 
 	new_content = g_f(content);
 	g_del(content);
-	*content = *new_content;
+	content = new_content;
 }
 
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
