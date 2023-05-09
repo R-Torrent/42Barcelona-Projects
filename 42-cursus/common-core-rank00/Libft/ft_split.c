@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 19:51:41 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 02:13:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 03:06:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static unsigned int	counter(const char *s, char c, const char **index)
 {
-	unsigned int	nc;
-	bool		count;
+	size_t	nc;
+	bool	count;
 
 	nc = 0;
 	count = true;

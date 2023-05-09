@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 20:11:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/08 01:02:37 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 03:08:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 void	ft_striteri(char *s, void (*f)(unsigned int, char *))
 {
-	unsigned int	ui;
+	size_t	i;
 
-	ui = 0;
-	while (s[ui])
+	i = 0;
+	while (s[i])
 	{
-		f(ui, s + ui);
-		ui++;
+		f(i, s + i);
+		i++;
 	}
 }
