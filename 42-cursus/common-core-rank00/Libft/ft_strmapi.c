@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 20:21:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 08:25:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 11:35:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	(*g_f)(unsigned int, char);
+static char	(*g_f)(unsigned int ui, char c);
 
 static void	f_aux(unsigned int ui, char *c)
 {
