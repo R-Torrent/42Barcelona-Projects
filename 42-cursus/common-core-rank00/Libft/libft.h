@@ -13,8 +13,6 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include "libft_bonus.h"
-
 /* ************************************************************************** */
 
 # include <stdbool.h>
