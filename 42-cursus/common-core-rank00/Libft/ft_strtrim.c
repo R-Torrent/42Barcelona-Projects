@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 01:55:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 02:51:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 02:57:35 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ char	*ft_strtrim(const char *s, const char *set)
 	}
 	else
 	{
-		j = ft_strlen(s);
-		while (i < j && (!s[j] || in_set(set, s[j])))
+		j = ft_strlen(s) - 1;
+		while (i < j &&  in_set(set, s[j]))
 			j--;
 		p = ft_substr(s, i, j - i + 1);
 	}
