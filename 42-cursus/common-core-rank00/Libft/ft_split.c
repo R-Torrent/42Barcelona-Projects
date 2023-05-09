@@ -6,12 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 19:51:41 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 01:35:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 02:13:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdbool.h>
 
 static unsigned int	counter(const char *s, char c, const char **index)
 {

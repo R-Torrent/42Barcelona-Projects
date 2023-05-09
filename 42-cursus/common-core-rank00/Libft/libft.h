@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/07 19:53:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/09 02:13:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 /* ************************************************************************** */
 
+# include <stdbool.h>
 # include <stddef.h>
 # include <sys/types.h>
 
@@ -66,7 +67,7 @@ char	**ft_split(const char *s, char c);
 void	ft_striteri(char *s, void (*f)(unsigned int, char *));
 char	*ft_strjoin(const char *s1, const char *s2);
 char	*ft_strmapi(const char *s, char (*f)(unsigned int, char));
-char	*ft_strtrim(const char *s1, const char *set);
+char	*ft_strtrim(const char *s, const char *set);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 
 #endif
