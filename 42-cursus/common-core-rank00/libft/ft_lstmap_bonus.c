@@ -6,11 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:24:23 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 17:23:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:22:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft_bonus.h"
+#include "libft.h"
 
 static void	*(*g_f)(void *content);
 static void	(*g_del)(void *content);

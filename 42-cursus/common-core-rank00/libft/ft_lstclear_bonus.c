@@ -6,11 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:16:54 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 17:15:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:20:50 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft_bonus.h"
+#include "libft.h"
 
 void	ft_lstclear(t_list **plst, void (*del)(void *))
 {
