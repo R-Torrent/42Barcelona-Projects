@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 19:51:41 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/11 16:50:40 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/12 13:34:10 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	find_entries(const char *s, char c, char **index)
 	*index = NULL;
 }
 
-static size_t	copy_entries(char *dst, const char *src, char c, char **index) 
+static size_t	copy_entries(char *dst, const char *src, char c, char **index)
 {
 	const char	*dst0;
 
