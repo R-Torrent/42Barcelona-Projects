@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 01:55:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 20:24:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 00:53:50 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static bool	in_set(const char *set, char c)
+static bool	in_set(const char *set, const char c)
 {
 	while (*set)
 		if (*set++ == c)

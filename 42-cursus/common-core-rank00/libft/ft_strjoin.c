@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 14:27:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/08 01:39:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 00:50:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 
 char	*ft_strjoin(const char *s1, const char *s2)
 {
-	size_t	size;
-	char	*p;
+	const size_t	size = ft_strlen(s1) + ft_strlen(s2) + 1;
+	char *const	p = malloc(size);
 
-	size = ft_strlen(s1) + ft_strlen(s2) + 1;
-	p = malloc(size);
 	if (p)
 	{
 		ft_strlcpy(p, s1, size);

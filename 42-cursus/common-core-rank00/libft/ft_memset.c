@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 20:35:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/11 18:48:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 00:28:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 void	*ft_memset(void *s, int c, size_t n)
 {
-	unsigned char	*us;
-	unsigned char	uc;
+	unsigned char		*us;
+	const unsigned char	uc = c;
 
 	us = s;
-	uc = c;
 	while (n--)
 		*us++ = uc;
 	return (s);

@@ -6,24 +6,24 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:33:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/10 11:48:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 00:44:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static void	place_digit(int n, char **str)
+static void	place_digit(int n, char **pstr)
 {
 	int	x;
 
 	x = n / 10;
 	if (x)
-		place_digit(x, str);
+		place_digit(x, pstr);
 	if (n < 0)
 		x = '0' - n % 10;
 	else
 		x = '0' + n % 10;
-	*(*str)++ = x;
+	*(*pstr)++ = x;
 }
 
 static size_t	count_chars(int n)
@@ -44,12 +44,10 @@ static size_t	count_chars(int n)
 
 char	*ft_itoa(int n)
 {
-	size_t	nc;
-	char	*p;
-	char	*p1;
+	const size_t	nc = count_chars(n);
+	char *const	p = malloc(nc + 1);
+	char		*p1;
 
-	nc = count_chars(n);
-	p = malloc(nc + 1);
 	if (p)
 	{
 		p1 = p;

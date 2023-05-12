@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 20:21:49 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 11:35:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 00:52:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ static void	f_aux(unsigned int ui, char *c)
 
 char	*ft_strmapi(const char *s, char (*f)(unsigned int, char))
 {
-	char	*p;
+	char *const	p = ft_strdup(s);
 
-	p = ft_strdup(s);
 	if (p)
 	{
 		g_f = f;

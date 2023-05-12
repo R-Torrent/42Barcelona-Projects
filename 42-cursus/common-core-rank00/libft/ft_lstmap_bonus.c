@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:24:23 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/12 16:22:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 01:02:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@ static void	(*g_del)(void *content);
 
 static void	f_aux(void *content)
 {
-	void	*new_content;
+	void *const	new_content = g_f(content);
 
-	new_content = g_f(content);
 	g_del(content);
 	content = new_content;
 }

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 18:08:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/06 00:29:03 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 00:25:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,9 @@
 void	*memchr(const void *s, int c, size_t n)
 {
 	const unsigned char	*us;
-	unsigned char		uc;
+	const unsigned char	uc = c;
 
 	us = s;
-	uc = c;
 	while (n--)
 	{
 		if (*us == uc)

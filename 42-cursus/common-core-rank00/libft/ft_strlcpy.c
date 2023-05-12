@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 18:47:12 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/06 18:01:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/13 00:33:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	const char	*src0;
+	const char *const	src0 = src;
 
-	src0 = src;
 	while (size > 1 && *src)
 	{
 		*dst++ = *src++;
