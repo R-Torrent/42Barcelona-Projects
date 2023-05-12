@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/05/12 16:18:38 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/05/12 16:31:07 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,9 +21,8 @@ RM     := rm -f
 
 # Filenames:
 
-NAME0  := libft
-NAME   := $(NAME0).a
-HEADER := $(NAME0).h
+NAME   := libft.a
+HEADER := libft.h
 
 SRC    := ft_atoi.c\
 	ft_bzero.c\
