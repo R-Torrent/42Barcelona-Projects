@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/05/12 16:31:07 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/05/13 18:19:30 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,14 +14,16 @@
 
 CFLAGS += -Werror -Wextra -Wall
 
-AR     := ar rcs
+AR     := ar rcsv
 RM     := rm -f
+TC     := touch
 
 # **************************************************************************** #
 
 # Filenames:
 
 NAME   := libft.a
+
 HEADER := libft.h
 
 SRC    := ft_atoi.c\
@@ -68,28 +70,34 @@ SRC    := ft_atoi.c\
 	ft_tolower.c\
 	ft_toupper.c
 
-OBJ    = $(filter-out %_bonus.o,$(SRC:.c=.o))
-OBB    = $(filter %_bonus.o,$(SRC:.c=.o))
-	
+OBJ    := $(SRC:.c=.o)
+
+BONUS  := .bonus
+
 # **************************************************************************** #
 
 # Primary targets:
 
-$(NAME): $(OBJ)
-	$(AR) $@ $^
+$(NAME): $(filter-out %_bonus.o,$(OBJ))
+	$(AR) $@ $?
 
-bonus: $(OBB)
-	$(AR) $(NAME) $^
+$(BONUS): $(filter %_bonus.o,$(OBJ))
+	$(AR) $(NAME) $?
+	$(TC) $(BONUS)
 
 all: $(NAME)
 
+bonus: $(BONUS)
+
 clean:
-	$(RM) $(OBJ) $(OBB)
+	$(RM) $(OBJ)
 
 fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
+
+.PHONY: all bonus clean fclean re
 
 # **************************************************************************** #
 
@@ -97,5 +105,3 @@ re: fclean all
 
 %.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) -o $@ -c $<
-
-.PHONY: bonus all clean fclean re
