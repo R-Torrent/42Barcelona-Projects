@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:33:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/13 00:44:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/14 18:56:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ static size_t	count_chars(int n)
 char	*ft_itoa(int n)
 {
 	const size_t	nc = count_chars(n);
-	char *const	p = malloc(nc + 1);
-	char		*p1;
+	char *const		p = malloc(nc + 1);
+	char			*p1;
 
 	if (p)
 	{
