@@ -6,13 +6,14 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 19:51:41 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/14 21:28:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/15 04:05:38 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	find_strs(const char *s, char c, char **index)
+
+static size_t	count_strs(const char *s, char c)
 {
 	size_t	nw;
 	bool	neww;
@@ -24,53 +25,70 @@ static size_t	find_strs(const char *s, char c, char **index)
 		if (*s != c)
 		{
 			if (neww)
-			{
 				nw++;
-				if (index)
-					*index++ = (char *)s;
-			}
 			neww = false;
 		}
 		else
 			neww = true;
 		s++;
 	}
-	if (index)
-		*index = NULL;
 	return (nw);
 }
 
-static char	*copy_strs(const char *src, char c)
+static void	copy_strs(const char *s, char c, char **p)
 {
-	const char *const	src0 = src;
+	const char	*sw;
+	bool		neww;
 
-	while (*src && *src != c)
-		src++;
-	return (ft_substr(src0, 0, src - src0));
+	neww = true;
+	while (*s)
+	{
+		if (*s != c)
+		{
+			if (neww)
+				sw = s;
+			neww = false;
+		}
+		else
+			if (!neww)
+			{
+				neww = true;
+				*p++ = ft_substr(sw, 0, s - sw);
+			}
+		s++;
+	}
+	if (!neww)
+		*p++ = ft_substr(sw, 0, s - sw);
+	*p = NULL;
+}
+
+static void	check_strs(char ***pp, size_t nw)
+{
+	char	**p1;
+
+	p1 = *pp;
+	while (*p1)
+		p1++;
+	if (p1 - *pp < (ptrdiff_t)nw)
+	{
+		p1 = *pp;
+		while (nw--)
+			free(*p1++);
+		free(*pp);
+		*pp = NULL;
+	}
 }
 
 char	**ft_split(const char *s, char c)
 {
-	char **const	p = malloc(sizeof (char *) * (find_strs(s, c, NULL) + 1));
-	char			**p1;
+	const size_t	nw = count_strs(s, c);
+	char		**p;
 
+	p = malloc(sizeof (char *) * (nw + 1));
 	if (p)
 	{
-		find_strs(s, c, p);
-		p1 = p;
-		while (*p1)
-		{
-			*p1 = copy_strs(*p1, c);
-			if (!*p1)
-			{
-				p1 = p;
-				while (*p1)
-					free(p1++);
-				free(p);
-				break ;
-			}
-			p1++;
-		}
+		copy_strs(s, c, p);
+		check_strs(&p, nw);
 	}
 	return (p);
 }
