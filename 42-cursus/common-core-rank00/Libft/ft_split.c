@@ -6,12 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 19:51:41 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/15 04:05:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/16 13:09:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
 
 static size_t	count_strs(const char *s, char c)
 {
@@ -49,12 +48,11 @@ static void	copy_strs(const char *s, char c, char **p)
 				sw = s;
 			neww = false;
 		}
-		else
-			if (!neww)
-			{
-				neww = true;
-				*p++ = ft_substr(sw, 0, s - sw);
-			}
+		else if (!neww)
+		{
+			neww = true;
+			*p++ = ft_substr(sw, 0, s - sw);
+		}
 		s++;
 	}
 	if (!neww)
@@ -82,7 +80,7 @@ static void	check_strs(char ***pp, size_t nw)
 char	**ft_split(const char *s, char c)
 {
 	const size_t	nw = count_strs(s, c);
-	char		**p;
+	char			**p;
 
 	p = malloc(sizeof (char *) * (nw + 1));
 	if (p)
