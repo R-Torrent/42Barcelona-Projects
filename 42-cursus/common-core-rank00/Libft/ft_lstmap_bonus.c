@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:24:23 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/14 18:56:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/16 16:42:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,16 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
 	t_list	*new;
 	t_list	*new1;
+	void	*newc;
 
 	new = NULL;
 	while (lst)
 	{
-		new1 = ft_lstnew(f(lst->content));
+		newc = f(lst->content);
+		new1 = ft_lstnew(newc);
 		if (!new1)
 		{
+			del(newc);
 			ft_lstclear(&new, del);
 			break ;
 		}
