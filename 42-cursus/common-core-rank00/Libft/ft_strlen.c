@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 16:52:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/13 00:35:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:42:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,5 @@
 
 size_t	ft_strlen(const char *s)
 {
-	const char *const	s0 = s;
-
-	while (*s)
-		s++;
-	return (s - s0);
+	return (ft_strchr(s, '\0') - s);
 }
