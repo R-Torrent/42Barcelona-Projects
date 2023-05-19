@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/16 02:10:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/19 13:54:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 #define FLD_SIZE 32
 
-typedef struct
+typedef struct s_spcf
 {
 	long	ival;
-	int	base;
+	int		base;
 	char	*str;
 	size_t	size;
 }	t_spcf;
@@ -60,7 +60,7 @@ static void	get_fld(t_spcf *const pspcf, const char c, va_list *pap)
 		pspcf->size = ft_strlen(pspcf->str);
 	}
 	else if (c == '%')
-		 pspcf->str[pspcf->size++] = '%';
+		pspcf->str[pspcf->size++] = '%';
 	else if (c == 'd' || c == 'i' || c == 'u' || c == 'x' || c == 'X')
 	{
 		if (c == 'x' || c == 'X')
@@ -74,7 +74,7 @@ static void	get_fld(t_spcf *const pspcf, const char c, va_list *pap)
 		itoa(pspcf, c);
 	}
 	else
-	 	pspcf->str[pspcf->size++] = c;
+		pspcf->str[pspcf->size++] = c;
 }
 
 static int	sift(const char **pp, va_list *pap)
@@ -82,8 +82,8 @@ static int	sift(const char **pp, va_list *pap)
 	const char	*p;
 	char		str[FLD_SIZE];
 	t_spcf		spcf;
-	int		nc;
-	int		nc1;
+	int			nc;
+	int			nc1;
 
 	p = *pp;
 	while (*p && *p != '%')
@@ -108,8 +108,8 @@ int	ft_printf(const char *format, ...)
 {
 	const char	*p;
 	va_list		ap;
-	int		nc;
-	int		nc1;
+	int			nc;
+	int			nc1;
 
 	p = format;
 	va_start(ap, format);
