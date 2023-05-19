@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/05/13 18:19:30 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/05/19 11:53:48 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 CFLAGS += -Werror -Wextra -Wall
 
-AR     := ar rcsv
+AR     := ar rcv
 RM     := rm -f
 TC     := touch
 
@@ -93,7 +93,7 @@ clean:
 	$(RM) $(OBJ)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) $(BONUS)
 
 re: fclean all
 
@@ -103,5 +103,5 @@ re: fclean all
 
 # Build prerequisites:
 
-%.o: %.c $(HEADER)
+%.o: $(HEADER) %.c 
 	$(CC) $(CFLAGS) -o $@ -c $<
