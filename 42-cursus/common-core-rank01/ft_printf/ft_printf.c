@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/19 13:54:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/20 19:41:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,63 +21,66 @@ typedef struct s_spcf
 	char	*str;
 	size_t	size;
 }	t_spcf;
+	
+static char	g_lower[] = "0123456789abcdef";
+static char	g_upper[] = "0123456789ABCDEF";
 
 static void	itoa(t_spcf *const pspcf, const char c)
 {
-	size_t		nd;
-	bool		minus;
-	const char	lower[] = "0123456789abcdef";
-	const char	upper[] = "0123456789ABCDEF";
+	int				nd;
+	unsigned long	uval;
+	const bool		minus = (c == 'i' || c == 'd') && pspcf->ival < 0;
 
 	nd = FLD_SIZE;
-	minus = pspcf->ival < 0;
 	if (minus)
-		pspcf->ival = -pspcf->ival;
-	if (!pspcf->ival)
+		uval = -pspcf->ival;
+	else
+		uval = pspcf->ival;
+	if (!uval)
 		pspcf->str[--nd] = '0';
-	while (pspcf->ival && --nd)
+	while (uval && --nd >= 0)
 	{
 		if (c == 'X')
-			pspcf->str[nd] = upper[pspcf->ival % pspcf->base];
+			pspcf->str[nd] = g_upper[uval % pspcf->base];
 		else
-			pspcf->str[nd] = lower[pspcf->ival % pspcf->base];
-		pspcf->ival /= pspcf->base;
+			pspcf->str[nd] = g_lower[uval % pspcf->base];
+		uval /= pspcf->base;
 	}
-	if (minus)
-		pspcf->str[--nd] = '-';
+	if (minus && --nd >= 0)
+		pspcf->str[nd] = '-';
+	if (nd < 0)
+		nd = 0;
 	pspcf->size = FLD_SIZE - nd;
 	ft_memcpy(pspcf->str, &pspcf->str[nd], pspcf->size);
 }
 
-static void	get_fld(t_spcf *const pspcf, const char c, va_list *pap)
+static void	get_field(t_spcf *const pspcf, const char c, va_list *pap)
 {
 	pspcf->size = 0;
-	if (c == 'c')
+	if (c == 'd' || c == 'i' || c == 'u' || c == 'x' || c == 'X' || c == 'p')
+	{
+		if (c == 'x' || c == 'X' || c == 'p')
+			pspcf->base = 16;
+		else
+			pspcf->base = 10;
+		if (c == 'p')
+			pspcf->ival = (long)va_arg(*pap, void *);
+		else
+			pspcf->ival = va_arg(*pap, int);
+		itoa(pspcf, c);
+	}
+	else if (c == 'c')
 		pspcf->str[pspcf->size++] = va_arg(*pap, int);
 	else if (c == 's')
 	{
 		pspcf->str = va_arg(*pap, char *);
 		pspcf->size = ft_strlen(pspcf->str);
 	}
-	else if (c == '%')
-		pspcf->str[pspcf->size++] = '%';
-	else if (c == 'd' || c == 'i' || c == 'u' || c == 'x' || c == 'X')
-	{
-		if (c == 'x' || c == 'X')
-			pspcf->base = 16;
-		else
-			pspcf->base = 10;
-		if (c == 'u' || c == 'x' || c == 'X')
-			pspcf->ival = (unsigned int)va_arg(*pap, int);
-		else
-			pspcf->ival = va_arg(*pap, int);
-		itoa(pspcf, c);
-	}
 	else
 		pspcf->str[pspcf->size++] = c;
 }
 
-static int	sift(const char **pp, va_list *pap)
+static int	sift(const char **pformat, va_list *pap)
 {
 	const char	*p;
 	char		str[FLD_SIZE];
@@ -85,38 +88,36 @@ static int	sift(const char **pp, va_list *pap)
 	int			nc;
 	int			nc1;
 
-	p = *pp;
+	p = *pformat;
 	while (*p && *p != '%')
-		p++;
-	spcf.str = str;
-	nc = write(1, *pp, p - *pp);
+		++p;
+	nc = write(1, *pformat, p - *pformat);
 	if (nc == -1)
 		return (-1);
-	if (*p++)
+	if (*p)
 	{
-		get_fld(&spcf, *p, pap);
+		spcf.str = str;
+		get_field(&spcf, *++p, pap);
 		nc1 = write(1, spcf.str, spcf.size);
 		if (nc1 == -1)
 			return (-1);
 		nc += nc1;
 	}
-	*pp = ++p;
+	*pformat = ++p;
 	return (nc);
 }
 
 int	ft_printf(const char *format, ...)
 {
-	const char	*p;
 	va_list		ap;
 	int			nc;
 	int			nc1;
 
-	p = format;
 	va_start(ap, format);
 	nc = 0;
-	while (*p)
+	while (*format)
 	{
-		nc1 = sift(&p, &ap);
+		nc1 = sift(&format, &ap);
 		if (nc1 == -1)
 			return (-1);
 		nc += nc1;

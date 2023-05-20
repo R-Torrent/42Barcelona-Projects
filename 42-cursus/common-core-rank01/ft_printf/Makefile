@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/15 10:39:47 by rtorrent          #+#    #+#              #
-#    Updated: 2023/05/19 13:45:40 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/05/20 19:56:17 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 CFLAGS += -Werror -Wextra -Wall
 
-AR     := ar rcv
+AR     := ar rcsv
 RM     := rm -f
 
 # **************************************************************************** #
@@ -27,6 +27,7 @@ HEADER := libftprintf.h
 
 SRC    := ft_printf.c\
 	libft/ft_memcpy.c\
+	libft/ft_strchr.c\
 	libft/ft_strlen.c
 
 OBJ    := $(SRC:.c=.o)

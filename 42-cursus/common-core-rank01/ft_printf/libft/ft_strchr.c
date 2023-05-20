@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
+/*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/06 16:52:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/17 19:42:06 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/06 02:22:58 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/06 03:02:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *s)
+char	*ft_strchr(const char *s, int c)
 {
-	return (ft_strchr(s, '\0') - s);
+	while (*s != (char)c)
+		if (!*s++)
+			return (NULL);
+	return ((char *)s);
 }
