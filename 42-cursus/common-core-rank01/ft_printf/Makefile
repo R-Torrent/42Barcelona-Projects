@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/15 10:39:47 by rtorrent          #+#    #+#              #
-#    Updated: 2023/05/20 19:56:17 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/05/25 15:04:19 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ RM     := rm -f
 
 NAME   := libftprintf.a
 
-HEADER := libftprintf.h
+HEADER := ft_printf.h
 
 SRC    := ft_printf.c\
 	libft/ft_memcpy.c\
@@ -55,5 +55,5 @@ re: fclean all
 
 # Build prerequisites:
 
-%.o: $(HEADER) %.c
+%.o: %.c $(HEADER) 
 	$(CC) $(CFLAGS) -o $@ -c $<
