@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/25 15:03:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/05/25 16:55:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef struct s_spcf
 	char	*str;
 	size_t	size;
 }	t_spcf;
-	
+
 static char	g_lower[] = "0123456789abcdef";
 static char	g_upper[] = "0123456789ABCDEF";
 
