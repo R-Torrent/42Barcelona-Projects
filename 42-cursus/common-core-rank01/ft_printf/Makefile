@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/15 10:39:47 by rtorrent          #+#    #+#              #
-#    Updated: 2023/05/25 20:35:00 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/06/09 11:37:37 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,16 +41,21 @@ SRCLIB := ft_memcpy.c\
 
 OBJLIB := $(addprefix $(DIRLIB),$(SRCLIB:.c=.o))
 
+MKFILE := $(lastword $(MAKEFILE_LIST))
+
 # **************************************************************************** #
 
 # Primary targets:
 
-all: makelib $(NAME)
+all: $(NAME)
 
 makelib:
 	@$(MAKE) -C $(DIRLIB) all
 
-$(NAME): $(OBJ) $(OBJLIB)
+$(NAME):: $(MKFILE)
+	@if [ -f "$@" ]; then $(MAKE) fclean; fi
+$(NAME):: makelib
+$(NAME):: $(OBJ) $(OBJLIB)
 	$(AR) $@ $?
 
 clean:

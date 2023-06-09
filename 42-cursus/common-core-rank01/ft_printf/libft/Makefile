@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/05/25 14:46:38 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/06/08 15:30:12 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,20 +74,25 @@ OBJ    := $(SRC:.c=.o)
 
 BONUS  := .bonus
 
+MKFILE := $(lastword $(MAKEFILE_LIST))
+
 # **************************************************************************** #
 
 # Primary targets:
 
-$(NAME): $(filter-out %_bonus.o,$(OBJ))
-	$(AR) $@ $?
-
-$(BONUS): $(filter %_bonus.o,$(OBJ))
-	$(AR) $(NAME) $?
-	$(TC) $(BONUS)
-
 all: $(NAME)
 
 bonus: $(BONUS)
+
+$(NAME) $(BONUS):: $(MKFILE)
+	@if [ -f "$@" ]; then $(MAKE) fclean; fi
+
+$(NAME):: $(filter-out %_bonus.o,$(OBJ))
+	$(AR) $@ $?
+
+$(BONUS):: $(filter %_bonus.o,$(OBJ))
+	$(AR) $(NAME) $?
+	$(TC) $(BONUS)
 
 clean:
 	$(RM) $(OBJ)
