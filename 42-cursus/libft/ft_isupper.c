@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalpha.c                                       :+:      :+:    :+:   */
+/*   ft_isupper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
+/*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/02 18:49:40 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/09 11:54:30 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/06/09 11:51:55 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/06/09 11:52:49 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_isalpha(int c)
+int	ft_isupper(int c)
 {
-	return (ft_isupper(c) || ft_islower(c));
+	return ('A' <= c && c <= 'Z');
 }
