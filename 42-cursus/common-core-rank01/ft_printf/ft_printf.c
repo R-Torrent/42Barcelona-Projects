@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/25 16:55:12 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/06/13 13:10:37 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,77 +14,74 @@
 
 #define FLD_SIZE 32
 
-typedef struct s_spcf
+typedef struct s_specf
 {
 	long	ival;
 	int		base;
 	char	*str;
 	size_t	size;
-}	t_spcf;
+}	t_specf;
 
-static char	g_lower[] = "0123456789abcdef";
-static char	g_upper[] = "0123456789ABCDEF";
-
-static void	itoa(t_spcf *const pspcf, const char c)
+static void	itoa(t_specf *const pspecf, const char c)
 {
-	int				nd;
+	int				numd;
 	unsigned long	uval;
-	const bool		minus = (c == 'i' || c == 'd') && pspcf->ival < 0;
+	const char		g_lower[] = "0123456789abcdef";
+	const char		g_upper[] = "0123456789ABCDEF";
+	const bool		minus = (c == 'i' || c == 'd') && pspecf->ival < 0;
 
-	nd = FLD_SIZE;
+	numd = FLD_SIZE;
 	if (minus)
-		uval = -pspcf->ival;
+		uval = -pspecf->ival;
 	else
-		uval = pspcf->ival;
-	if (!uval)
-		pspcf->str[--nd] = '0';
-	while (uval && --nd >= 0)
+		uval = pspecf->ival;
+	if (!uval && numd > 0)
+		pspecf->str[--numd] = '0';
+	while (uval && numd > 0)
 	{
 		if (c == 'X')
-			pspcf->str[nd] = g_upper[uval % pspcf->base];
+			pspecf->str[--numd] = g_upper[uval % pspecf->base];
 		else
-			pspcf->str[nd] = g_lower[uval % pspcf->base];
-		uval /= pspcf->base;
+			pspecf->str[--numd] = g_lower[uval % pspecf->base];
+		uval /= pspecf->base;
 	}
-	if (minus && --nd >= 0)
-		pspcf->str[nd] = '-';
-	if (nd < 0)
-		nd = 0;
-	pspcf->size = FLD_SIZE - nd;
-	ft_memcpy(pspcf->str, &pspcf->str[nd], pspcf->size);
+	if (minus && numd > 0)
+		pspecf->str[--numd] = '-';
+	pspecf->size = FLD_SIZE - numd;
+	ft_memcpy(pspecf->str, &pspecf->str[numd], pspecf->size);
 }
 
-static void	get_field(t_spcf *const pspcf, const char c, va_list *pap)
+static void	get_field(t_specf *const pspecf, const char c, va_list *pap)
 {
-	pspcf->size = 0;
+	pspecf->size = 0u;
 	if (c == 'd' || c == 'i' || c == 'u' || c == 'x' || c == 'X' || c == 'p')
 	{
 		if (c == 'x' || c == 'X' || c == 'p')
-			pspcf->base = 16;
+			pspecf->base = 16;
 		else
-			pspcf->base = 10;
+			pspecf->base = 10;
 		if (c == 'p')
-			pspcf->ival = (long)va_arg(*pap, void *);
+			pspecf->ival = (long)va_arg(*pap, void *);
 		else
-			pspcf->ival = va_arg(*pap, int);
-		itoa(pspcf, c);
+			pspecf->ival = va_arg(*pap, int);
+		itoa(pspecf, c);
 	}
 	else if (c == 'c')
-		pspcf->str[pspcf->size++] = va_arg(*pap, int);
+		pspecf->str[pspecf->size++] = va_arg(*pap, int);
 	else if (c == 's')
 	{
-		pspcf->str = va_arg(*pap, char *);
-		pspcf->size = ft_strlen(pspcf->str);
+		pspecf->str = va_arg(*pap, char *);
+		pspecf->size = ft_strlen(pspecf->str);
 	}
 	else
-		pspcf->str[pspcf->size++] = c;
+		pspecf->str[pspecf->size++] = c;
 }
 
 static int	sift(const char **pformat, va_list *pap)
 {
 	const char	*p;
 	char		str[FLD_SIZE];
-	t_spcf		spcf;
+	t_specf		specf;
 	int			nc;
 	int			nc1;
 
@@ -92,18 +89,17 @@ static int	sift(const char **pformat, va_list *pap)
 	while (*p && *p != '%')
 		++p;
 	nc = write(1, *pformat, p - *pformat);
-	if (nc == -1)
-		return (-1);
-	if (*p)
+	if (nc != -1 && *p == '%')
 	{
-		spcf.str = str;
-		get_field(&spcf, *++p, pap);
-		nc1 = write(1, spcf.str, spcf.size);
+		specf.str = str;
+		get_field(&specf, *++p, pap);
+		nc1 = write(1, specf.str, specf.size);
 		if (nc1 == -1)
 			return (-1);
 		nc += nc1;
+		p++;
 	}
-	*pformat = ++p;
+	*pformat = p;
 	return (nc);
 }
 
