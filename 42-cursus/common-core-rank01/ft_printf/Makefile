@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/15 10:39:47 by rtorrent          #+#    #+#              #
-#    Updated: 2023/06/09 11:37:37 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/06/16 22:12:05 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,8 @@ HDRLIB := libft.h
 
 SRCLIB := ft_memcpy.c\
 	ft_strlen.c\
-	ft_strchr.c
+	ft_strchr.c\
+	ft_toupper.c
 
 OBJLIB := $(addprefix $(DIRLIB),$(SRCLIB:.c=.o))
 

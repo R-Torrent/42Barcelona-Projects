@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/16 19:57:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/06/16 22:33:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ static void	hextoa(t_specf *const pspecf, const char c)
 {
 	int				numd;
 	unsigned long	uval;
-	const char		hex_lower[] = "0123456789abcdef";
-	const char		hex_upper[] = "0123456789ABCDEF";
+	const char		hex[] = "0123456789abcdef";
 
 	numd = FLD_SIZE;
 	if (c == 'p')
@@ -38,16 +37,17 @@ static void	hextoa(t_specf *const pspecf, const char c)
 	while (uval)
 	{
 		if (c == 'X')
-			pspecf->str[--numd] = hex_upper[uval % 16];
+			pspecf->str[--numd] = ft_toupper(hex[uval % 16]);
 		else
-			pspecf->str[--numd] = hex_lower[uval % 16];
+			pspecf->str[--numd] = hex[uval % 16];
 		uval /= 16;
 	}
 	pspecf->size = FLD_SIZE - numd;
 	if (c == 'p')
-		ft_memcpy(&pspecf->str[2], &pspecf->str[numd], pspecf->size);
+		ft_memcpy(ft_memcpy(pspecf->str, "0x", 2) + 2, pspecf->str + numd,
+			pspecf->size);
 	else
-		ft_memcpy(pspecf->str, &pspecf->str[numd], pspecf->size);
+		ft_memcpy(pspecf->str, pspecf->str + numd, pspecf->size);
 }
 
 static void	itoa(t_specf *const pspecf, const char c)
@@ -71,10 +71,10 @@ static void	itoa(t_specf *const pspecf, const char c)
 	if (minus)
 		pspecf->str[--numd] = '-';
 	pspecf->size = FLD_SIZE - numd;
-	ft_memcpy(pspecf->str, &pspecf->str[numd], pspecf->size);
+	ft_memcpy(pspecf->str, pspecf->str + numd, pspecf->size);
 }
 
-static void	get_field(t_specf *const pspecf, const char c, va_list *pap)
+static char	*get_field(t_specf *const pspecf, const char c, va_list *pap)
 {
 	if (c == 'd' || c == 'i' || c == 'u' || c == 'x' || c == 'X')
 	{
@@ -87,7 +87,6 @@ static void	get_field(t_specf *const pspecf, const char c, va_list *pap)
 	else if (c == 'p')
 	{
 		pspecf->ival = (long)va_arg(*pap, void *);
-		ft_memcpy(pspecf->str, "0x", 2);
 		hextoa(pspecf, c);
 		pspecf->size += 2;
 	}
@@ -101,6 +100,7 @@ static void	get_field(t_specf *const pspecf, const char c, va_list *pap)
 	}
 	else
 		pspecf->str[pspecf->size++] = c;
+	return (pspecf->str);
 }
 
 static int	sift(const char **pformat, va_list *pap)
@@ -119,8 +119,7 @@ static int	sift(const char **pformat, va_list *pap)
 	{
 		specf.str = str;
 		specf.size = 0;
-		get_field(&specf, *++p, pap);
-		if (specf.str)
+		if (get_field(&specf, *++p, pap))
 			nc1 = write(1, specf.str, specf.size);
 		else
 			nc1 = write(1, "(null)", 6);
