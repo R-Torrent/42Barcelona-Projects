@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/06/09 12:08:20 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/06/18 13:38:03 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ SRC    := ft_atoi.c\
 	ft_isdigit.c\
 	ft_islower.c\
 	ft_isprint.c\
+	ft_isspace.c\
 	ft_isupper.c\
 	ft_itoa.c\
 	ft_lstadd_back_bonus.c\
