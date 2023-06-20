@@ -1,27 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstclear_bonus.c                                :+:      :+:    :+:   */
+/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/09 13:16:54 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/12 21:12:02 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/09 12:49:39 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/06/20 15:24:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstclear(t_list **plst, void (*del)(void *))
+void	ft_lstdelone(t_list *lst, void (*del)(void *))
 {
-	t_list	*nxt;
-
-	nxt = *plst;
-	while (nxt)
-	{
-		*plst = nxt;
-		nxt = (*plst)->next;
-		ft_lstdelone(*plst, del);
-		*plst = NULL;
-	}
+	del(lst->content);
+	free(lst);
 }

@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew_bonus.c                                  :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/09 12:42:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/13 00:59:49 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/09 13:16:54 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/06/20 15:24:20 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(void *content)
+void	ft_lstclear(t_list **plst, void (*del)(void *))
 {
-	t_list *const	p = malloc(sizeof (t_list));
+	t_list	*nxt;
 
-	if (p)
+	nxt = *plst;
+	while (nxt)
 	{
-		p->content = content;
-		p->next = NULL;
+		*plst = nxt;
+		nxt = (*plst)->next;
+		ft_lstdelone(*plst, del);
+		*plst = NULL;
 	}
-	return (p);
 }

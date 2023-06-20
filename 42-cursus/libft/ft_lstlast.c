@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstiter_bonus.c                                 :+:      :+:    :+:   */
+/*   ft_lstlast.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/09 12:54:52 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/12 16:21:37 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/09 13:32:44 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/06/20 15:25:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstiter(t_list *lst, void (*f)(void *))
+t_list	*ft_lstlast(t_list *lst)
 {
-	while (lst)
+	t_list	*nxt;
+
+	nxt = lst;
+	while (nxt)
 	{
-		f(lst->content);
-		lst = lst->next;
+		lst = nxt;
+		nxt = lst->next;
 	}
+	return (lst);
 }
