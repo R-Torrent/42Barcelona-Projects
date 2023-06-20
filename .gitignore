@@ -58,3 +58,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Containing folder attributes
+.DS_Store
+Desktop.ini
