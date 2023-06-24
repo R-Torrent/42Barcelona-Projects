@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/06/20 15:43:04 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/06/24 15:42:17 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,6 +51,7 @@ SRC    := ft_atoi.c\
 	ft_memcmp.c\
 	ft_memmove.c\
 	ft_memset.c\
+	ft_printf.c\
 	ft_putchar_fd.c\
 	ft_putendl_fd.c\
 	ft_putnbr_fd.c\

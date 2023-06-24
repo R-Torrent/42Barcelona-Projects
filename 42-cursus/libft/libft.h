@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/18 14:12:20 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/06/24 15:44:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 /* ************************************************************************** */
 
+# include <stdarg.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <sys/types.h>
@@ -38,6 +39,9 @@ int		ft_isupper(int c);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 
+// functions also found in stdio.h
+int		ft_printf(const char *s, ...);
+
 // functions also found in stdlib.h
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
@@ -60,6 +64,8 @@ char	*ft_strrchr(const char *s, int c);
 // functions also found in strings.h
 void	ft_bzero(void *s, size_t n);
 
+/* ************************************************************************** */
+
 // additional '42' functions
 char	*ft_itoa(int n);
 void	ft_putchar_fd(char c, int fd);
@@ -72,8 +78,6 @@ char	*ft_strjoin(const char *s1, const char *s2);
 char	*ft_strmapi(const char *s, char (*f)(unsigned int, char));
 char	*ft_strtrim(const char *s, const char *set);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
-
-/* ************************************************************************** */
 
 typedef struct s_list
 {
