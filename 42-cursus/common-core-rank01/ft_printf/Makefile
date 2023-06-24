@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/15 10:39:47 by rtorrent          #+#    #+#              #
-#    Updated: 2023/06/16 22:12:05 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/06/24 15:57:54 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,14 +50,16 @@ MKFILE := $(lastword $(MAKEFILE_LIST))
 
 all: $(NAME)
 
-makelib:
-	@$(MAKE) -C $(DIRLIB) all
-
 $(NAME):: $(MKFILE)
 	@if [ -f "$@" ]; then $(MAKE) fclean; fi
+
 $(NAME):: makelib
+
 $(NAME):: $(OBJ) $(OBJLIB)
 	$(AR) $@ $?
+
+makelib:
+	@$(MAKE) -C $(DIRLIB) all
 
 clean:
 	@$(MAKE) -C $(DIRLIB) clean
