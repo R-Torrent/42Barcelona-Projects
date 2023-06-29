@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:16:54 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/23 13:30:03 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/06/29 23:06:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	ft_lstclear(t_list **plst, void (*del)(void *))
 	{
 		nxt = (*plst)->next;
 		ft_lstdelone(*plst, del);
-		*plst = NULL;
 		*plst = nxt;
 	}
 }
