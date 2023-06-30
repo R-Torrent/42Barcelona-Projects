@@ -6,54 +6,35 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 12:14:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/20 17:08:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/06/30 10:22:47 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strchr(const char *s, int c)
+void	ft_lstadd_back(t_list **plst, t_list *new)
 {
-	while (*s != (char)c)
-		if (!*s++)
-			return (NULL);
-	return ((char *)s);
-}
-
-char	*ft_strdup(const char *s)
-{
-	size_t	strlen;
-	char	*p;
-
-	p = s;
-	while (*p)
-		p++;
-	strlen = p - s;
-	p = malloc(strlen + 1);
-	if (p)
+	if (*plst)
 	{
-		while (*s)
-			*p++ = *s++;
-		*p = '\0';
+		while ((*plst)->next)
+			*plst = (*plst)->next;
+		(*plst)->next = new;
 	}
-	return (p);
+	else
+		*plst = new;
 }
 
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+void	ft_lstclear(t_list **plst, void (*del)(void *))
 {
-	size_t	size;
-	char	*p;
+	t_list	*nxt;
 
-	size = ft_strlen(s);
-	if (start > size)
-		return (ft_calloc(1, 1));
-	size -= start;
-	if (len < size)
-		size = len;
-	p = malloc(++size);
-	if (p)
-		ft_strlcpy(p, s + start, size);
-	return (p);
+	while (*plst)
+	{
+		nxt = (*plst)->next;
+		del((*plst)->content);
+		free(*plst);
+		*plst = nxt;
+	}
 }
 
 t_list	*ft_lstnew(void *content)
@@ -68,14 +49,39 @@ t_list	*ft_lstnew(void *content)
 	return (p);
 }
 
-void	ft_lstadd_back(t_list **plst, t_list *new)
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	if (*plst)
+	const char *const	src0 = src;
+
+	while (size > 1 && *src)
 	{
-		while ((*plst)->next)
-			*plst = (*plst)->next;
-		(*plst)->next = new;
+		*dst++ = *src++;
+		size--;
 	}
-	else
-		*plst = new;
+	if (size)
+		*dst = '\0';
+	while (*src)
+		src++;
+	return (src - src0);
+}
+
+char	*ft_substr(const char *s, unsigned int start, size_t len)
+{
+	size_t	size;
+	char	*p;
+
+	size = ft_strlcpy(NULL, s, 0);
+	if (start > size)
+	{
+		p = malloc(1);
+		*p = '\0';
+		return (p);
+	}
+	size -= start;
+	if (len < size)
+		size = len;
+	p = malloc(++size);
+	if (p)
+		ft_strlcpy(p, s + start, size);
+	return (p);
 }

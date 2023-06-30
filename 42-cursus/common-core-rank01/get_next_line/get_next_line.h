@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:25:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/20 16:40:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/06/30 10:30:32 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*get_next_line(int fd);
 
 /* ************************************************************************** */
 
-// library functions & structure needed for the project
+// 'libft' functions & structure needed for the project
 
 typedef struct s_list
 {
@@ -45,7 +45,10 @@ typedef struct s_list
 }		t_list;
 
 void	ft_lstadd_back(t_list **plst, t_list *new);
+void	ft_lstclear(t_list **plst, void (*del)(void *));
 t_list	*ft_lstnew(void *content);
+char	*ft_strchr(const char *s, int c);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 
 #endif
