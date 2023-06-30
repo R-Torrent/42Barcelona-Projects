@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 12:14:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/30 10:22:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/06/30 19:33:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	if (start > size)
 	{
 		p = malloc(1);
-		*p = '\0';
+		if (p)
+			*p = '\0';
 		return (p);
 	}
 	size -= start;
