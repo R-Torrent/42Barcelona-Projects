@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 20:11:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/05/09 03:08:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/04 19:42:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_striteri(char *s, void (*f)(unsigned int, char *))
+void	ft_striteri(char *s, void (*f)(size_t, char *))
 {
 	size_t	i;
 
