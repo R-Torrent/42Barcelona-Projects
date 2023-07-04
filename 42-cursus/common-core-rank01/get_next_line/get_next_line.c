@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/02 21:53:21 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/04 19:00:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@ static char	*construct_line(t_list *lst0)
 	char	*p0;
 	char	*p;
 
-	lst = lst0;
-	if (!lst)
+	if (!lst0)
 		return (NULL);
+	lst = lst0;
 	size = 0;
-	while (lst)
+	while (lst->next)
 	{
-		size += ft_strlcpy(NULL, lst->content, 0);
+		size += BUFFER_SIZE;
 		lst = lst->next;
 	}
-	p0 = malloc(++size);
+	p0 = malloc(size + ft_strlcpy(NULL, lst->content, 0) + 1);
 	p = p0;
 	lst = lst0;
 	while (p0 && lst)
@@ -40,7 +40,7 @@ static char	*construct_line(t_list *lst0)
 	return (p0);
 }
 
-static int	add(t_list **plst, const char *s, unsigned int start, size_t len)
+static int	add_to_list(t_list **plst, const char *s, size_t start, size_t len)
 {
 	char	*sub;
 	t_list	*new;
@@ -58,18 +58,22 @@ static int	add(t_list **plst, const char *s, unsigned int start, size_t len)
 	return (0);
 }
 
-static int	read_first(int fd, t_list **plst, char *dst)
+static ssize_t	read_first(int fd, t_list **plst, char *dst)
 {
-	int	n;
+	size_t	m;
+	ssize_t	n;
 
 	if (*plst)
 	{
-		n = ft_strlcpy(dst, (*plst)->content, BUFFER_SIZE);
+		m = ft_strlcpy(dst, (*plst)->content, BUFFER_SIZE);
 		ft_lstclear(plst, free);
 	}
 	else
+		m = 0;
+	n = read(fd, dst + m, BUFFER_SIZE - m);
+	if (n != -1)
 	{
-		n = read(fd, dst, BUFFER_SIZE);
+		n += m;
 		dst[n] = '\0';
 	}
 	return (n);
@@ -77,11 +81,11 @@ static int	read_first(int fd, t_list **plst, char *dst)
 
 char	*get_next_line(int fd)
 {
-	int				n;
+	ssize_t			n;
+	static t_list	*listed_lines[MAX_FILES];
 	char			*pos_nl;
 	char			*line;
 	char			buffer[BUFFER_SIZE + 1];
-	static t_list	*listed_lines[MAX_FILES];
 
 	n = read_first(fd, &listed_lines[fd], buffer);
 	pos_nl = NULL;
@@ -89,19 +93,17 @@ char	*get_next_line(int fd)
 	{
 		pos_nl = ft_strchr(buffer, '\n');
 		if (pos_nl)
-			n = add(&listed_lines[fd], buffer, 0, pos_nl - buffer + 1);
+			n = add_to_list(&listed_lines[fd], buffer, 0, pos_nl - buffer + 1);
 		else
-		{
-			n = add(&listed_lines[fd], buffer, 0, BUFFER_SIZE);
-			if (n != -1)
-				n = read(fd, buffer, BUFFER_SIZE);
-		}
+			n = add_to_list(&listed_lines[fd], buffer, 0, BUFFER_SIZE);
+		if (n != -1 && !pos_nl)
+			n = read(fd, buffer, BUFFER_SIZE);
 	}
 	if (n == -1)
 		return (NULL);
 	line = construct_line(listed_lines[fd]);
-	if (pos_nl && (size_t)(pos_nl - buffer) < (ft_strlcpy(NULL, buffer, 0) - 1))
-		n = add(&listed_lines[fd], buffer, pos_nl - buffer + 1, BUFFER_SIZE);
+	if (pos_nl && *++pos_nl)
+		add_to_list(&listed_lines[fd], buffer, pos_nl - buffer, BUFFER_SIZE);
 	return (line);
 }
 
