@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/24 15:44:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/04 17:51:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char *));
 char	*ft_strjoin(const char *s1, const char *s2);
 char	*ft_strmapi(const char *s, char (*f)(unsigned int, char));
 char	*ft_strtrim(const char *s, const char *set);
-char	*ft_substr(const char *s, unsigned int start, size_t len);
+char	*ft_substr(const char *s, size_t start, size_t len);
 
 typedef struct s_list
 {
