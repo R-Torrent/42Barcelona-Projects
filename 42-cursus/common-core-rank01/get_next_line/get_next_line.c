@@ -6,37 +6,36 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/04 19:00:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/07 19:29:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*construct_line(t_list *lst0)
+static char	*construct_line(t_list **plst)
 {
-	t_list	*lst;
-	size_t	size;
-	char	*p0;
-	char	*p;
+	t_list **const	plst0 = plst;
+	size_t			size;
+	char			*p0;
+	char			*p;
 
-	if (!lst0)
+	if (!*plst)
 		return (NULL);
-	lst = lst0;
 	size = 0;
-	while (lst->next)
+	while ((*plst)->next)
 	{
 		size += BUFFER_SIZE;
-		lst = lst->next;
+		(*plst) = (*plst)->next;
 	}
-	p0 = malloc(size + ft_strlcpy(NULL, lst->content, 0) + 1);
+	p0 = malloc(size + ft_strlcpy(NULL, (*plst)->content, 0) + 1);
 	p = p0;
-	lst = lst0;
-	while (p0 && lst)
+	plst = plst0;
+	while (p0 && *plst)
 	{
-		p += ft_strlcpy(p, lst->content, BUFFER_SIZE);
-		lst = lst->next;
+		p += ft_strlcpy(p, (*plst)->content, BUFFER_SIZE);
+		(*plst) = (*plst)->next;
 	}
-	ft_lstclear(&lst0, free);
+	ft_lstclear(plst0, free);
 	return (p0);
 }
 
@@ -101,7 +100,7 @@ char	*get_next_line(int fd)
 	}
 	if (n == -1)
 		return (NULL);
-	line = construct_line(listed_lines[fd]);
+	line = construct_line(&listed_lines[fd]);
 	if (pos_nl && *++pos_nl)
 		add_to_list(&listed_lines[fd], buffer, pos_nl - buffer, BUFFER_SIZE);
 	return (line);
