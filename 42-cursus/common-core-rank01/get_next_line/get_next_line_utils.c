@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 12:14:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/04 17:53:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/08 16:57:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 void	ft_lstadd_back(t_list **plst, t_list *new)
 {
-	if (*plst)
+	t_list	*lst;
+
+	lst = *plst;
+	if (lst)
 	{
-		while ((*plst)->next)
-			*plst = (*plst)->next;
-		(*plst)->next = new;
+		while (lst->next)
+			lst = lst->next;
+		lst->next = new;
 	}
 	else
 		*plst = new;
@@ -26,14 +29,14 @@ void	ft_lstadd_back(t_list **plst, t_list *new)
 
 void	ft_lstclear(t_list **plst, void (*del)(void *))
 {
-	t_list	*nxt;
+	t_list	*next;
 
 	while (*plst)
 	{
-		nxt = (*plst)->next;
+		next = (*plst)->next;
 		del((*plst)->content);
 		free(*plst);
-		*plst = nxt;
+		*plst = next;
 	}
 }
 
