@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/08 17:31:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/17 20:02:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,24 +86,24 @@ char	*get_next_line(int fd)
 	static t_list	*listed_lines[MAX_FILES];
 	char			*pos_nl;
 	char			*line;
-	char			buffer[BUFFER_SIZE + 1];
+	char			buf[BUFFER_SIZE + 1];
 
-	n = read_first(fd, &listed_lines[fd], buffer, &pos_nl);
+	n = read_first(fd, &listed_lines[fd], buf, &pos_nl);
 	while (n > 0 && !pos_nl)
 	{
-		n = add_to_list(&listed_lines[fd], buffer, 0, BUFFER_SIZE);
+		n = add_to_list(&listed_lines[fd], buf, 0, BUFFER_SIZE);
 		if (n == -1)
-			break;
-		n = read(fd, buffer, BUFFER_SIZE);
-		buffer[n] = '\0';
-		pos_nl = ft_strchr(buffer, '\n');
+			break ;
+		n = read(fd, buf, BUFFER_SIZE);
+		buf[n] = '\0';
+		pos_nl = ft_strchr(buf, '\n');
 	}
 	if (n != -1 && pos_nl)
-		n = add_to_list(&listed_lines[fd], buffer, 0, pos_nl - buffer + 1);
+		n = add_to_list(&listed_lines[fd], buf, 0, pos_nl - buf + 1);
 	if (n != -1)
 		line = construct_line(&listed_lines[fd]);
 	if (n != -1 && pos_nl && *++pos_nl)
-		n = add_to_list(&listed_lines[fd], buffer, pos_nl - buffer, BUFFER_SIZE);
+		n = add_to_list(&listed_lines[fd], buf, pos_nl - buf, BUFFER_SIZE);
 	if (n != -1)
 		return (line);
 	return (NULL);
