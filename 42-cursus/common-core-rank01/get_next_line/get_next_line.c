@@ -6,74 +6,98 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/17 20:02:11 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:25:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*construct_line(t_list **plst)
+struct s_block
 {
-	t_list	*lst;
-	size_t	size;
-	char	*p0;
-	char	*p;
+	char	*str;
+	size_t	len;
+};
 
-	if (!*plst)
-		return (NULL);
-	lst = *plst;
-	size = 0;
-	while (lst->next)
-	{
-		size += BUFFER_SIZE;
-		lst = lst->next;
-	}
-	p0 = malloc(size + ft_strlcpy(NULL, lst->content, 0) + 1);
-	p = p0;
-	lst = *plst;
-	while (p0 && lst)
-	{
-		p += ft_strlcpy(p, lst->content, BUFFER_SIZE + 1);
-		lst = lst->next;
-	}
-	ft_lstclear(plst, free);
-	return (p0);
+static void	del_block(void *content)
+{
+	struct s_block *const	block = content;
+
+	free(block->str);
+	free(block);
 }
 
-static int	add_to_list(t_list **plst, const char *s, size_t start, size_t len)
+static char	*construct_line(t_list **plst)
 {
-	char	*sub;
-	t_list	*new;
+	t_list			*lst;
+	size_t			size;
+	struct s_block	*block;
+	char			*p;
 
-	sub = ft_substr(s, start, len);
-	new = ft_lstnew(sub);
-	if (!sub || !new)
+	lst = *plst;
+	size = 0;
+	while (lst)
 	{
-		free(sub);
-		free(new);
-		ft_lstclear(plst, free);
+		block = lst->content;
+		size += block->len;
+		lst = lst->next;
+	}
+	lst = *plst;
+	p = malloc(size + 1);
+	if (!lst || !p)
+		return (NULL);
+	p += size;
+	*p = '\0';
+	while (lst)
+	{
+		block = lst->content;
+		p -= block->len;
+		ft_memcpy(p, block->str, block->len);
+		lst = lst->next;
+	}
+	ft_lstclear(plst, del_block);
+	return (p);
+}
+
+static ssize_t	add_block(t_list **plst, const char *str, size_t i0, size_t len)
+{
+	struct s_block	*new_block;	
+	char			*new_substr;
+	t_list			*new_link;
+
+	new_block = malloc(sizeof(struct s_block));
+	new_substr = ft_substr(str, i0, len);
+	new_link = ft_lstnew(new_block);
+	if (!new_block || !new_substr || !new_link)
+	{
+		free(new_block);
+		free(new_substr);
+		free(new_link);
+		ft_lstclear(plst, del_block);
 		return (-1);
 	}
-	ft_lstadd_back(plst, new);
-	return (0);
+	new_block->str = new_substr;
+	new_block->len = len;
+	new_link->next = *plst;
+	*plst = new_link;
+	return (len);
 }
 
 static ssize_t	read_first(int fd, t_list **plst, char *dst, char **ppos_nl)
 {
-	size_t	m;
-	ssize_t	n;
+	struct s_block	*block;
+	ssize_t			n;
 
 	if (*plst)
 	{
-		m = ft_strlcpy(dst, (*plst)->content, BUFFER_SIZE);
-		ft_lstclear(plst, free);
+		block = (*plst)->content;
+		n = block->len;
+		ft_memcpy(dst, block->str, n);
+		ft_lstclear(plst, del_block);
 	}
 	else
-		m = 0;
-	n = read(fd, dst + m, BUFFER_SIZE - m);
+		n = read(fd, dst, BUFFER_SIZE);
 	if (n != -1)
 	{
-		n += m;
 		dst[n] = '\0';
 		*ppos_nl = ft_strchr(dst, '\n');
 	}
@@ -91,7 +115,7 @@ char	*get_next_line(int fd)
 	n = read_first(fd, &listed_lines[fd], buf, &pos_nl);
 	while (n > 0 && !pos_nl)
 	{
-		n = add_to_list(&listed_lines[fd], buf, 0, BUFFER_SIZE);
+		n = add_block(&listed_lines[fd], buf, 0, n);
 		if (n == -1)
 			break ;
 		n = read(fd, buf, BUFFER_SIZE);
@@ -99,20 +123,12 @@ char	*get_next_line(int fd)
 		pos_nl = ft_strchr(buf, '\n');
 	}
 	if (n != -1 && pos_nl)
-		n = add_to_list(&listed_lines[fd], buf, 0, pos_nl - buf + 1);
+		n = add_block(&listed_lines[fd], buf, 0, pos_nl - buf + 1);
 	if (n != -1)
 		line = construct_line(&listed_lines[fd]);
 	if (n != -1 && pos_nl && *++pos_nl)
-		n = add_to_list(&listed_lines[fd], buf, pos_nl - buf, BUFFER_SIZE);
+		n = add_block(&listed_lines[fd], buf, pos_nl - buf, BUFFER_SIZE - n);
 	if (n != -1)
 		return (line);
 	return (NULL);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s != (char)c)
-		if (!*s++)
-			return (NULL);
-	return ((char *)s);
 }

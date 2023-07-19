@@ -6,26 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 12:14:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/08 16:57:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/19 03:06:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void	ft_lstadd_back(t_list **plst, t_list *new)
-{
-	t_list	*lst;
-
-	lst = *plst;
-	if (lst)
-	{
-		while (lst->next)
-			lst = lst->next;
-		lst->next = new;
-	}
-	else
-		*plst = new;
-}
 
 void	ft_lstclear(t_list **plst, void (*del)(void *))
 {
@@ -52,28 +37,35 @@ t_list	*ft_lstnew(void *content)
 	return (p);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	const char *const	src0 = src;
+	unsigned char		*udst;
+	const unsigned char	*usrc;
 
-	while (size > 1 && *src)
-	{
-		*dst++ = *src++;
-		size--;
-	}
-	if (size)
-		*dst = '\0';
-	while (*src)
-		src++;
-	return (src - src0);
+	udst = dst;
+	usrc = src;
+	while (n--)
+		*udst++ = *usrc++;
+	return (dst);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s != (char)c)
+		if (!*s++)
+			return (NULL);
+	return ((char *)s);
 }
 
 char	*ft_substr(const char *s, size_t start, size_t len)
 {
-	size_t	size;
-	char	*p;
+	const char *const	s0 = s;
+	size_t				size;
+	char				*p;
 
-	size = ft_strlcpy(NULL, s, 0);
+	while (*s)
+		s++;
+	size = s - s0;
 	if (start > size)
 	{
 		p = malloc(1);
@@ -84,8 +76,11 @@ char	*ft_substr(const char *s, size_t start, size_t len)
 	size -= start;
 	if (len < size)
 		size = len;
-	p = malloc(++size);
+	p = malloc(size + 1);
 	if (p)
-		ft_strlcpy(p, s + start, size);
+	{
+		ft_memcpy(p, s0 + start, size);
+		p[size] = '\0';
+	}
 	return (p);
 }
