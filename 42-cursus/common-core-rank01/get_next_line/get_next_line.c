@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/23 06:41:50 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/23 07:31:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,13 @@ static char	*construct_line(t_list **plst)
 {
 	t_list			*lst;
 	size_t			size;
-	struct s_block	*block;
 	char			*p;
 
 	lst = *plst;
 	size = 0;
 	while (lst)
 	{
-		block = lst->content;
-		size += block->len;
+		size += ((struct s_block *)(lst->content))->len;
 		lst = lst->next;
 	}
 	lst = *plst;
@@ -49,8 +47,8 @@ static char	*construct_line(t_list **plst)
 	*p = '\0';
 	while (lst)
 	{
-		block = lst->content;
-		p = ft_memcpy(p - block->len, block->str, block->len);
+		size = ((struct s_block *)(lst->content))->len;
+		p = ft_memcpy(p - size, ((struct s_block *)(lst->content))->str, size);
 		lst = lst->next;
 	}
 	ft_lstclear(plst, del_block);
@@ -85,14 +83,12 @@ static ssize_t	add_block(t_list **plst, const char *str, size_t len, char **ln)
 
 static ssize_t	read_first(int fd, t_list **plst, char *dst, char **pp_nl)
 {
-	struct s_block	*block;
 	ssize_t			n;
 
 	if (*plst)
 	{
-		block = (*plst)->content;
-		n = block->len;
-		ft_memcpy(dst, block->str, n);
+		n = ((struct s_block *)((*plst)->content))->len;
+		ft_memcpy(dst, ((struct s_block *)((*plst)->content))->str, n);
 		ft_lstclear(plst, del_block);
 	}
 	else
