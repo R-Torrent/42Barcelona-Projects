@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 12:14:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/19 03:06:29 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/23 06:23:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,29 +57,22 @@ char	*ft_strchr(const char *s, int c)
 	return ((char *)s);
 }
 
+// NOTE: This toned down version of 'ft_substr' is intended to be used solely in
+// this file, in conjunction with 'get_next_line.c'.
+
 char	*ft_substr(const char *s, size_t start, size_t len)
 {
-	const char *const	s0 = s;
-	size_t				size;
-	char				*p;
+	size_t	size;
+	char	*p;
 
-	while (*s)
-		s++;
-	size = s - s0;
-	if (start > size)
-	{
-		p = malloc(1);
-		if (p)
-			*p = '\0';
-		return (p);
-	}
-	size -= start;
+	(void)start;
+	size = ft_strchr(s, '\0') - s;
 	if (len < size)
 		size = len;
 	p = malloc(size + 1);
 	if (p)
 	{
-		ft_memcpy(p, s0 + start, size);
+		ft_memcpy(p, s, size);
 		p[size] = '\0';
 	}
 	return (p);
