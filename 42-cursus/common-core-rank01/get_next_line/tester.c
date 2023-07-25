@@ -1,6 +1,7 @@
 #include "get_next_line.h"
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 int main()
@@ -22,11 +23,11 @@ int main()
 
 	while (s1 = get_next_line(fd1), s2 = get_next_line(fd2), s1 || s2) {
 		if (s1) {
-			printf("\n[%d] %s", fd1, s1);
+			printf("\n[%d; %zu] %s", fd1, strlen(s1), s1);
 			free(s1);
 		}		
 		if (s2) {
-			printf("\n[%d] %s", fd2, s2);
+			printf("\n[%d; %zu] %s", fd2, strlen(s2), s2);
 			free(s2);
 		}
 	}	
