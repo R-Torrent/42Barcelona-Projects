@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/25 06:22:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:20:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,19 @@ static bool	construct_line(t_list **plst, char **ln)
 	}
 	if (size)
 		*ln = malloc(size + 1);
-	if (*ln)
+	if (!*ln)
+		return (false);
+	*ln += size;
+	**ln = '\0';
+	lst = *plst;
+	while (lst)
 	{
-		*ln += size;
-		**ln = '\0';
-		lst = *plst;
-		while (lst)
-		{
-			size = ((t_pblock)lst->content)->len;
-			*ln = ft_memcpy(*ln - size, ((t_pblock)lst->content)->str, size);
-			lst = lst->next;
-		}
-		ft_lstclear(plst, del_block);
+		size = ((t_pblock)lst->content)->len;
+		*ln = ft_memcpy(*ln - size, ((t_pblock)lst->content)->str, size);
+		lst = lst->next;
 	}
-	return (*ln);
+	ft_lstclear(plst, del_block);
+	return (true);
 }
 
 static bool	add_block(t_list **plst, const char *str, size_t len)
@@ -108,7 +107,7 @@ char	*get_next_line(int fd)
 	char			*line;
 
 	line = NULL;
-	if (!read_blocks(fd, &listed_lines[fd], buffer, &line) && listed_lines[fd])
+	if (!read_blocks(fd, &listed_lines[fd], buffer, &line))
 		ft_lstclear(&listed_lines[fd], del_block);
 	return (line);
 }
