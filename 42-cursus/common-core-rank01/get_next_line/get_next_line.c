@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/27 13:20:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/27 20:45:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ char	*get_next_line(int fd)
 	char			buffer[BUFFER_SIZE + 1];
 	char			*line;
 
+	buffer[BUFFER_SIZE] = '\0';
 	line = NULL;
 	if (!read_blocks(fd, &listed_lines[fd], buffer, &line))
 		ft_lstclear(&listed_lines[fd], del_block);
