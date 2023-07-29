@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:25:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/25 01:40:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/28 21:05:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ typedef struct s_list
 	struct s_list	*next;
 }		t_list;
 
+void	ft_lstadd_front(t_list **plst, t_list *new);
 void	ft_lstclear(t_list **plst, void (*del)(void *));
 t_list	*ft_lstnew(void *content);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 char	*ft_strchr(const char *s, int c);
-char	*ft_substr(const char *s, size_t start, size_t len);
 
 #endif

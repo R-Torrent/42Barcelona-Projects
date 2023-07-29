@@ -6,11 +6,17 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 12:14:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/23 06:23:34 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/07/28 21:05:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+void	ft_lstadd_front(t_list **plst, t_list *new)
+{
+	new->next = *plst;
+	*plst = new;
+}
 
 void	ft_lstclear(t_list **plst, void (*del)(void *))
 {
@@ -55,25 +61,4 @@ char	*ft_strchr(const char *s, int c)
 		if (!*s++)
 			return (NULL);
 	return ((char *)s);
-}
-
-// NOTE: This toned down version of 'ft_substr' is intended to be used solely in
-// this file, in conjunction with 'get_next_line.c'.
-
-char	*ft_substr(const char *s, size_t start, size_t len)
-{
-	size_t	size;
-	char	*p;
-
-	(void)start;
-	size = ft_strchr(s, '\0') - s;
-	if (len < size)
-		size = len;
-	p = malloc(size + 1);
-	if (p)
-	{
-		ft_memcpy(p, s, size);
-		p[size] = '\0';
-	}
-	return (p);
 }
