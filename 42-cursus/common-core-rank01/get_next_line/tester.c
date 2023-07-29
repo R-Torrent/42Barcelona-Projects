@@ -19,7 +19,7 @@ int main()
 	}
 
 	printf("File descriptor1: %d\n", fd1);
-	printf("File descriptor2: %d\n\n", fd2);
+	printf("File descriptor2: %d\n", fd2);
 
 	while (s1 = get_next_line(fd1), s2 = get_next_line(fd2), s1 || s2) {
 		if (s1) {
