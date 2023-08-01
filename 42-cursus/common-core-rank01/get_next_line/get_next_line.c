@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/01 18:19:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/01 22:01:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,98 +14,108 @@
 
 typedef struct s_block
 {
-	char	*str;
-	size_t	len;
-}	*t_pblock;
+	char			*start;
+	size_t			len;
+	struct s_block	*next;
+	char			str[BUFFER_SIZE + 1];
+}	t_block;
 
-static void	del_block(void *content)
+static void	clear_blocks(t_block **pblocks)
 {
-	free(((t_pblock)content)->str + ((t_pblock)content)->len - BUFFER_SIZE);
-	free(content);
+	t_block	*next;
+
+	while (*pblocks)
+	{
+		next = (*pblocks)->next;
+		free(*pblocks);
+		*pblocks = next;
+	}
 }
 
-static bool	asm_line(t_list **plst, char **ln, size_t size, char *last)
+static bool	asm_line(t_block **pblocks, char **line, size_t size, char *last)
 {
 	const size_t	len_last = size;
-	t_list			*lst;
+	t_block			*pblock;
 
-	lst = *plst;
-	while (lst)
+	pblock = *pblocks;
+	while (pblock)
 	{
-		size += ((t_pblock)lst->content)->len;
-		lst = lst->next;
+		size += pblock->len;
+		pblock = pblock->next;
 	}
 	if (size)
-		*ln = malloc(size + 1);
-	if (*ln)
+		*line = malloc(size + 1);
+	if (*line)
 	{
-		(*ln)[size] = '\0';
-		*ln = ft_memcpy(*ln + size - len_last, last, len_last);
-		lst = *plst;
-		while (lst)
+		(*line)[size] = '\0';
+		*line = ft_memcpy(*line + size - len_last, last, len_last);
+		pblock = *pblocks;
+		while (pblock)
 		{
-			size = ((t_pblock)lst->content)->len;
-			*ln = ft_memcpy(*ln - size, ((t_pblock)lst->content)->str, size);
-			lst = lst->next;
+			size = pblock->len;
+			*line = ft_memcpy(*line - size, pblock->start, size);
+			pblock = pblock->next;
 		}
-		ft_lstclear(plst, del_block);
+		clear_blocks(pblocks);
 	}
-	return (*ln);
+	return (*line);
 }
 
-static bool	add_block(t_list **plst, char *buffer, size_t len)
+static ssize_t	add_block(int fd, t_block **pblocks)
 {
-	char *const		text = malloc(BUFFER_SIZE + 1);
-	t_pblock const	new_blck = malloc(sizeof(struct s_block));
-	t_list *const	new_link = ft_lstnew(new_blck);
+	t_block *const	new_block = malloc(sizeof(struct s_block));
+	ssize_t			n;
 
-	if (!text || !new_blck || !new_link)
+	if (!new_block)
+		return (-1);
+	n = read(fd, new_block->str, BUFFER_SIZE);
+	if (n <= 0)
 	{
-		free(text);
-		free(new_blck);
-		free(new_link);
-		return (false);
+		free(new_block);
+		return (n);
 	}
-	buffer[len] = '\0';
-	new_blck->str = ft_memcpy(text + BUFFER_SIZE - len, buffer, len + 1);
-	new_blck->len = len;
-	ft_lstadd_front(plst, new_link);
-	return (true);
+	new_block->start = new_block->str;
+	new_block->len = n;
+	(new_block->str)[n] = '\0';
+	new_block->next = *pblocks;
+	*pblocks = new_block;
+	return (n);
 }
 
-static bool	read_blocks(int fd, t_list **plst, char *buffer, char **line)
+static bool	read_blocks(int fd, t_block **pblocks, char **line)
 {
 	char	*p_nl;
 	ssize_t	n;
 
 	p_nl = NULL;
-	if (*plst)
-		p_nl = ft_strchr(((t_pblock)(*plst)->content)->str, '\n');
+	if (*pblocks)
+		p_nl = ft_strchr((*pblocks)->start, '\n');
 	while (!p_nl)
 	{
-		n = read(fd, buffer, BUFFER_SIZE);
-		if (n == 0)
-			return (asm_line(plst, line, 0, NULL));
-		if (n == -1 || !add_block(plst, buffer, n))
+		n = add_block(fd, pblocks);
+		if (n < 0)
 			return (false);
-		p_nl = ft_strchr(((t_pblock)(*plst)->content)->str, '\n');
+		if (n == 0)
+			return (asm_line(pblocks, line, 0, NULL));
+		p_nl = ft_strchr((*pblocks)->start, '\n');
 	}
-	n = ++p_nl - ((t_pblock)(*plst)->content)->str;
-	if (!asm_line(&((*plst)->next), line, n, ((t_pblock)(*plst)->content)->str))
+	n = ++p_nl - (*pblocks)->start;
+	if (!asm_line(&(*pblocks)->next, line, n, (*pblocks)->start))
 		return (false);
-	((t_pblock)(*plst)->content)->str = p_nl;
-	((t_pblock)(*plst)->content)->len -= n;
-	return (((t_pblock)(*plst)->content)->len);
+	(*pblocks)->start = p_nl;
+	(*pblocks)->len -= n;
+	return ((*pblocks)->len);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_list	*listed_lines[MAX_FILES];
-	char			buffer[BUFFER_SIZE + 1];
+	static t_block	*listed_lines[MAX_FILES];
 	char			*line;
 
 	line = NULL;
-	if (!read_blocks(fd, &listed_lines[fd], buffer, &line))
-		ft_lstclear(&listed_lines[fd], del_block);
+	if (fd < 0 || fd >= MAX_FILES || BUFFER_SIZE <= 0)
+		return (line);
+	if (!read_blocks(fd, &listed_lines[fd], &line) && fd >= 0)
+		clear_blocks(&listed_lines[fd]);
 	return (line);
 }
