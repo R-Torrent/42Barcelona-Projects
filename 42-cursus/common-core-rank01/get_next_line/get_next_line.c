@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/29 03:33:34 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/01 18:19:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ static bool	add_block(t_list **plst, char *buffer, size_t len)
 		free(new_link);
 		return (false);
 	}
+	buffer[len] = '\0';
 	new_blck->str = ft_memcpy(text + BUFFER_SIZE - len, buffer, len + 1);
 	new_blck->len = len;
 	ft_lstadd_front(plst, new_link);
@@ -103,7 +104,6 @@ char	*get_next_line(int fd)
 	char			buffer[BUFFER_SIZE + 1];
 	char			*line;
 
-	buffer[BUFFER_SIZE] = '\0';
 	line = NULL;
 	if (!read_blocks(fd, &listed_lines[fd], buffer, &line))
 		ft_lstclear(&listed_lines[fd], del_block);
