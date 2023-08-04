@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/03 20:47:40 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/04 01:41:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 typedef struct s_block
 {
-	char			*start;
 	size_t			len;
 	unsigned int	index;
 	struct s_block	*prev;
+	char			*start;
 	char			str[BUFFER_SIZE];
 }	*t_blocks;
 
@@ -39,13 +39,13 @@ static void	clear_blocks(t_blocks *plist, bool skip_first)
 	}
 }
 
-static bool	asm_line(t_blocks *plist, char **line, bool clear_skip_first)
+static bool	asm_line(t_blocks *plst_copy, t_blocks *plst_del, char **line)
 {
 	size_t		size;
 	t_blocks	blocks;
 
 	size = 0;
-	blocks = *plist;
+	blocks = *plst_copy;
 	while (blocks)
 	{
 		size += blocks->len;
@@ -55,15 +55,15 @@ static bool	asm_line(t_blocks *plist, char **line, bool clear_skip_first)
 		*line = malloc(size + 1);
 	if (*line)
 	{
-		(*line)[size] = '\0';
-		blocks = *plist;
+		*line += size;
+		**line = '\0';
+		blocks = *plst_copy;
 		while (blocks)
 		{
-			size = blocks->len;
-			*line = ft_memcpy(*line - size, blocks->start, size);
+			*line = ft_memcpy(*line - blocks->len, blocks->start, blocks->len);
 			blocks = blocks->prev;
 		}
-		clear_blocks(plist, clear_skip_first);
+		clear_blocks(plst_del, *plst_copy != *plst_del && (*plst_copy)->index);
 	}
 	return (*line);
 }
@@ -83,13 +83,13 @@ static ssize_t	add_block(int fd, t_blocks *plist)
 	n = read(fd, new_block->str, BUFFER_SIZE);
 	if (n > 0)
 	{
-		new_block->start = new_block->str;
 		new_block->len = n;
 		if (new_batch)
 			new_block->index = 0;
 		else
 			new_block->index = (*plist)->index + 1;
 		new_block->prev = *plist;
+		new_block->start = new_block->str;
 		*plist = new_block;
 	}
 	else if (new_batch)
@@ -111,15 +111,15 @@ static bool	read_blocks(int fd, t_blocks *plist, char **line)
 		if (n < 0)
 			return (false);
 		if (n == 0)
-			return (asm_line(plist, line, false));
+			return (asm_line(plist, plist, line));
 		p_nl = ft_memchr((*plist)->start, '\n', (*plist)->len);
 	}
 	n = (*plist)->len;
 	(*plist)->len = ++p_nl - (*plist)->start;
-	if (!asm_line(plist, line, true))
+	if (!asm_line(plist, &(*plist)->prev, line))
 		return (false);
-	(*plist)->start = p_nl;
 	(*plist)->len = n - (*plist)->len;
+	(*plist)->start = p_nl;
 	return ((*plist)->len);
 }
 
