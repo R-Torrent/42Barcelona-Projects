@@ -9,7 +9,8 @@ int main()
 	int fd1, fd2, fd3;
 	char *s1, *s2, *s3;
 
-	printf("BUFFER_SIZE: %d\n\n", BUFFER_SIZE);
+	printf("BUFFER_SIZE: %d\n", BUFFER_SIZE);
+	printf("DEFAULT_LIST_SIZE: %d\n\n", DEFAULT_LIST_SIZE);
 
 	if ((fd1 = open("test1.txt", O_RDONLY)) == -1)
 		return 1;
