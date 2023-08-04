@@ -1,0 +1,1 @@
+Static array 'listed_lines' in function 'get_next_line' is wasteful. A more reasonable solution would employ a hash table, mapping list pointers ('t_blocks') with file descriptors ('fd').
