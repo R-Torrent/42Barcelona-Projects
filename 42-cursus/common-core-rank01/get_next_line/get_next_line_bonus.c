@@ -6,11 +6,14 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/04 13:37:19 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/04 14:39:33 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
+
+// by default, maximum number of files that Mac OS X can open
+#define MAX_FILES 12288
 
 typedef struct s_block
 {

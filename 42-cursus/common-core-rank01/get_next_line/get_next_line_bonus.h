@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:25:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/04 13:38:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/04 14:38:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ ssize_t	read(int fildes, void *buf, size_t nbyte);
 # ifndef DEFAULT_LIST_SIZE
 #  define DEFAULT_LIST_SIZE 10
 # endif
-
-// by default, maximum number of files that Mac OS X can open
-# define MAX_FILES 12288
 
 char	*get_next_line(int fd);
 
