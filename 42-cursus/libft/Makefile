@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/06/24 15:49:37 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/08/07 19:24:09 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ HEADER := libft.h
 SRC    := ft_atoi.c\
 	ft_bzero.c\
 	ft_calloc.c\
+	ft_getnextline_fd.c\
 	ft_isalnum.c\
 	ft_isalpha.c\
 	ft_isascii.c\

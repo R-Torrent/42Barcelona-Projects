@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/07/04 19:51:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/07 19:38:39 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,21 @@
 // external declarations from the libc (AKA 'authorized functions')
 void	free(void *ptr);
 void	*malloc(size_t size);
+ssize_t	read(int fildes, void *buf, size_t nbyte);
 ssize_t	write(int fildes, const void *buf, size_t nbyte);
+
+/* ************************************************************************** */
+
+// buffer size for read operations (ft_getnextline_fd)
+// (=BUFSIZ constant defined in stdio.h)
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
+
+// minimim list size and subsequent batch allocations (ft_getnextline_fd)
+# ifndef DEFAULT_LIST_SIZE
+#  define DEFAULT_LIST_SIZE 10
+# endif
 
 /* ************************************************************************** */
 
@@ -67,6 +81,7 @@ void	ft_bzero(void *s, size_t n);
 /* ************************************************************************** */
 
 // additional '42' functions
+char	*ft_getnextline_fd(int fd);
 char	*ft_itoa(int n);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putendl_fd(char *s, int fd);
