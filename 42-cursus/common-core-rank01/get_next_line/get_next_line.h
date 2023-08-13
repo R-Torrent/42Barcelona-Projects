@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:25:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/04 14:37:39 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/12 15:40:21 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,18 @@ ssize_t	read(int fildes, void *buf, size_t nbyte);
 #  define DEFAULT_LIST_SIZE 10
 # endif
 
+// by default, maximum number of files that Mac OS X can open
+# define MAX_FILES 12288
+
+typedef struct s_block
+{
+	size_t			len;
+	unsigned int	index;
+	struct s_block	*prev;
+	char			*start;
+	char			str[BUFFER_SIZE];
+}	*t_blocks;
+
 char	*get_next_line(int fd);
 
 /* ************************************************************************** */
@@ -42,5 +54,7 @@ char	*get_next_line(int fd);
 
 void	*ft_memchr(const void *s, int c, size_t n);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
+
+/* ************************************************************************** */
 
 #endif

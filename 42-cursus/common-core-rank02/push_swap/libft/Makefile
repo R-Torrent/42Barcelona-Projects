@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2023/08/07 19:24:09 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/08/13 05:03:25 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -104,5 +104,6 @@ re: fclean all
 
 # Build prerequisites:
 
-%.o: %.c $(HEADER)
-	$(CC) $(CFLAGS) -o $@ -c $<
+$(OBJ): $(HEADER)
+
+ft_printf.o ft_getnextline_fd.o: %.o: %.h

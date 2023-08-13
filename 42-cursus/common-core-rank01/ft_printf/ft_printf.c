@@ -6,20 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/16 22:33:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/12 14:33:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-#define FLD_SIZE 32
-
-typedef struct s_specf
-{
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
 
 static void	hextoa(t_specf *const pspecf, const char c)
 {

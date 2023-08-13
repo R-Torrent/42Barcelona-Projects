@@ -1,0 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_getnextline_fd.h                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/20 11:25:11 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/08/12 14:59:28 by rtorrent         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef FT_GETNEXTLINE_FD_H
+# define FT_GETNEXTLINE_FD_H
+
+// by default, maximum number of files that Mac OS X can open
+# define MAX_FILES 12288
+
+typedef struct s_block
+{
+	size_t			len;
+	unsigned int	index;
+	struct s_block	*prev;
+	char			*start;
+	char			str[BUFFER_SIZE];
+}	*t_blocks;
+
+#endif
