@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2023/08/12 01:05:19 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/08/14 19:04:43 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,6 @@ $(NAME)::
 	@$(MAKE) -C $(DIRLIB) all
 
 $(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
-	$(CC) -o $@ $^
 
 clean:
 	@$(MAKE) -C $(DIRLIB) clean
@@ -68,4 +67,3 @@ re: fclean all
 # Build prerequisites:
 
 $(OBJ): %.o: %.c $(HEADER) $(DIRLIB)$(HDRLIB)
-	$(CC) $(CFLAGS) -o $@ -c $<
