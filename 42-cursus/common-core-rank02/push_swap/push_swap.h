@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/11 23:14:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/14 20:05:40 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,29 @@ void	exit(int status);
 
 /* ************************************************************************** */
 
-// STUFF HERE
+typedef struct s_stack
+{
+	size_t	maxsize;
+	size_t	top;
+	int		stack[];
+}	t_stack;
+
+enum e_ops
+{
+	SA,
+	SB,
+	SS,
+	PA,
+	PB,
+	RA,
+	RB,
+	RR,
+	RRA,
+	RRB,
+	RRS
+};
+
+// MORE STUFF HERE
 
 /* ************************************************************************** */
 
