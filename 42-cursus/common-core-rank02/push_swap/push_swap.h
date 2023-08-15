@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/14 20:05:40 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/15 17:30:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,22 @@ void	exit(int status);
 
 /* ************************************************************************** */
 
+// successful completion
+# define SUCCESS 0
+// memory allocation error
+# define MEM_ERR 1
+// not a number error
+# define NAN_ERR 2
+// out of bounds error
+# define OOB_ERR 3
+// duplicate error
+# define DUP_ERR 4
+
 typedef struct s_stack
 {
 	size_t	maxsize;
 	size_t	top;
-	int		stack[];
+	size_t	stack[];
 }	t_stack;
 
 enum e_ops
@@ -41,7 +52,7 @@ enum e_ops
 	RR,
 	RRA,
 	RRB,
-	RRS
+	RRR
 };
 
 // MORE STUFF HERE
