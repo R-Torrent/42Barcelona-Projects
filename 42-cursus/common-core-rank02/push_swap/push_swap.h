@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/15 17:30:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/16 14:20:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include "libft/libft.h"
 
 /* ************************************************************************** */
+
+# include <limits.h>
 
 // external declarations from the libc (AKA 'authorized functions')
 void	exit(int status);

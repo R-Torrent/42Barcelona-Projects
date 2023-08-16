@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/15 21:33:41 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/16 15:58:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,25 +25,27 @@ void	end_push_swap(t_stack *sta, t_stack *stb, t_list **p_ops, int status)
 
 int	atoi2(const char *str, int *status)
 {
-	int	n;
-	int	sign;
+	int		n;
+	int		i;
+	bool	sgn;
 
 	while (ft_isspace(*str))
 		str++;
-	sign = *str == '-';
+	sgn = *str == '-';
 	if (*str == '-' || *str == '+')
 		str++;
 	n = 0;
 	while (ft_isdigit(*str) && !*status)
 	{
-		n *= 10;
-		if (sign)
-			n -= *str - '0';
-		else
-			n += *str - '0';
-		str++;
-		if ((sign && n > 0) || (!sign && n < 0))
+		i = *str - '0';
+		if ((sgn && n < (INT_MIN + i) / 10) || (!sgn && n > (INT_MAX - i) / 10))
 			*status = OOB_ERR;
+		n *= 10;
+		if (sgn)
+			n -= i;
+		else
+			n += i;
+		str++;
 	}
 	if (*str && !*status)
 		*status = NAN_ERR;
@@ -65,8 +67,8 @@ int	fill_stack(size_t *dst, const int *src, size_t size)
 		while (src < src_n)
 		{
 			if (src == src_current)
-				continue ;
-			if (*src < *src_current)
+				;
+			else if (*src < *src_current)
 				ordinal++;
 			else if (*src == *src_current)
 				return (DUP_ERR);
