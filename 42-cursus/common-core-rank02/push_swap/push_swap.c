@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/16 15:58:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/08/17 17:02:54 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,13 @@ int	atoi2(const char *str, int *status)
 	n = 0;
 	while (ft_isdigit(*str) && !*status)
 	{
-		i = *str - '0';
+		i = *str++ - '0';
 		if ((sgn && n < (INT_MIN + i) / 10) || (!sgn && n > (INT_MAX - i) / 10))
 			*status = OOB_ERR;
-		n *= 10;
 		if (sgn)
-			n -= i;
+			n = 10 * n - i;
 		else
-			n += i;
-		str++;
+			n = 10 * n + i;
 	}
 	if (*str && !*status)
 		*status = NAN_ERR;
