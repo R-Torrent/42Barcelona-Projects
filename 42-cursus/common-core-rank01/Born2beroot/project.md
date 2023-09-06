@@ -33,7 +33,7 @@ Open VirtualBox and select **`New`**.
 #### Hardware
 
 > Base Memory: Leave as recommended, 2048 MB.<br>
-> Processors: In my experience, OS installation at 42's facilities will crash with more than `2` CPUs.
+> Processors: In my experience, OS installation at 42's facilities **will crash** with more than `1` CPU. We *may* choose to increase the number after the installation is complete.
 
 #### Hard Disk
 
@@ -235,8 +235,36 @@ Set all partitions as: `Ext4 journaling file system`
 >> `Done setting up the partition`
 >
 > `Finish partitioning and write changes to disk`<br>
+
+![Partition disks overview](./img1.png "Your screen should look similar to this!")
+
 > Write the changes to disks? `Yes`
 
 #### Install the base system
 
-This stage may take a while. Sadly, it is prone to error.
+Installation of the OS at this stage may take a while.
+
+> Scan extra installation media? `No`<br>
+> Debian archive mirror country: `Spain` (§)<br>
+> Debian archive mirror: `deb.debian.org`<br>
+> HTTP proxy information (blank for none): ` ` \<leave empty\><br>
+> Participate in the package usage survey? `No`<br>
+> Choose software to install:
+>> `[ ] Debian desktop environment`<br>
+>> `[ ] ... GNOME`<br>
+>> `[ ] ... Xfce`<br>
+>> `[ ] ... GNOME Flashback`<br>
+>> `[ ] ... KDE Plasma`<br>
+>> `[ ] ... Cinnamon`<br>
+>> `[ ] ... MATE`<br>
+>> `[ ] ... LXDE`<br>
+>> `[ ] ... LXQt`<br>
+>> `[ ] web server`<br>
+>> `[ ] SSH server`<br>
+>> `[ ] standard system utilities`
+- Deselect all options and select none of the predefined collections.
+> Install the GRUB boot loader to your primary drive? `Yes`<br>
+> Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)
+- Obviously, the serial number above will be different in each case.
+> `Continue`
+- Success!
