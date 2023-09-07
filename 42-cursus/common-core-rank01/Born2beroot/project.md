@@ -39,7 +39,7 @@ Open VirtualBox and select **`New`**.
 
 > `Create a Virtual Hard Disk Now` ☉ this button
 - Hard Disk File location for the .vdi (VirtualBox Disk Image) should be automatically selected in our VM's folder.
-- Increase size to `28.70 GB` for the *bonus* sections of this project. NOTE: VirtualBox uses the *traditional* 1 GB = 1,073,741,824 bytes, while Debian's installer uses the *modern* 1 GB = 1,000,000,000 bytes. These 28.70 GB correspond with the 30.8 GB of the project's document.
+- Increase size to `30.80 GB` for the *bonus* sections of this project. [**NOTE**: Both Debian and VirtualBox use the *traditional* 1 GB = (1,024)^3 = 1,073,741,824 bytes. However, Debian's installer uses the *modern* 1 GB = 1,000,000,000 bytes, perhaps to accomodate the manufacturers' scheming of inflated HD sizes.]
 - No need to Pre-allocate Full Size.
 
 After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolder of our choice.
@@ -100,12 +100,12 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 Set all partitions as: `Ext4 journaling file system`
 
 > Partitioning method: `Manual`<br>
-> `SCSI3 (0,0,0) (sda) - 30.8 GB ATA VBOX HARDDISK`
-- Location for the new partition table.
+> `SCSI3 (0,0,0) (sda) - 33.1 GB ATA VBOX HARDDISK`
+- Location for the new partition table. NOTE
 > Create new empty partition table on this device? `Yes`<br>
-> `pri/log 30.8 GB FREE SPACE`<br>
+> `pri/log 33.1 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
-> New partition size: `500M`
+> New partition size: `524`
 - This will be `sda1` and contain the OS.
 > Type for the new partition: `Primary`<br>
 > Location for the new partition: `Beginning`<br>
@@ -113,7 +113,7 @@ Set all partitions as: `Ext4 journaling file system`
 >> Mount point: `/boot` \<After selecting `/boot - static files of the boot loader`\><br>
 >> `Done setting up the partition`
 > 
-> `pri/log 30.3 GB FREE SPACE`<br>
+> `pri/log 32.5 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
 > New partition size: `max`
 - Next create a LV (Logical Volume) with the rest of the free space.
@@ -126,8 +126,8 @@ Set all partitions as: `Ext4 journaling file system`
 > Write the changes to disk and configure encrypted volumes? `Yes`<br>
 > Encryption configuration actions: `Create encrypted volumes`<br>
 > Devices to encrypt:
->> `[ ] /dev/sda1 (499MB; ext4)`<br>
->> `[*] /dev/sda5 (30314MB; ext4)`
+>> `[ ] /dev/sda1 (523MB; ext4)`<br>
+>> `[*] /dev/sda5 (32545MB; ext4)`
 - Encrypt only the logical volume.
 > Partition settings:
 >> `Done setting up the partition`
@@ -144,90 +144,90 @@ Set all partitions as: `Ext4 journaling file system`
 > Volume group name: `LVMGroup`
 - This is the name suggested in the project's document.
 > Devices for the new volume group:
->> `[*] /dev/mapper/sda5_crypt (30297MB; ext4)`<br>
->> `[ ] /dev/sda1 (499MB; ext4)`
+>> `[*] /dev/mapper/sda5_crypt (32528MB; ext4)`<br>
+>> `[ ] /dev/sda1 (523MB; ext4)`
 >
 > LVM configuration action: `Create logical volume`<br>
-> Volume group: `LVMGroup (30295MB)`<br>
+> Volume group: `LVMGroup (32526MB)`<br>
 > Logical volume name: `root`<br>
-> Logical volume size: `10G`
+> Logical volume size: `10737`
 - And repeat for the next six volumes in the group!
 > LVM configuration action: `Create logical volume`<br>
-> Volume group: `LVMGroup (20296MB)`<br>
+> Volume group: `LVMGroup (21793MB)`<br>
 > Logical volume name: `swap`<br>
-> Logical volume size: `2.3G`<br>
+> Logical volume size: `2470`<br>
 > LVM configuration action: `Create logical volume`<br>
-> Volume group: `LVMGroup (17997MB)`<br>
+> Volume group: `LVMGroup (19327MB)`<br>
 > Logical volume name: `home`<br>
-> Logical volume size: `5G`<br>
+> Logical volume size: `5369`<br>
 > LVM configuration action: `Create logical volume`<br>
-> Volume group: `LVMGroup (12998MB)`<br>
+> Volume group: `LVMGroup (13958MB)`<br>
 > Logical volume name: `var`<br>
-> Logical volume size: `3G`<br>
+> Logical volume size: `3221`<br>
 > LVM configuration action: `Create logical volume`<br>
-> Volume group: `LVMGroup (9999MB)`<br>
+> Volume group: `LVMGroup (10741MB)`<br>
 > Logical volume name: `srv`<br>
-> Logical volume size: `3G`<br>
+> Logical volume size: `3221`<br>
 > LVM configuration action: `Create logical volume`<br>
-> Volume group: `LVMGroup (7000MB)`<br>
+> Volume group: `LVMGroup (7524MB)`<br>
 > Logical volume name: `tmp`<br>
-> Logical volume size: `3G`<br>
+> Logical volume size: `3221`<br>
 > LVM configuration action: `Create logical volume`<br>
-> Volume group: `LVMGroup (4001MB)`<br>
+> Volume group: `LVMGroup (4307MB)`<br>
 > Logical volume name: `var-log`<br>
-> Logical volume size: `4001MB`<br>
+> Logical volume size: `4307MB` \<leave unchanged\><br>
 > LVM configuration action: `Finish`
 - We now have to specify the use and mounting points for each of the volumes in the group:
->> `LVM VG LVMGroup, LV home - 5.0 GB Linux device-mapper (linear)`<br>
->> `#1 5.0 GB` \<select this row\>
+>> `LVM VG LVMGroup, LV home - 5.4 GB Linux device-mapper (linear)`<br>
+>> `#1 5.4 GB` \<select this row\>
 >
 > Partition settings:
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/home` \<After selecting `/home - user home directories`\><br>
 >> `Done setting up the partition`
 >
->> `LVM VG LVMGroup, LV root - 10.0 GB Linux device-mapper (linear)`<br>
->> `#1 10.0 GB` \<select this row\>
+>> `LVM VG LVMGroup, LV root - 10.7 GB Linux device-mapper (linear)`<br>
+>> `#1 10.7 GB` \<select this row\>
 >
 > Partition settings:
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/` \<After selecting `/ - the root file system`\><br>
 >> `Done setting up the partition`
 >
->> `LVM VG LVMGroup, LV srv - 3.0 GB Linux device-mapper (linear)`<br>
->> `#1 3.0 GB` \<select this row\>
+>> `LVM VG LVMGroup, LV srv - 3.2 GB Linux device-mapper (linear)`<br>
+>> `#1 3.2 GB` \<select this row\>
 >
 > Partition settings:
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/srv` \<After selecting `/srv - data for services provided by this system`\><br>
 >> `Done setting up the partition`
 >
->> `LVM VG LVMGroup, LV swap - 2.3 GB Linux device-mapper (linear)`<br>
->> `#1 2.3 GB` \<select this row\>
+>> `LVM VG LVMGroup, LV swap - 2.5 GB Linux device-mapper (linear)`<br>
+>> `#1 2.5 GB` \<select this row\>
 >
 > Partition settings:
 >> Use as: `swap area`
 - This partition does not use the Ext4 file system. No mount point required either.
 >> `Done setting up the partition`
 >
->> `LVM VG LVMGroup, LV tmp - 3.0 GB Linux device-mapper (linear)`<br>
->> `#1 3.0 GB` \<select this row\>
+>> `LVM VG LVMGroup, LV tmp - 3.2 GB Linux device-mapper (linear)`<br>
+>> `#1 3.2 GB` \<select this row\>
 >
 > Partition settings:
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/tmp` \<After selecting `/tmp - temporary files`\><br>
 >> `Done setting up the partition`
 >
->> `LVM VG LVMGroup, LV var - 3.0 GB Linux device-mapper (linear)`<br>
->> `#1 3.0 GB` \<select this row\>
+>> `LVM VG LVMGroup, LV var - 3.2 GB Linux device-mapper (linear)`<br>
+>> `#1 3.2 GB` \<select this row\>
 >
 > Partition settings:
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/var` \<After selecting `/var - variable data`\><br>
 >> `Done setting up the partition`
 >
->> `LVM VG LVMGroup, LV var-log - 4.0 GB Linux device-mapper (linear)`<br>
->> `#1 4.0 GB` \<select this row\>
+>> `LVM VG LVMGroup, LV var-log - 4.3 GB Linux device-mapper (linear)`<br>
+>> `#1 4.3 GB` \<select this row\>
 >
 > Partition settings:
 >> Use as: `Ext4 journaling file system`<br>
@@ -244,11 +244,19 @@ Set all partitions as: `Ext4 journaling file system`
 
 Installation of the OS at this stage may take a while.
 
+#### Configure the package manager
+
 > Scan extra installation media? `No`<br>
 > Debian archive mirror country: `Spain` (§)<br>
 > Debian archive mirror: `deb.debian.org`<br>
-> HTTP proxy information (blank for none): ` ` \<leave empty\><br>
-> Participate in the package usage survey? `No`<br>
+> HTTP proxy information (blank for none): ` ` \<leave empty\>
+
+#### Configuring popularity-contest
+
+> Participate in the package usage survey? `No`
+
+#### Software selection
+
 > Choose software to install:
 >> `[ ] Debian desktop environment`<br>
 >> `[ ] ... GNOME`<br>
@@ -260,11 +268,56 @@ Installation of the OS at this stage may take a while.
 >> `[ ] ... LXDE`<br>
 >> `[ ] ... LXQt`<br>
 >> `[ ] web server`<br>
->> `[ ] SSH server`<br>
+>> `[*] SSH server`<br>
 >> `[ ] standard system utilities`
-- Deselect all options and select none of the predefined collections.
+- Deselect all options and install the predefined SSH collection (OpenSSH).
+
+#### Configuring grub-pc
+
 > Install the GRUB boot loader to your primary drive? `Yes`<br>
-> Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)
+> Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)`
 - Obviously, the serial number above will be different in each case.
+
+#### Finish the installation
+
 > `Continue`
-- Success!
+- Success! [**TIP**: Cloning the virtual machine after the installation is a sensible precaution before moving on.]
+
+---
+
+### 3. Configuring the virtual machine
+
+Henceforth, enter your Debian installation by pressing `Debian GNU/Linux` in the GNU GRUB loading screen, and unlock the encrypted partition:
+> Please unlock disk sda5_crypt: `Born2beroot42` (§)
+
+But before continuing, power the machine off to enable the ports.
+
+#### Setting the ports
+
+Navigate to the `Network` menu, either by pressing the **`Settings`** button or the `Network` reticule of the machine's `Display` view.<br>
+Expand to the `Advanced` options and press the **`Port Forwarding`** button.
+
+![Port Forwarding](./img2.png "Press the 'Port Forwarding' button")
+
+Add a new rule:
+> `Name		Protocol	Host Port	Guest Port`<br>
+> `Rule 1	TCP			1717		4242`
+- *Host port* may be any port of our liking, `1717` (§) in this case, but it **must** be rerouted to *guest port* `4242` in our virtual machine.
+
+Turn the machine on  and login as `root` user to continue with the project:
+> rtorrent42 login: `root` (§)<br>
+> Password: `Born2beroot00` (§)
+
+#### Secure Shell setup
+
+SSH server should be present in the machine. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirming with `y`.
+
+#### Uncomplicated Firewall setup
+
+> `apt install ufw`<br>
+> Do you want to continue? [Y/n] `y` \<a simple `⏎` in the keyboard will suffice\><br>
+> `ufw enable`
+- Activates UFW for immediate use and enables it on system boot.
+> `ufw allow 4242`
+- As instructed in the document, port 4242 is left open.
+- Type `ufw status` to confirm that port 4242 is indeed open.
