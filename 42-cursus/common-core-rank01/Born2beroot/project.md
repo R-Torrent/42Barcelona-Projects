@@ -97,15 +97,13 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 
 #### 2.e Partition disks
 
-Set all partitions as: `Ext4 journaling file system`
-
 > Partitioning method: `Manual`<br>
 > `SCSI3 (0,0,0) (sda) - 33.1 GB ATA VBOX HARDDISK`
-- Location for the new partition table. NOTE
+- Location for the new partition table. [NOTE: The installer may revert to the SCSI1 or SCSI2 protocols. Don't worry about this.]
 > Create new empty partition table on this device? `Yes`<br>
 > `pri/log 33.1 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
-> New partition size: `524`
+> New partition size: `525`
 - This will be `sda1` and contain the OS.
 > Type for the new partition: `Primary`<br>
 > Location for the new partition: `Beginning`<br>
@@ -126,8 +124,8 @@ Set all partitions as: `Ext4 journaling file system`
 > Write the changes to disk and configure encrypted volumes? `Yes`<br>
 > Encryption configuration actions: `Create encrypted volumes`<br>
 > Devices to encrypt:
->> `[ ] /dev/sda1 (523MB; ext4)`<br>
->> `[*] /dev/sda5 (32545MB; ext4)`
+>> `[ ] /dev/sda1 (524MB; ext4)`<br>
+>> `[*] /dev/sda5 (32544MB; ext4)`
 - Encrypt only the logical volume.
 > Partition settings:
 >> `Done setting up the partition`
@@ -144,8 +142,8 @@ Set all partitions as: `Ext4 journaling file system`
 > Volume group name: `LVMGroup`
 - This is the name suggested in the project's document.
 > Devices for the new volume group:
->> `[*] /dev/mapper/sda5_crypt (32528MB; ext4)`<br>
->> `[ ] /dev/sda1 (523MB; ext4)`
+>> `[*] /dev/mapper/sda5_crypt (32527MB; ext4)`<br>
+>> `[ ] /dev/sda1 (524MB; ext4)`
 >
 > LVM configuration action: `Create logical volume`<br>
 > Volume group: `LVMGroup (32526MB)`<br>
@@ -269,8 +267,8 @@ Installation of the OS at this stage may take a while.
 >> `[ ] ... LXQt`<br>
 >> `[ ] web server`<br>
 >> `[*] SSH server`<br>
->> `[ ] standard system utilities`
-- Deselect all options and install the predefined SSH collection (OpenSSH).
+>> `[*] standard system utilities`
+- Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands.
 
 #### 2.j Configuring grub-pc
 
@@ -299,7 +297,7 @@ Expand to the `Advanced` options and press the **`Port Forwarding`** button.
 
 ![Port Forwarding](src/img2.png "Press the 'Port Forwarding' button")
 
-Add a new rule:
+Add a new rule (green button in the top right corner):
 > `Name     Protocol    Host Port   Guest Port`<br>
 > `Rule 1   TCP         1717        4242      `
 - *Host port* may be any port of our liking, `1717` (§) in this case, but it **must** be rerouted to *guest port* `4242` in our virtual machine.
@@ -310,8 +308,25 @@ Turn the machine on  and login as `root` user to continue with the project:
 
 #### 3.b Secure Shell setup
 
-A SSH server should be present in the machine from the software selection phase of the OS installation. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirming with `y`.
+A SSH server should be present in the machine from the software selection phase of the OS installation. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirm with `y`.
 
+Configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor:
+> `vi /etc/ssh/sshd_config` (§)
+- Observe that there is also a `ssh_config` file, a `ssh_config.d` folder, and a `sshd_config.d` folder in `/etc/ssh/`. Check your spelling!
+- The config file basically consists of an `Include` directive to call further config files stored in the `sshd_config.d` folder, and a list of *commented out* settings (starting with the `#` character). These are the default settings the server runs on.
+
+Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** listens on:
+> `Port 4242`
+
+Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root".
+> `PermitRootLogin no`
+- Open the man page for further details, `man sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
+
+Restart the service to force the changes:
+> `service ssh restart`
+- Check with `service ssh status` that the listened port has indeed changed to 4242.
+
+**ssh_config** configures the SSH client one uses to SSH *another* machine. **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. The document does not mandate us to set a client in the virtual machine.
 
 #### 3.c Uncomplicated Firewall setup
 
