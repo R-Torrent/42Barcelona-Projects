@@ -12,7 +12,7 @@ Virtualization software: Oracle VM VirtualBox v7.0.8
 
 ---
 
-## Installing & setting our virtual machine
+## A.- Installing & setting our virtual machine
 
 [Download](https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.1.0-amd64-netinst.iso) the latest *stable* version of Debian.
 
@@ -20,7 +20,7 @@ Open VirtualBox and select **`New`**.
 
 ### 1. VirtualBox Settings
 
-#### Name and Operating System
+#### 1.a Name and Operating System
 
 > Name: `Born2beroot_Debian12.1.0` (§)<br>
 > Folder: `cd /System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§)
@@ -30,12 +30,12 @@ Open VirtualBox and select **`New`**.
 - Further boxes should autofill.
 > `Skip Unattended Installation` ✓ this box
 
-#### Hardware
+#### 1.b Hardware
 
 > Base Memory: Leave as recommended, 2048 MB.<br>
 > Processors: In my experience, OS installation at 42's facilities **will crash** with more than `1` CPU. We *may* choose to increase the number after the installation is complete.
 
-#### Hard Disk
+#### 1.c Hard Disk
 
 > `Create a Virtual Hard Disk Now` ☉ this button
 - Hard Disk File location for the .vdi (VirtualBox Disk Image) should be automatically selected in our VM's folder.
@@ -55,31 +55,31 @@ After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolde
 
 Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the window to a comfortable size.
 
-#### Select a language
+#### 2.a Select a language
 
 > Language: `English - English`
 
-#### Select your location
+#### 2.b Select your location
 
 > Country, territory or area: `other` (§)<br>
 > Continent or region: `Europe` (§)<br>
 > Country, territory or area: `Spain` (§)
 
-#### Configure locales
+#### 2.c Configure locales
 
 > Country to base default locale settings on: `United States - en_US.UTF-8`
 
-#### Configure the keyboard
+#### 2.d Configure the keyboard
 
 > Keymap to use: `American English`
 
-#### Configure the network
+#### 2.e Configure the network
 
 > Hostname: `rtorrent42` (§)
 - As per instructions, hostname **must** be the user's 42 login ending with 42.
 > Domain name: ` ` \<leave empty\>
 
-#### Set up users and passwords
+#### 2.f Set up users and passwords
 
 > Root password: `Born2beroot00` (§)<br>
 > Re-enter password to verify: `Born2beroot00` (§)
@@ -91,11 +91,11 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 > Choose a password for the new user: `Born2berootrt` (§)<br>
 > Re-enter password to verify: `Born2berootrt` (§)
 
-#### Configure the clock
+#### 2.d Configure the clock
 
 > Select a location in your time zone: `Madrid` (§)
 
-#### Partition disks
+#### 2.e Partition disks
 
 Set all partitions as: `Ext4 journaling file system`
 
@@ -236,26 +236,26 @@ Set all partitions as: `Ext4 journaling file system`
 >
 > `Finish partitioning and write changes to disk`<br>
 
-![Partition disks overview](./img1.png "Your screen should look similar to this!")
+![Partition disks overview](src/img1.png "Your screen should look similar to this!")
 
 > Write the changes to disks? `Yes`
 
-#### Install the base system
+#### 2.f Install the base system
 
 Installation of the OS at this stage may take a while.
 
-#### Configure the package manager
+#### 2.g Configure the package manager
 
 > Scan extra installation media? `No`<br>
 > Debian archive mirror country: `Spain` (§)<br>
 > Debian archive mirror: `deb.debian.org`<br>
 > HTTP proxy information (blank for none): ` ` \<leave empty\>
 
-#### Configuring popularity-contest
+#### 2.h Configuring popularity-contest
 
 > Participate in the package usage survey? `No`
 
-#### Software selection
+#### 2.i Software selection
 
 > Choose software to install:
 >> `[ ] Debian desktop environment`<br>
@@ -272,13 +272,13 @@ Installation of the OS at this stage may take a while.
 >> `[ ] standard system utilities`
 - Deselect all options and install the predefined SSH collection (OpenSSH).
 
-#### Configuring grub-pc
+#### 2.j Configuring grub-pc
 
 > Install the GRUB boot loader to your primary drive? `Yes`<br>
 > Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)`
 - Obviously, the serial number above will be different in each case.
 
-#### Finish the installation
+#### 2.k Finish the installation
 
 > `Continue`
 - Success! [**TIP**: Cloning the virtual machine after the installation is a sensible precaution before moving on.]
@@ -292,30 +292,31 @@ Henceforth, enter your Debian installation by pressing `Debian GNU/Linux` in the
 
 But before continuing, power the machine off to enable the ports.
 
-#### Setting the ports
+#### 3.a Setting the ports
 
 Navigate to the `Network` menu, either by pressing the **`Settings`** button or the `Network` reticule of the machine's `Display` view.<br>
 Expand to the `Advanced` options and press the **`Port Forwarding`** button.
 
-![Port Forwarding](./img2.png "Press the 'Port Forwarding' button")
+![Port Forwarding](src/img2.png "Press the 'Port Forwarding' button")
 
 Add a new rule:
-> `Name		Protocol	Host Port	Guest Port`<br>
-> `Rule 1	TCP			1717		4242`
+> `Name     Protocol    Host Port   Guest Port`<br>
+> `Rule 1   TCP         1717        4242      `
 - *Host port* may be any port of our liking, `1717` (§) in this case, but it **must** be rerouted to *guest port* `4242` in our virtual machine.
 
 Turn the machine on  and login as `root` user to continue with the project:
 > rtorrent42 login: `root` (§)<br>
 > Password: `Born2beroot00` (§)
 
-#### Secure Shell setup
+#### 3.b Secure Shell setup
 
-SSH server should be present in the machine. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirming with `y`.
+A SSH server should be present in the machine from the software selection phase of the OS installation. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirming with `y`.
 
-#### Uncomplicated Firewall setup
+
+#### 3.c Uncomplicated Firewall setup
 
 > `apt install ufw`<br>
-> Do you want to continue? [Y/n] `y` \<a simple `⏎` in the keyboard will suffice\><br>
+> Do you want to continue? [Y/n] `⏎` \<a simple `y` in the keyboard would also suffice\><br>
 > `ufw enable`
 - Activates UFW for immediate use and enables it on system boot.
 > `ufw allow 4242`
