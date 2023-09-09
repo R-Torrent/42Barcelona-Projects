@@ -257,17 +257,17 @@ Installation of the OS at this stage may take a while.
 
 > Choose software to install:
 >> `[ ] Debian desktop environment`<br>
->> `[ ] ... GNOME`<br>
->> `[ ] ... Xfce`<br>
->> `[ ] ... GNOME Flashback`<br>
->> `[ ] ... KDE Plasma`<br>
->> `[ ] ... Cinnamon`<br>
->> `[ ] ... MATE`<br>
->> `[ ] ... LXDE`<br>
->> `[ ] ... LXQt`<br>
->> `[ ] web server`<br>
->> `[*] SSH server`<br>
->> `[*] standard system utilities`
+>> `[ ] ... GNOME                 `<br>
+>> `[ ] ... Xfce                  `<br>
+>> `[ ] ... GNOME Flashback       `<br>
+>> `[ ] ... KDE Plasma            `<br>
+>> `[ ] ... Cinnamon              `<br>
+>> `[ ] ... MATE                  `<br>
+>> `[ ] ... LXDE                  `<br>
+>> `[ ] ... LXQt                  `<br>
+>> `[ ] web server                `<br>
+>> `[*] SSH server                `<br>
+>> `[*] standard system utilities `
 - Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands.
 
 #### 2.j Configuring grub-pc
@@ -320,7 +320,7 @@ Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** li
 
 Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root".
 > `PermitRootLogin no`
-- Open the man page for further details, `man sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
+- Open the **man** page for further details, `man 5 sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
 
 Restart the service to force the changes:
 > `service ssh restart`
@@ -337,3 +337,38 @@ Restart the service to force the changes:
 > `ufw allow 4242`
 - As instructed in the document, port 4242 is left open.
 - Type `ufw status` to confirm that port 4242 is indeed open.
+
+#### 3.d Strong password policy
+
+Open the configuration file that stores user account parameters, `/etc/login.defs`, with your preferred text editor:
+> `vi /etc/login.defs` (§)
+
+Find definition `PASS_MAX_DAYS` and edit from `99999` to the mandated `30`.<br>
+Find definition `PASS_MIN_DAYS` and edit from `0` to `2`.<br>
+Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `7` by default.
+> `#                                                                               `<br>
+> `# Password aging controls:                                                      `<br>
+> `#                                                                               `<br>
+> `#       PASS_MAX_DAYS   Maximum number of days a password may be used.          `<br>
+> `#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.`<br>
+> `#       PASS_WARN_AGE   Number of days warning given before a password expires. `<br>
+> `#                                                                               `<br>
+> `PASS_MAX_DAYS   30                                                              `<br>
+> `PASS_MIN_DAYS   2                                                               `<br>
+> `PASS_WARN_AGE   7                                                               `
+- In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
+- This file is accessed by commands such as `useradd` and `groupadd`.
+- Open the **man** page for further details, `man 5 login.defs`.
+
+Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). But we must first install the required PAM password management module:
+> `apt -y install libpam-pwquality`
+- `-y` option spares us the confirmation request after the `apt` command.
+- You may check if the package is installed with `dpkg - libpam-pwquality`.
+
+Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
+> `vi /etc/pam.d/common-password` (§)
+
+CONTINUE HERE!!
+
+- You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
+- For more details, open the **man** page, `man 5 pam.d`.
