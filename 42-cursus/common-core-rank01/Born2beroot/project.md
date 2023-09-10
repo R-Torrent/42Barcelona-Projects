@@ -81,8 +81,8 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 
 #### 2.f Set up users and passwords
 
-> Root password: `Born2beroot00` (§)<br>
-> Re-enter password to verify: `Born2beroot00` (§)
+> Root password: `Born2becute` (§)<br>
+> Re-enter password to verify: `Born2becute` (§)
 - Remember to store this and all passwords in a safe location.
 - Checking the `Show Password in Clear` option is very helpful.
 > Full name for the new user: `Roger Torrent` (§)<br>
@@ -268,7 +268,7 @@ Installation of the OS at this stage may take a while.
 >> `[ ] web server                `<br>
 >> `[*] SSH server                `<br>
 >> `[*] standard system utilities `
-- Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands.
+- Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands. Alternatively, just deselect everything; later on you may install the precise packages yourself.
 
 #### 2.j Configuring grub-pc
 
@@ -304,7 +304,7 @@ Add a new rule (green button in the top right corner):
 
 Turn the machine on  and login as `root` user to continue with the project:
 > rtorrent42 login: `root` (§)<br>
-> Password: `Born2beroot00` (§)
+> Password: `Born2becute` (§)
 
 #### 3.b Secure Shell setup
 
@@ -326,7 +326,7 @@ Restart the service to force the changes:
 > `service ssh restart`
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
-**ssh_config** configures the SSH client one uses to SSH *another* machine. **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. The document does not mandate us to set a client in the virtual machine.
+**ssh_config** configures the SSH client one uses to SSH *another* machine. **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. The document does not mandate us to set a client in the virtual machine!
 
 #### 3.c Uncomplicated Firewall setup
 
@@ -363,12 +363,36 @@ Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `
 Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). But we must first install the required PAM password management module:
 > `apt -y install libpam-pwquality`
 - `-y` option spares us the confirmation request after the `apt` command.
-- You may check if the package is installed with `dpkg - libpam-pwquality`.
+- You may check if the package is installed with `dpkg -s libpam-pwquality`.
 
 Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
 > `vi /etc/pam.d/common-password` (§)
 
-CONTINUE HERE!!
+Locate line 25:
+> `password   requisite   pam_pwquality.so   retry=3`
+
+Column 1, `password`, is the management group for the service, *Password group* in our case. Other groups we may find are *Auth*, *Account*, and *Session groups*.<br>
+Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. If the requisite is not found or failed to load, it will stop loading other modules and return failure.<br>
+Column 3, `pam_pwquality.so`, is the *Module* (.so file) used.<br>
+Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:<br>
+> `password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root`
+- All parameters should go in the same *line*, that is, before a newline character.
+
+`minlen=10`: minimum acceptable size.<br>
+`ucredit=-1`: minimum number of upper case letters. (†)<br>
+`lcredit=-1`: minumum number of lower case letters. (†)<br>
+`dcredit=-1`: minimum number of digits. (†)<br>
+`maxrepeat=3`: limit on repeated consecutive characters.<br>
+`reject_username`: rejects the new password if it contains the login, either in straight or reversed form.<br>
+`difok=7`: number of changes (inserts, removals, or replacements) in the new password vs the old.<br>
+`enforce_for_root`: as per instructions!
+
+(†) NOTE: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In ths system, the value numbers are positive.
 
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
-- For more details, open the **man** page, `man 5 pam.d`.
+- For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
+
+Type `reboot` to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
+- Notice that the `root` user does not have to present the current password before typing a new one, neither for itself nor other users. Therefore, the minimum 7-character difference with the old password rule is not applicable to `root`, in accordance with the project document!
+
+#### 3.e sudo installation & configuration
