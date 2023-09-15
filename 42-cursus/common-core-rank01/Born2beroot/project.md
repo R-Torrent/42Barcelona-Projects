@@ -396,3 +396,19 @@ Type `reboot` to restart the machine if you wish to try the new password conditi
 - Notice that the `root` user does not have to present the current password before typing a new one, neither for itself nor other users. Therefore, the minimum 7-character difference with the old password rule is not applicable to `root`, in accordance with the project document!
 
 #### 3.e sudo installation & configuration
+**sudo** (superuser do) will allow any user to adopt omnipotent `root` abilities. Therefore, it must be be properly configured. Start by installing the `sudo` package:
+> `apt -y install sudo`
+-  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`
+
+One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that:
+> `vi /etc/sudoers.d/Born2beroot` (§)
+- Any filename not ending with tilde `~` or containing a dot `.` will do.
+
+**sudoers** mostly contains *users specifications* following the following syntax: `User Host = (Runas) Command`. This reads as *User may run Command as the Runas user on Host*.
+
+`User` and `Runas` may by usernames, groupnames prefixed with `%`, numeric UIDs prefixed with `#`, or numeric GIDs prefixed with `%#`.<br>
+`Host` may be a hostname, IP address, or a whole network.<br>
+`Command` is the full path to an executable.<br>
+Any or all of the above may be the special keyword `ALL`, valid for everyone, everywhere, and everything.
+- The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**.
+- It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers`.
