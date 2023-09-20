@@ -27,8 +27,8 @@ Open VirtualBox and select **`New`**.
 - Actual location of the `sgoinfre` folder may vary.
 - User's folder in the public directory may be further protected: `chmod go-rwx rtorrent`
 > ISO Image: Should be located in the `Downloads` folder.
-- Further boxes should autofill.
-> `Skip Unattended Installation` ✓ this box
+- Further boxes will autofill.
+> `Skip Unattended Installation` **✓** this box
 
 #### 1.b Hardware
 
@@ -37,9 +37,10 @@ Open VirtualBox and select **`New`**.
 
 #### 1.c Hard Disk
 
-> `Create a Virtual Hard Disk Now` ☉ this button
+> `Create a Virtual Hard Disk Now` **☉** this button
 - Hard Disk File location for the .vdi (VirtualBox Disk Image) should be automatically selected in our VM's folder.
-- Increase size to `30.80 GB` for the *bonus* sections of this project. [**NOTE**: Both Debian and VirtualBox use the *traditional* 1 GB = (1,024)^3 = 1,073,741,824 bytes. However, Debian's installer uses the *modern* 1 GB = 1,000,000,000 bytes, perhaps to accomodate the manufacturers' scheming of inflated HD sizes.]
+- Increase size to `30.80 GB` for the *bonus* sections of this project.<br>
+  [**NOTE**: Both Debian and VirtualBox use the *traditional* 1 GB = (1,024)^3 = 1,073,741,824 bytes. However, Debian's installer uses the *modern* 1 GB = 1,000,000,000 bytes, perhaps to accomodate hardware manufacturers' scheming of inflated HD sizes.]
 - No need to Pre-allocate Full Size.
 
 After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolder of our choice.
@@ -91,15 +92,16 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 > Choose a password for the new user: `Born2berootrt` (§)<br>
 > Re-enter password to verify: `Born2berootrt` (§)
 
-#### 2.d Configure the clock
+#### 2.g Configure the clock
 
 > Select a location in your time zone: `Madrid` (§)
 
-#### 2.e Partition disks
+#### 2.h Partition disks
 
 > Partitioning method: `Manual`<br>
 > `SCSI3 (0,0,0) (sda) - 33.1 GB ATA VBOX HARDDISK`
-- Location for the new partition table. [NOTE: The installer may revert to the SCSI1 or SCSI2 protocols. Don't worry about this.]
+- Location for the new partition table.<br>
+  [NOTE: The installer may revert to the SCSI1 or SCSI2 protocols. Don't worry about this.]
 > Create new empty partition table on this device? `Yes`<br>
 > `pri/log 33.1 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
@@ -238,22 +240,22 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 
 > Write the changes to disks? `Yes`
 
-#### 2.f Install the base system
+#### 2.i Install the base system
 
 Installation of the OS at this stage may take a while.
 
-#### 2.g Configure the package manager
+#### 2.j Configure the package manager
 
 > Scan extra installation media? `No`<br>
 > Debian archive mirror country: `Spain` (§)<br>
 > Debian archive mirror: `deb.debian.org`<br>
 > HTTP proxy information (blank for none): ` ` \<leave empty\>
 
-#### 2.h Configuring popularity-contest
+#### 2.k Configuring popularity-contest
 
 > Participate in the package usage survey? `No`
 
-#### 2.i Software selection
+#### 2.l Software selection
 
 > Choose software to install:
 >> `[ ] Debian desktop environment`<br>
@@ -270,16 +272,17 @@ Installation of the OS at this stage may take a while.
 >> `[*] standard system utilities `
 - Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands. Alternatively, just deselect everything; later on you may install the precise packages yourself.
 
-#### 2.j Configuring grub-pc
+#### 2.m Configuring grub-pc
 
 > Install the GRUB boot loader to your primary drive? `Yes`<br>
 > Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)`
 - Obviously, the serial number above will be different in each case.
 
-#### 2.k Finish the installation
+#### 2.n Finish the installation
 
 > `Continue`
-- Success! [**TIP**: Cloning the virtual machine after the installation is a sensible precaution before moving on.]
+- Success!<br>
+  [**TIP**: Cloning the virtual machine after the installation is a sensible precaution before moving on.]
 
 ---
 
@@ -326,7 +329,7 @@ Restart the service to force the changes:
 > `service ssh restart`
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
-**ssh_config** configures the SSH client one uses to SSH *another* machine. **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. The document does not mandate us to set a client in the virtual machine!
+**ssh_config** configures the SSH client one uses to SSH *another* machine. By contrast, **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. The document does not mandate us to set a client in the virtual machine!
 
 #### 3.c Uncomplicated Firewall setup
 
@@ -360,7 +363,7 @@ Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `
 - This file is accessed by commands such as `useradd` and `groupadd`.
 - Open the **man** page for further details, `man 5 login.defs`.
 
-Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). But we must first install the required PAM password management module:
+Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
 > `apt -y install libpam-pwquality`
 - `-y` option spares us the confirmation request after the `apt` command.
 - You may check if the package is installed with `dpkg -s libpam-pwquality`.
@@ -411,4 +414,18 @@ One could add to the main configuration file, `/etc/sudoers`, directly. But in i
 `Command` is the full path to an executable.<br>
 Any or all of the above may be the special keyword `ALL`, valid for everyone, everywhere, and everything.
 - The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**.
-- It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers`.
+- It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (pay special attention to the **Runas_Spec** section).
+
+Type the following lines into the new file:
+> `Defaults	passwd_tries=3`<br>
+> `Defaults	badpass_message="Prueba otra vez, bobo"` (§)<br>
+> `Defaults	log_input, log_output`
+- Technically, we could list all the specs of this file into one single command, separated with commas.
+> `Defaults	iolog_dir="/var/log/sudo/"`<br>
+> `Defaults	iolog_file="sudo.log"` (§)<br>
+> `Defaults	requiretty`<br>
+> `Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"`
+- Unfortunately, strict compliance with the project document bars the very colorful `Defaults	insults`!
+- `requiretty` will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).
+
+If you wish, you may create the folder for the log files with `mkdir /var/log/sudo` or, better, let the first use of **sudo** do it for you.
