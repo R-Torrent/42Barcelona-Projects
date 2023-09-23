@@ -18,9 +18,9 @@ Virtualization software: Oracle VM VirtualBox v7.0.8
 
 Open VirtualBox and select **`New`**.
 
-### 1. VirtualBox Settings
+### A.1 VirtualBox Settings
 
-#### 1.a Name and Operating System
+#### A.1.a Name and Operating System
 
 > Name: `Born2beroot_Debian12.1.0` (§)<br>
 > Folder: `cd /System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§)
@@ -30,12 +30,12 @@ Open VirtualBox and select **`New`**.
 - Further boxes will autofill.
 > `Skip Unattended Installation` **✓** this box
 
-#### 1.b Hardware
+#### A.1.b Hardware
 
 > Base Memory: Leave as recommended, 2048 MB.<br>
 > Processors: In my experience, OS installation at 42's facilities **will crash** with more than `1` CPU. We *may* choose to increase the number after the installation is complete.
 
-#### 1.c Hard Disk
+#### A.1.c Hard Disk
 
 > `Create a Virtual Hard Disk Now` **☉** this button
 - Hard Disk File location for the .vdi (VirtualBox Disk Image) should be automatically selected in our VM's folder.
@@ -50,37 +50,37 @@ After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolde
 
 ---
 
-### 2. Installing Debian
+### A.2 Installing Debian
 
 **IMPORTANT: Immediately press the `↓` key in the keyboard to interrupt the *Graphic install* option. Select the *Install* option instead.**
 
 Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the window to a comfortable size.
 
-#### 2.a Select a language
+#### A.2.a Select a language
 
 > Language: `English - English`
 
-#### 2.b Select your location
+#### A.2.b Select your location
 
 > Country, territory or area: `other` (§)<br>
 > Continent or region: `Europe` (§)<br>
 > Country, territory or area: `Spain` (§)
 
-#### 2.c Configure locales
+#### A.2.c Configure locales
 
 > Country to base default locale settings on: `United States - en_US.UTF-8`
 
-#### 2.d Configure the keyboard
+#### A.2.d Configure the keyboard
 
 > Keymap to use: `American English`
 
-#### 2.e Configure the network
+#### A.2.e Configure the network
 
 > Hostname: `rtorrent42` (§)
 - As per instructions, hostname **must** be the user's 42 login ending with 42.
 > Domain name: ` ` \<leave empty\>
 
-#### 2.f Set up users and passwords
+#### A.2.f Set up users and passwords
 
 > Root password: `Born2becute` (§)<br>
 > Re-enter password to verify: `Born2becute` (§)
@@ -92,16 +92,16 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 > Choose a password for the new user: `Born2berootrt` (§)<br>
 > Re-enter password to verify: `Born2berootrt` (§)
 
-#### 2.g Configure the clock
+#### A.2.g Configure the clock
 
 > Select a location in your time zone: `Madrid` (§)
 
-#### 2.h Partition disks
+#### A.2.h Partition disks
 
 > Partitioning method: `Manual`<br>
 > `SCSI3 (0,0,0) (sda) - 33.1 GB ATA VBOX HARDDISK`
 - Location for the new partition table.<br>
-  [NOTE: The installer may revert to the SCSI1 or SCSI2 protocols. Don't worry about this.]
+  [NOTE: The installer may revert to the SCSI1 or SCSI2 protocols. Don't worry over this.]
 > Create new empty partition table on this device? `Yes`<br>
 > `pri/log 33.1 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
@@ -240,22 +240,22 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 
 > Write the changes to disks? `Yes`
 
-#### 2.i Install the base system
+#### A.2.i Install the base system
 
 Installation of the OS at this stage may take a while.
 
-#### 2.j Configure the package manager
+#### A.2.j Configure the package manager
 
 > Scan extra installation media? `No`<br>
 > Debian archive mirror country: `Spain` (§)<br>
 > Debian archive mirror: `deb.debian.org`<br>
 > HTTP proxy information (blank for none): ` ` \<leave empty\>
 
-#### 2.k Configuring popularity-contest
+#### A.2.k Configuring popularity-contest
 
 > Participate in the package usage survey? `No`
 
-#### 2.l Software selection
+#### A.2.l Software selection
 
 > Choose software to install:
 >> `[ ] Debian desktop environment`<br>
@@ -272,13 +272,13 @@ Installation of the OS at this stage may take a while.
 >> `[*] standard system utilities `
 - Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands. Alternatively, just deselect everything; later on you may install the precise packages yourself.
 
-#### 2.m Configuring grub-pc
+#### A.2.m Configuring grub-pc
 
 > Install the GRUB boot loader to your primary drive? `Yes`<br>
 > Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)`
 - Obviously, the serial number above will be different in each case.
 
-#### 2.n Finish the installation
+#### A.2.n Finish the installation
 
 > `Continue`
 - Success!<br>
@@ -286,14 +286,14 @@ Installation of the OS at this stage may take a while.
 
 ---
 
-### 3. Configuring the virtual machine
+### A.3 Configuring the virtual machine
 
 Henceforth, enter your Debian installation by pressing `Debian GNU/Linux` in the GNU GRUB loading screen, and unlock the encrypted partition:
 > Please unlock disk sda5_crypt: `Born2beroot42` (§)
 
 But before continuing, power the machine off to enable the ports.
 
-#### 3.a Setting the ports
+#### A.3.a Setting the ports
 
 Navigate to the `Network` menu, either by pressing the **`Settings`** button or the `Network` reticule of the machine's `Display` view.<br>
 Expand to the `Advanced` options and press the **`Port Forwarding`** button.
@@ -309,7 +309,7 @@ Turn the machine on  and login as `root` user to continue with the project:
 > rtorrent42 login: `root` (§)<br>
 > Password: `Born2becute` (§)
 
-#### 3.b Secure Shell setup
+#### A.3.b Secure Shell setup
 
 A SSH server should be present in the machine from the software selection phase of the OS installation. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirm with `y`.
 
@@ -331,7 +331,7 @@ Restart the service to force the changes:
 
 **ssh_config** configures the SSH client one uses to SSH *another* machine. By contrast, **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. The document does not mandate us to set a client in the virtual machine!
 
-#### 3.c Uncomplicated Firewall setup
+#### A.3.c Uncomplicated Firewall setup
 
 > `apt install ufw`<br>
 > Do you want to continue? [Y/n] `⏎` \<a simple `y` in the keyboard would also suffice\><br>
@@ -341,7 +341,7 @@ Restart the service to force the changes:
 - As instructed in the document, port 4242 is left open.
 - Type `ufw status` to confirm that port 4242 is indeed open.
 
-#### 3.d Strong password policy
+#### A.3.d Strong password policy
 
 Open the configuration file that stores user account parameters, `/etc/login.defs`, with your preferred text editor:
 > `vi /etc/login.defs` (§)
@@ -398,7 +398,8 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 Type `reboot` to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
 - Notice that the `root` user does not have to present the current password before typing a new one, neither for itself nor other users. Therefore, the minimum 7-character difference with the old password rule is not applicable to `root`, in accordance with the project document!
 
-#### 3.e sudo installation & configuration
+#### A.3.e sudo installation & configuration
+
 **sudo** (superuser do) will allow any user to adopt omnipotent `root` abilities. Therefore, it must be be properly configured. Start by installing the `sudo` package:
 > `apt -y install sudo`
 -  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`
@@ -413,19 +414,34 @@ One could add to the main configuration file, `/etc/sudoers`, directly. But in i
 `Host` may be a hostname, IP address, or a whole network.<br>
 `Command` is the full path to an executable.<br>
 Any or all of the above may be the special keyword `ALL`, valid for everyone, everywhere, and everything.
-- The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**.
-- It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (pay special attention to the **Runas_Spec** section).
+- The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**. In its absence, the assumed identity will be *superuser*, i.e. `root`.
+- It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (paying special attention to the **Runas_Spec** section).
 
 Type the following lines into the new file:
-> `Defaults	passwd_tries=3`<br>
-> `Defaults	badpass_message="Prueba otra vez, bobo"` (§)<br>
+> `Defaults	badpass_message="Prueba otra vez, bobo"` (§)
+- Unfortunately, strict compliance with the project document bars the very colorful `Defaults	insults`!
 > `Defaults	log_input, log_output`
 - Technically, we could list all the specs of this file into one single command, separated with commas.
 > `Defaults	iolog_dir="/var/log/sudo/"`<br>
-> `Defaults	iolog_file="sudo.log"` (§)<br>
-> `Defaults	requiretty`<br>
-> `Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"`
-- Unfortunately, strict compliance with the project document bars the very colorful `Defaults	insults`!
+> `Defaults	iolog_file="logs"` (§)
+- Path relative to `iolog_dir` where input and output streams will be recorded.
+> `Defaults	logfile="/var/log/sudo/sudo.logs"`
+- Human readable log file.
+> `Defaults	requiretty`
 - `requiretty` will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).
+> `Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"`
+- Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** application packaged in our machine.
 
-If you wish, you may create the folder for the log files with `mkdir /var/log/sudo` or, better, let the first use of **sudo** do it for you.
+`Defaults	passwd_tries=3` is unnecessary as the default before **sudo** logs a failure and exits is already three attempts.
+
+Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
+[**NOTE**: A first use of **sudo** from within `root` would also create this folder.]
+
+#### A.3.f Adding new groups
+
+You can find all the groups in the database stored in the `/etc/group` file, including their ID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
+> `awk -F : '{print $1}' /etc/group | sort | more`
+
+To figure out the groups the current user is a member of, type `id -Gn`. Consider switching from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "Hello"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
+
+Back as `root`, create the two groups the document asks for:
