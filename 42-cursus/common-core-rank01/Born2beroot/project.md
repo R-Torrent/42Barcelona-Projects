@@ -134,7 +134,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >
 > Encryption configuration actions: `Finish`<br>
 > Really erase the data on SCSI3 (0,0,0), partition #5 (sda)? `No`
-- Should `Yes` be selected, interrupt the installer by pressing `Cancel` as it overwrites partition #5; it is safe, as there is nothing to encrypt.
+- Should `Yes` be selected, interrupt the installer by pressing `Cancel` as it overwrites partition #5; it is safe, as there was nothing to hide.
 > Encryption passphrase: `Born2beroot42` (§)<br>
 > Re-enter passphrase to verify: `Born2beroot42` (§)<br>
 > `Configure the Logical Volume Manager`<br>
@@ -240,7 +240,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 
 > Write the changes to disks? `Yes`
 
-#### A.2.i Install the base system
+#### A.2.i Installing the base system
 
 Installation of the OS at this stage may take a while.
 
@@ -439,9 +439,24 @@ Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 
 #### A.3.f Adding new groups
 
-You can find all the groups in the database stored in the `/etc/group` file, including their ID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
+You can find all the groups in the database stored in the `/etc/group` file, including their GID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
 > `awk -F : '{print $1}' /etc/group | sort | more`
 
-To figure out the groups the current user is a member of, type `id -Gn`. Consider switching from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "Hello"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
+To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "Hello"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
 
-Back as `root`, create the two groups the document asks for:
+Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
+> `groupadd user42 -U rtorrent` (§)
+
+Now add the same user to the `sudo` group with one of the following commands,
+> `groupmod sudo -aU rtorrent` (§)
+
+or alternatively,
+> `usermod rtorrent -aG sudo` (§)
+
+Both edit the user's details and the group's membership.<br>
+[**NOTE**:  The `-a` option (*append*) is crucial. Without it, the command will completely replace the user/group lists. This is not important with the `groupmod` command **in this case**—because we start with an empty group—, but it would be dramatic in the case of `usermod` to expel the user from all groups, including their own primary group, just to get them into `sudo`!]
+- Open the **man** pages for further details: `man 8 groupadd`, `man 8 groupmod`, and `man 8 usermod`.
+
+Double-check everything went right with `id rtorrent -Gn` (§). If you switch users again, **sudo** should now work with the login user.
+
+There is another option to the commands in this section: `addgroup` and `adduser`. These are actually *interactive* Perl scripts working with the original bin commands. You may locate them with `which addgroup` and `which adduser`, and find more information in the **man** page, common for both, `man 8 adduser`.
