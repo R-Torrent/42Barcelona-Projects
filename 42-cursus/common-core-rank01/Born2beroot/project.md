@@ -430,7 +430,7 @@ Type the following lines into the new file:
 > `Defaults	requiretty`
 - `requiretty` will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).
 > `Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"`
-- Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** application packaged in our machine.
+- Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
 `Defaults	passwd_tries=3` is unnecessary as the default before **sudo** logs a failure and exits is already three attempts.
 
@@ -440,18 +440,22 @@ Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 #### A.3.f Adding new groups
 
 You can find all the groups in the database stored in the `/etc/group` file, including their GID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
-> `awk -F : '{print $1}' /etc/group | sort | more`
+
+		awk -F : '{print $1}' /etc/group | sort | more
 
 To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "Hello"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
 
 Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
-> `groupadd user42 -U rtorrent` (§)
+
+		groupadd user42 -U rtorrent (§)
 
 Now add the same user to the `sudo` group with one of the following commands,
-> `groupmod sudo -aU rtorrent` (§)
+
+		groupmod sudo -aU rtorrent (§)
 
 or alternatively,
-> `usermod rtorrent -aG sudo` (§)
+
+		usermod rtorrent -aG sudo (§)
 
 Both edit the user's details and the group's membership.<br>
 [**NOTE**:  The `-a` option (*append*) is crucial. Without it, the command will completely replace the user/group lists. This is not important with the `groupmod` command **in this case**—because we start with an empty group—, but it would be dramatic in the case of `usermod` to expel the user from all groups, including their own primary group, just to get them into `sudo`!]
@@ -460,3 +464,35 @@ Both edit the user's details and the group's membership.<br>
 Double-check everything went right with `id rtorrent -Gn` (§). If you switch users again, **sudo** should now work with the login user.
 
 There is another option to the commands in this section: `addgroup` and `adduser`. These are actually *interactive* Perl scripts working with the original bin commands. You may locate them with `which addgroup` and `which adduser`, and find more information in the **man** page, common for both, `man 8 adduser`.
+
+#### A.3.g Simple script
+
+The next task is to write a Bash script, **monitoring.sh**. We choose to place this script in the `/usr/local/sbin` folder, which conveniently is in the PATH environment variable of our Linux system. (You can check this fact with `printenv PATH`.) Thus placed, the script can be executed without specifying its path.
+
+Using *everyone's* favorite text editor,
+
+		vi /usr/local/sbin/monitoring.sh (§)
+
+type the following Bash commands:
+
+		#!/bin/bash
+
+		# Architecture of OS & kernel version
+		arch=$(uname a)
+
+		# Physical processors
+		pcpu=$(lscpu | grep '^CPU(s)' | awk '{print $2}')
+
+		# Virtual processors
+		vcpu=$(nproc)
+
+		# RAM used/total MB (%)
+		ramu=$(free -m | awk 'NR == 2 {print $3}'
+		ramt=$(free -m | awk 'NR == 2 {print $2}'
+		ramp=$(printf '%.2f' $((10000*ramu/ramt))e-2)
+
+		# DISK used/total GB (%)
+		dsku=$(df -x tmpfs | grep -v 'udev' | awk 'NR > 1 {disk += $3} END {print disk}')
+		
+		dsk_total=$(df 
+
