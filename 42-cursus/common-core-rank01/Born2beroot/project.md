@@ -6,8 +6,8 @@ Operating system: Debian "Bookworm" v12.1.0<br>
 Virtualization software: Oracle VM VirtualBox v7.0.8
 
 **NOTES**:
-- User throughout this file is `rtorrent`.
-- Any other filename, password, or such marked with a (§) can and should be adapted to the user's personal preferences.
+- User login throughout this file is `rtorrent`.
+- Any other filename, password, or such marked with a (§) can and **should** be adapted to the user's personal preferences.
 - A text file with user, root, and partition passwords should be kept at hand.
 
 ---
@@ -24,7 +24,7 @@ Open VirtualBox and select **`New`**.
 
 > Name: `Born2beroot_Debian12.1.0` (§)<br>
 > Folder: `cd /System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§)
-- Actual location of the `sgoinfre` folder may vary.
+- Actual location of the `sgoinfre` folder in the 42 system might vary.
 - User's folder in the public directory may be further protected: `chmod go-rwx rtorrent`
 > ISO Image: Should be located in the `Downloads` folder.
 - Further boxes will autofill.
@@ -33,7 +33,7 @@ Open VirtualBox and select **`New`**.
 #### A.1.b Hardware
 
 > Base Memory: Leave as recommended, 2048 MB.<br>
-> Processors: In my experience, OS installation at 42's facilities **will crash** with more than `1` CPU. We *may* choose to increase the number after the installation is complete.
+> Processors: In my experience, OS installation at 42's facilities **will crash** with more than `1` CPU selected. We *may* choose to increase the number after the installation is complete.
 
 #### A.1.c Hard Disk
 
@@ -41,7 +41,7 @@ Open VirtualBox and select **`New`**.
 - Hard Disk File location for the .vdi (VirtualBox Disk Image) should be automatically selected in our VM's folder.
 - Increase size to `30.80 GB` for the *bonus* sections of this project.<br>
   [**NOTE**: Both Debian and VirtualBox use the *traditional* 1 GB = (1,024)^3 = 1,073,741,824 bytes. However, Debian's installer uses the *modern* 1 GB = 1,000,000,000 bytes, perhaps to accomodate hardware manufacturers' scheming of inflated HD sizes.]
-- No need to Pre-allocate Full Size.
+- No need to *Pre-allocate Full Size*.
 
 After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolder of our choice.
 
@@ -54,7 +54,7 @@ After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolde
 
 **IMPORTANT: Immediately press the `↓` key in the keyboard to interrupt the *Graphic install* option. Select the *Install* option instead.**
 
-Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the window to a comfortable size.
+Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mouse to adjust the window to a comfortable size.
 
 #### A.2.a Select a language
 
@@ -85,12 +85,14 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 > Root password: `Born2becute` (§)<br>
 > Re-enter password to verify: `Born2becute` (§)
 - Remember to store this and all passwords in a safe location.
+- Root password should comply with all the restrictions listed in the pdf document.
 - Checking the `Show Password in Clear` option is very helpful.
 > Full name for the new user: `Roger Torrent` (§)<br>
 > Username for your account: `rtorrent` (§)
 - As per instructions, an account with the user's 42 login **must** be present.
 > Choose a password for the new user: `Born2berootrt` (§)<br>
 > Re-enter password to verify: `Born2berootrt` (§)
+- Again, comply with the password policy.
 
 #### A.2.g Configure the clock
 
@@ -112,7 +114,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 > Partition settings:
 >> Mount point: `/boot` \<After selecting `/boot - static files of the boot loader`\><br>
 >> `Done setting up the partition`
-> 
+>
 > `pri/log 32.5 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
 > New partition size: `max`
@@ -140,7 +142,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 > `Configure the Logical Volume Manager`<br>
 > Write the changes to disks and configure LVM? `Yes`<br>
 > LVM configuration action: `Create volume group`
-- Selecting `Display configuration details` at this stage of the installation will show the progress of the configuration as new volumes are included into the group.
+- Selecting `Display configuration details` at any point of this stage of the installation will show the progress of the configuration as new volumes are included into the group.
 > Volume group name: `LVMGroup`
 - This is the name suggested in the project's document.
 > Devices for the new volume group:
@@ -185,7 +187,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/home` \<After selecting `/home - user home directories`\><br>
 >> `Done setting up the partition`
->
+
 >> `LVM VG LVMGroup, LV root - 10.7 GB Linux device-mapper (linear)`<br>
 >> `#1 10.7 GB` \<select this row\>
 >
@@ -193,7 +195,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/` \<After selecting `/ - the root file system`\><br>
 >> `Done setting up the partition`
->
+
 >> `LVM VG LVMGroup, LV srv - 3.2 GB Linux device-mapper (linear)`<br>
 >> `#1 3.2 GB` \<select this row\>
 >
@@ -201,7 +203,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/srv` \<After selecting `/srv - data for services provided by this system`\><br>
 >> `Done setting up the partition`
->
+
 >> `LVM VG LVMGroup, LV swap - 2.5 GB Linux device-mapper (linear)`<br>
 >> `#1 2.5 GB` \<select this row\>
 >
@@ -209,7 +211,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >> Use as: `swap area`
 - This partition does not use the Ext4 file system. No mount point required either.
 >> `Done setting up the partition`
->
+
 >> `LVM VG LVMGroup, LV tmp - 3.2 GB Linux device-mapper (linear)`<br>
 >> `#1 3.2 GB` \<select this row\>
 >
@@ -217,7 +219,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/tmp` \<After selecting `/tmp - temporary files`\><br>
 >> `Done setting up the partition`
->
+
 >> `LVM VG LVMGroup, LV var - 3.2 GB Linux device-mapper (linear)`<br>
 >> `#1 3.2 GB` \<select this row\>
 >
@@ -225,7 +227,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/var` \<After selecting `/var - variable data`\><br>
 >> `Done setting up the partition`
->
+
 >> `LVM VG LVMGroup, LV var-log - 4.3 GB Linux device-mapper (linear)`<br>
 >> `#1 4.3 GB` \<select this row\>
 >
@@ -233,8 +235,8 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Adjust the
 >> Use as: `Ext4 journaling file system`<br>
 >> Mount point: `/var/log` \<After selecting `Enter manually` and typing `/var/log`\><br>
 >> `Done setting up the partition`
->
-> `Finish partitioning and write changes to disk`<br>
+
+> `Finish partitioning and write changes to disk`
 
 ![Partition disks overview](src/img1.png "Your screen should look similar to this!")
 
@@ -291,7 +293,7 @@ Installation of the OS at this stage may take a while.
 Henceforth, enter your Debian installation by pressing `Debian GNU/Linux` in the GNU GRUB loading screen, and unlock the encrypted partition:
 > Please unlock disk sda5_crypt: `Born2beroot42` (§)
 
-But before continuing, power the machine off to enable the ports.
+But before continuing, power the machine off and enable the ports.
 
 #### A.3.a Setting the ports
 
@@ -302,10 +304,10 @@ Expand to the `Advanced` options and press the **`Port Forwarding`** button.
 
 Add a new rule (green button in the top right corner):
 > `Name     Protocol    Host Port   Guest Port`<br>
-> `Rule 1   TCP         1717        4242      `
+> `Rule 1   TCP         1717        4242      ` (§)
 - *Host port* may be any port of our liking, `1717` (§) in this case, but it **must** be rerouted to *guest port* `4242` in our virtual machine.
 
-Turn the machine on  and login as `root` user to continue with the project:
+Turn the machine on and login as `root` user to continue with the project:
 > rtorrent42 login: `root` (§)<br>
 > Password: `Born2becute` (§)
 
@@ -313,72 +315,87 @@ Turn the machine on  and login as `root` user to continue with the project:
 
 A SSH server should be present in the machine from the software selection phase of the OS installation. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirm with `y`.
 
-Configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor:
-> `vi /etc/ssh/sshd_config` (§)
+Configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor, **vi** in my case:
+
+		vi /etc/ssh/sshd_config (§)
 - Observe that there is also a `ssh_config` file, a `ssh_config.d` folder, and a `sshd_config.d` folder in `/etc/ssh/`. Check your spelling!
 - The config file basically consists of an `Include` directive to call further config files stored in the `sshd_config.d` folder, and a list of *commented out* settings (starting with the `#` character). These are the default settings the server runs on.
 
 Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** listens on:
-> `Port 4242`
 
-Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root".
-> `PermitRootLogin no`
+		Port 4242
+
+Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root":
+
+		PermitRootLogin no
+
 - Open the **man** page for further details, `man 5 sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
 
 Restart the service to force the changes:
-> `service ssh restart`
+
+		service ssh restart
+
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
-**ssh_config** configures the SSH client one uses to SSH *another* machine. By contrast, **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. The document does not mandate us to set a client in the virtual machine!
+**sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. By contrast, **ssh_config** configures the SSH client one uses to SSH *another* machine. The document does not mandate us to set a client in the virtual machine, and so we shan't tinker any further!
 
 #### A.3.c Uncomplicated Firewall setup
 
-> `apt install ufw`<br>
-> Do you want to continue? [Y/n] `⏎` \<a simple `y` in the keyboard would also suffice\><br>
-> `ufw enable`
-- Activates UFW for immediate use and enables it on system boot.
-> `ufw allow 4242`
-- As instructed in the document, port 4242 is left open.
-- Type `ufw status` to confirm that port 4242 is indeed open.
+		apt install ufw
+> Do you want to continue? [Y/n] `⏎` \<a simple `y` in the keyboard would also suffice\>
+
+Activate UFW for immediate use and enables it on system boot:
+
+		ufw enable
+
+As instructed in the document, port 4242 is left open:
+
+		ufw allow 4242
+- Confirm this is indeed the case with `ufw status`.
 
 #### A.3.d Strong password policy
 
 Open the configuration file that stores user account parameters, `/etc/login.defs`, with your preferred text editor:
-> `vi /etc/login.defs` (§)
+
+		vi /etc/login.defs (§)
 
 Find definition `PASS_MAX_DAYS` and edit from `99999` to the mandated `30`.<br>
 Find definition `PASS_MIN_DAYS` and edit from `0` to `2`.<br>
 Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `7` by default.
-> `#                                                                               `<br>
-> `# Password aging controls:                                                      `<br>
-> `#                                                                               `<br>
-> `#       PASS_MAX_DAYS   Maximum number of days a password may be used.          `<br>
-> `#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.`<br>
-> `#       PASS_WARN_AGE   Number of days warning given before a password expires. `<br>
-> `#                                                                               `<br>
-> `PASS_MAX_DAYS   30                                                              `<br>
-> `PASS_MIN_DAYS   2                                                               `<br>
-> `PASS_WARN_AGE   7                                                               `
+
+		#
+		# Password aging controls:
+		#
+		#       PASS_MAX_DAYS   Maximum number of days a password may be used.
+		#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.
+		#       PASS_WARN_AGE   Number of days warning given before a password expires.
+		#
+		PASS_MAX_DAYS   30
+		PASS_MIN_DAYS   2
+		PASS_WARN_AGE   7
 - In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
 - This file is accessed by commands such as `useradd` and `groupadd`.
 - Open the **man** page for further details, `man 5 login.defs`.
 
 Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
-> `apt -y install libpam-pwquality`
+
+		apt -y install libpam-pwquality
 - `-y` option spares us the confirmation request after the `apt` command.
 - You may check if the package is installed with `dpkg -s libpam-pwquality`.
 
 Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
-> `vi /etc/pam.d/common-password` (§)
+
+		vi /etc/pam.d/common-password (§)
 
 Locate line 25:
-> `password   requisite   pam_pwquality.so   retry=3`
 
+		password   requisite   pam_pwquality.so   retry=3
 Column 1, `password`, is the management group for the service, *Password group* in our case. Other groups we may find are *Auth*, *Account*, and *Session groups*.<br>
 Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. If the requisite is not found or failed to load, it will stop loading other modules and return failure.<br>
 Column 3, `pam_pwquality.so`, is the *Module* (.so file) used.<br>
-Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:<br>
-> `password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root`
+Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:
+
+		password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
 - All parameters should go in the same *line*, that is, before a newline character.
 
 `minlen=10`: minimum acceptable size.<br>
@@ -401,14 +418,16 @@ Type `reboot` to restart the machine if you wish to try the new password conditi
 #### A.3.e sudo installation & configuration
 
 **sudo** (superuser do) will allow any user to adopt omnipotent `root` abilities. Therefore, it must be be properly configured. Start by installing the `sudo` package:
-> `apt -y install sudo`
+
+		apt -y install sudo
 -  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`
 
 One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that:
-> `vi /etc/sudoers.d/Born2beroot` (§)
+
+		vi /etc/sudoers.d/Born2beroot (§)
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 
-**sudoers** mostly contains *users specifications* following the following syntax: `User Host = (Runas) Command`. This reads as *User may run Command as the Runas user on Host*.
+**sudoers** mostly contains *users specifications* following the syntax `User Host = (Runas) Command`. This reads as *User may run Command as the Runas user on Host*.
 
 `User` and `Runas` may by usernames, groupnames prefixed with `%`, numeric UIDs prefixed with `#`, or numeric GIDs prefixed with `%#`.<br>
 `Host` may be a hostname, IP address, or a whole network.<br>
@@ -418,21 +437,24 @@ Any or all of the above may be the special keyword `ALL`, valid for everyone, ev
 - It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (paying special attention to the **Runas_Spec** section).
 
 Type the following lines into the new file:
-> `Defaults	badpass_message="Prueba otra vez, bobo"` (§)
-- Unfortunately, strict compliance with the project document bars the very colorful `Defaults	insults`!
-> `Defaults	log_input, log_output`
-- Technically, we could list all the specs of this file into one single command, separated with commas.
-> `Defaults	iolog_dir="/var/log/sudo/"`<br>
-> `Defaults	iolog_file="logs"` (§)
-- Path relative to `iolog_dir` where input and output streams will be recorded.
-> `Defaults	logfile="/var/log/sudo/sudo.logs"`
-- Human readable log file.
-> `Defaults	requiretty`
-- `requiretty` will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).
-> `Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"`
+
+		Defaults	badpass_message="Prueba otra vez, bobo" (§)
+		Defaults	log_input, log_output
+		Defaults	iolog_dir="/var/log/sudo/"
+		Defaults	iolog_file="logs" (§)
+  		Defaults	logfile="/var/log/sudo/sudo.logs"
+		Defaults	requiretty
+  		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+`badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
+`log_input, log_output`: technically, we could list all the specs of this file into one single command, separated with commas.<br>
+`iolog_file`: path relative to `iolog_dir` where input and output streams will be recorded.<br>
+`logfile`: human-readable log file.<br>
+`requiretty` will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).<br>
+`secure_path`: **sudo** will use this value in place of the user's PATH environment variable.
 - Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
-`Defaults	passwd_tries=3` is unnecessary as the default before **sudo** logs a failure and exits is already three attempts.
+`Defaults   passwd_tries=3` is unnecessary as the default before **sudo** logs a failure and exits is already three attempts.
 
 Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 [**NOTE**: A first use of **sudo** from within `root` would also create this folder.]
@@ -463,11 +485,11 @@ Both edit the user's details and the group's membership.<br>
 
 Double-check everything went right with `id rtorrent -Gn` (§). If you switch users again, **sudo** should now work with the login user.
 
-There is another option to the commands in this section: `addgroup` and `adduser`. These are actually *interactive* Perl scripts working with the original bin commands. You may locate them with `which addgroup` and `which adduser`, and find more information in the **man** page, common for both, `man 8 adduser`.
+There is an alternative solution to the commands used in this section: `addgroup` and `adduser`. These are actually *interactive* Perl scripts working with the original bin commands. You may locate them with `which addgroup` and `which adduser`, and find more information in the **man** page, common for both, `man 8 adduser`.
 
 #### A.3.g Simple script
 
-The next task is to write a Bash script, **monitoring.sh**. We choose to place this script in the `/usr/local/sbin` folder, which conveniently is in the PATH environment variable of our Linux system. (You can check this fact with `printenv PATH`.) Thus placed, the script can be executed without specifying its path.
+The next task is to write a Bash script, **monitoring.sh**. We choose to place this script in the `/usr/local/sbin` folder, which conveniently is included in the PATH environment variable of our Linux system. (You can check this fact with `printenv PATH`.) Thus placed, the script can be executed everywhere without specifying its full path.
 
 Using *everyone's* favorite text editor,
 
@@ -495,4 +517,3 @@ type the following Bash commands:
 		dsku=$(df -x tmpfs | grep -v 'udev' | awk 'NR > 1 {disk += $3} END {print disk}')
 		
 		dsk_total=$(df 
-
