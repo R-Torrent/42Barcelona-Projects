@@ -24,8 +24,8 @@ Open VirtualBox and select **`New`**.
 
 > Name: `Born2beroot_Debian12.1.0` (§)<br>
 > Folder: `cd /System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§)
-- Actual location of the `sgoinfre` folder in the 42 system might vary.
-- User's folder in the public directory may be further protected: `chmod go-rwx rtorrent`
+- Actual location of the `SGoinfre` folder in the 42 system might vary.
+- User's folder in the public directory may be further protected: `chmod go-rwx rtorrent` (§). Check the local rules governing `SGoinfre` in the `F.A.Q.` link of the *intra*.
 > ISO Image: Should be located in the `Downloads` folder.
 - Further boxes will autofill.
 > `Skip Unattended Installation` **✓** this box
@@ -407,7 +407,7 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 `difok=7`: number of changes (inserts, removals, or replacements) in the new password vs the old.<br>
 `enforce_for_root`: as per instructions!
 
-(†) NOTE: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In ths system, the value numbers are positive.
+(†) NOTE: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In this system, the value numbers are positive.
 
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
 - For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
