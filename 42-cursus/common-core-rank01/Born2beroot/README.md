@@ -1,6 +1,6 @@
 # Born2beroot
 
-Instructions for common-core-rank01/Born2beroot project, mandatory & *bonus* parts.
+**Instructions for common-core-rank01/Born2beroot project, mandatory & *bonus* parts.**
 
 Operating system: Debian "Bookworm" v12.1.0<br>
 Virtualization software: Oracle VM VirtualBox v7.0.8
@@ -9,14 +9,21 @@ Virtualization software: Oracle VM VirtualBox v7.0.8
 - User login throughout this file is `rtorrent`.
 - Any other filename, password, or such marked with a (§) can and **should** be adapted to the user's personal preferences.
 - A text file with user, root, and partition passwords should be kept at hand.
+- Popular text editors available with the bare Debian build are **vi** and **nano**. **Emacs** requires an installation (`apt install emacs`) first. Commands in this tutorial reliant on a text editor are marked with (†).
 
 ---
 
-## A.- Installing & setting our virtual machine
+## A.- Installing our virtual machine & setting the server
 
-[Download](https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.1.0-amd64-netinst.iso) the latest *stable* version of Debian.
+[Download](https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/) the latest *stable* version of Debian. Currently, this will be image `debian-12.1.0-amd64-netinst.iso`.
 
 Open VirtualBox and select **`New`**.
+
+- You may determine your VirtualBox release version by executing in the CLI
+
+		VBoxManage -v
+
+---
 
 ### A.1 VirtualBox Settings
 
@@ -24,7 +31,7 @@ Open VirtualBox and select **`New`**.
 
 > Name: `Born2beroot_Debian12.1.0` (§)<br>
 > Folder: `cd /System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§)
-- Actual location of the `SGoinfre` folder in the 42 system might vary.
+- Actual location of the `SGoinfre` folder in the 42 system might vary. A symbolic link in the root directory, `/sgoinfre`, is probably present.
 - User's folder in the public directory may be further protected: `chmod go-rwx rtorrent` (§). Check the local rules governing `SGoinfre` in the `F.A.Q.` link of the *intra*.
 > ISO Image: Should be located in the `Downloads` folder.
 - Further boxes will autofill.
@@ -41,9 +48,9 @@ Open VirtualBox and select **`New`**.
 - Hard Disk File location for the .vdi (VirtualBox Disk Image) should be automatically selected in our VM's folder.
 - Increase size to `30.80 GB` for the *bonus* sections of this project.<br>
   [**NOTE**: Both Debian and VirtualBox use the *traditional* 1 GB = (1,024)^3 = 1,073,741,824 bytes. However, Debian's installer uses the *modern* 1 GB = 1,000,000,000 bytes, perhaps to accomodate hardware manufacturers' scheming of inflated HD sizes.]
-- No need to *Pre-allocate Full Size*.
+- Do not *Pre-allocate Full Size*, as you will exceed your assigned space quota in disk.
 
-After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolder of our choice.
+After pressing **`Finish`**, the VM should be created in the `sgoinfre` subfolder of our choosing.
 
 **`Start`** the VM.
 - At all times, one can switch from the host to the guest sytem, and back, by pressing the `⌘` key.
@@ -118,7 +125,8 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > `pri/log 32.5 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
 > New partition size: `max`
-- Next create a LV (Logical Volume) with the rest of the free space.
+
+Next, create a LV (Logical Volume) with the rest of the free space.
 > Type for the new partition: `Logical`<br>
 > Partition settings:
 >> Mount point: `none` \<After selecting `Do not mount it`\><br>
@@ -148,12 +156,14 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > Devices for the new volume group:
 >> `[*] /dev/mapper/sda5_crypt (32527MB; ext4)`<br>
 >> `[ ] /dev/sda1 (524MB; ext4)`
->
+
+Create the seven encrypted partitions with LVM:
 > LVM configuration action: `Create logical volume`<br>
 > Volume group: `LVMGroup (32526MB)`<br>
 > Logical volume name: `root`<br>
 > Logical volume size: `10737`
-- And repeat for the next six volumes in the group!
+
+And repeat for the next six volumes in the group!
 > LVM configuration action: `Create logical volume`<br>
 > Volume group: `LVMGroup (21793MB)`<br>
 > Logical volume name: `swap`<br>
@@ -179,7 +189,8 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > Logical volume name: `var-log`<br>
 > Logical volume size: `4307MB` \<leave unchanged\><br>
 > LVM configuration action: `Finish`
-- We now have to specify the use and mounting points for each of the volumes in the group:
+
+We now have to specify the use and mounting points for each of the volumes in the group:
 >> `LVM VG LVMGroup, LV home - 5.4 GB Linux device-mapper (linear)`<br>
 >> `#1 5.4 GB` \<select this row\>
 >
@@ -209,7 +220,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 >
 > Partition settings:
 >> Use as: `swap area`
-- This partition does not use the Ext4 file system. No mount point required either.
+- This partition does not use the Ext4 file system. No mount point required either. The *swap area* is the space where inactive memory pages are stored when the physical RAM memory runs out.
 >> `Done setting up the partition`
 
 >> `LVM VG LVMGroup, LV tmp - 3.2 GB Linux device-mapper (linear)`<br>
@@ -283,8 +294,9 @@ Installation of the OS at this stage may take a while.
 #### A.2.n Finish the installation
 
 > `Continue`
-- Success!<br>
-  [**TIP**: Cloning the virtual machine after the installation is a sensible precaution before moving on.]
+
+Success!<br>
+[**TIP**: Cloning the virtual machine after this lengthy installation is a sensible precaution before moving on.]
 
 ---
 
@@ -315,9 +327,9 @@ Turn the machine on and login as `root` user to continue with the project:
 
 A SSH server should be present in the machine from the software selection phase of the OS installation. You may test this with `service ssh status`. If this is not the case, install it now by typing `apt install openssh-server` and confirm with `y`.
 
-Configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor, **vi** in my case:
+Next, configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor, **vi** in my case:
 
-		vi /etc/ssh/sshd_config (§)
+		vi /etc/ssh/sshd_config (†)
 - Observe that there is also a `ssh_config` file, a `ssh_config.d` folder, and a `sshd_config.d` folder in `/etc/ssh/`. Check your spelling!
 - The config file basically consists of an `Include` directive to call further config files stored in the `sshd_config.d` folder, and a list of *commented out* settings (starting with the `#` character). These are the default settings the server runs on.
 
@@ -344,7 +356,7 @@ Restart the service to force the changes:
 		apt install ufw
 > Do you want to continue? [Y/n] `⏎` \<a simple `y` in the keyboard would also suffice\>
 
-Activate UFW for immediate use and enables it on system boot:
+Activate UFW for immediate use and enable it on system boot:
 
 		ufw enable
 
@@ -357,7 +369,7 @@ As instructed in the document, port 4242 is left open:
 
 Open the configuration file that stores user account parameters, `/etc/login.defs`, with your preferred text editor:
 
-		vi /etc/login.defs (§)
+		vi /etc/login.defs (†)
 
 Find definition `PASS_MAX_DAYS` and edit from `99999` to the mandated `30`.<br>
 Find definition `PASS_MIN_DAYS` and edit from `0` to `2`.<br>
@@ -385,7 +397,7 @@ Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggab
 
 Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
 
-		vi /etc/pam.d/common-password (§)
+		vi /etc/pam.d/common-password (†)
 
 Locate line 25:
 
@@ -399,15 +411,15 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 - All parameters should go in the same *line*, that is, before a newline character.
 
 `minlen=10`: minimum acceptable size.<br>
-`ucredit=-1`: minimum number of upper case letters. (†)<br>
-`lcredit=-1`: minumum number of lower case letters. (†)<br>
-`dcredit=-1`: minimum number of digits. (†)<br>
+`ucredit=-1`: minimum number of upper case letters. (‡)<br>
+`lcredit=-1`: minumum number of lower case letters. (‡)<br>
+`dcredit=-1`: minimum number of digits. (‡)<br>
 `maxrepeat=3`: limit on repeated consecutive characters.<br>
 `reject_username`: rejects the new password if it contains the login, either in straight or reversed form.<br>
 `difok=7`: number of changes (inserts, removals, or replacements) in the new password vs the old.<br>
 `enforce_for_root`: as per instructions!
 
-(†) NOTE: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In this system, the value numbers are positive.
+(‡) NOTE: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In this system, the value numbers are positive.
 
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
 - For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
@@ -422,9 +434,9 @@ Type `reboot` to restart the machine if you wish to try the new password conditi
 		apt -y install sudo
 -  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`
 
-One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that:
+One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that, calling the new config `Born2beroot`:
 
-		vi /etc/sudoers.d/Born2beroot (§)
+		vi /etc/sudoers.d/Born2beroot (§)(†)
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 
 **sudoers** mostly contains *users specifications* following the syntax `User Host = (Runas) Command`. This reads as *User may run Command as the Runas user on Host*.
@@ -442,12 +454,14 @@ Type the following lines into the new file:
 		Defaults	log_input, log_output
 		Defaults	iolog_dir="/var/log/sudo/"
 		Defaults	iolog_file="logs" (§)
-  		Defaults	logfile="/var/log/sudo/sudo.logs"
+  		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
 		Defaults	requiretty
   		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
-`log_input, log_output`: technically, we could list all the specs of this file into one single command, separated with commas.<br>
+`log_input, log_output`: every input and output action has to be archived.
+- Technically, we could list all the specs of this file into one single command, separated with commas.
+
 `iolog_file`: path relative to `iolog_dir` where input and output streams will be recorded.<br>
 `logfile`: human-readable log file.<br>
 `requiretty` will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).<br>
@@ -493,7 +507,7 @@ The next task is to write a Bash script, **monitoring.sh**. We choose to place t
 
 Using *everyone's* favorite text editor,
 
-		vi /usr/local/sbin/monitoring.sh (§)
+		vi /usr/local/sbin/monitoring.sh (†)
 
 type the following Bash commands:
 
