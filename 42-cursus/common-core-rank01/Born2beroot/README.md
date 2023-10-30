@@ -97,8 +97,8 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > Full name for the new user: `Roger Torrent` (§)<br>
 > Username for your account: `rtorrent` (§)
 - As per instructions, an account with the user's 42 login **must** be present.
-> Choose a password for the new user: `Born2berootrt` (§)<br>
-> Re-enter password to verify: `Born2berootrt` (§)
+> Choose a password for the new user: `Born2berude` (§)<br>
+> Re-enter password to verify: `Born2berude` (§)
 - Again, comply with the password policy.
 
 #### A.2.g Configure the clock
