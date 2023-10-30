@@ -514,10 +514,13 @@ type the following Bash commands:
 		#!/bin/bash
 
 		# Architecture of OS & kernel version
-		arch=$(uname a)
+		arch=$(uname -a)
 
 		# Physical processors
-		pcpu=$(lscpu | grep '^CPU(s)' | awk '{print $2}')
+		pcpu=$(lscpu | awk -F : '
+			BEGIN {mult=1}
+			/^(Core\(s\) per socket|Socket\(s\))/ {mult*=$2}
+			END {print mult}')
 
 		# Virtual processors
 		vcpu=$(nproc)
@@ -531,3 +534,15 @@ type the following Bash commands:
 		dsku=$(df -x tmpfs | grep -v 'udev' | awk 'NR > 1 {disk += $3} END {print disk}')
 		
 		dsk_total=$(df 
+
+		wall "Architecture: $arch
+		Physical processor(s): $pcpu"
+
+
+
+Finally, change the permissions on the script so everybody can actually execute it:
+
+		chmod +x /usr/local/sbin/monitoring.sh
+
+`uname -a`: prints all relevant system information.<br>
+`lscpu`: displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`.<br>
