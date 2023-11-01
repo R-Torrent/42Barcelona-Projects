@@ -419,7 +419,7 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 `difok=7`: number of changes (inserts, removals, or replacements) in the new password vs the old.<br>
 `enforce_for_root`: as per instructions!
 
-(‡) NOTE: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In this system, the value numbers are positive.
+(‡) **NOTE**: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In this system, the value numbers are positive.
 
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
 - For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
@@ -514,7 +514,7 @@ type the following Bash commands:
 		#!/bin/bash
 
 		# Architecture of OS & kernel version
-		arch=$(uname -a)
+		arch=$(uname -srvmo)
 
 		# Physical processors
 		pcpu=$(lscpu | awk -F : '
@@ -525,41 +525,43 @@ type the following Bash commands:
 		# Virtual processors
 		vcpu=$(nproc --all)
 
-		# RAM used/total MB (%)
-		ramu=$(free -m | awk '/^Mem:/ {print $3}')
+		# RAM available/total MB (%)
+		rama=$(free -m | awk '/^Mem:/ {print $7}')
 		ramt=$(free -m | awk '/^Mem:/ {print $2}')
-		ramp=$(printf '%.2f' $((10000*ramu/ramt))e-2)
+		ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)
 
-		# DISK used/total GB (%)
-		dsku=$(df -x tmpfs | grep -v 'udev' | awk 'NR > 1 {disk += $3} END {print disk}')
-		
-		dsk_total=$(df 
+		# DISK available/total GB (%)
+		dska=$(printf '%.2f' $(((df -x tmpfs -x devtmpfs --total | grep ^total | awk '{print $4}')*100/1024/1024)e-2))
+		dskt=$(printf '%.2f' $(((df -x tmpfs -x devtmpfs --total | grep ^total | awk '{print $2}')*100/1024/1024)e-2))
+		dskp=$(printf '%.2f' $((10000*dska/dskt))e-2)
 
 		wall "Architecture: $arch
 		Physical processor(s): $pcpu
 		Virtual processor(s): $vcpu
-		Memory usage: $ramu/$ramt MB ($ramp%)"
+		Available memory: $rama/$ramt MB ($ramp%)
+		Available disk space: $dska/$dskt GB ($dskp%)"
 
 Finally, change the permissions on the script so everybody can actually execute it:
 
 		chmod +x /usr/local/sbin/monitoring.sh
 
-`Architecture`: command `uname -a` (or `uname --all`) prints all relevant system information.<br>
+`Architecture`: command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited newtwork node hostname (`rtorrent` (§)).<br>
 `Physical processor(s)`: command `lscpu` displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`. Line `CPU(s)` actually displays the number of *logical* cores, that is, the physical number just calculated multiplied by the *hyper-threads* in each core, `Thread(s) per core`.
-- An alternative (and convoluted) route is to read the contents of the `/proc/cpuinfo` text file. A plethora of data is printed for each of the *logical* CPU with a unique processor number:<br>
+- An alternative (and convoluted) route is to read the contents of the `/proc/cpuinfo` text file. A plethora of data is printed for the *logical* CPUs, each with a unique processor number:<br>
  `processor`: identifies the logical processor.<br>
  `physical id`: identifies the socket.<br>
  `siblings`: number of threads on the socket.<br>
  `core id`: identifies the core on a socket.<br>
  `cpu cores`: number of cores on the socket.<br>
- *Hyper-threading* is engaged when `siblings` differs to `cpu cores`. The number of `processor` entries divided by the *hyper-threads* equals the physical cores present.
+ *Hyper-threading* is engaged when `siblings` differs to `cpu cores`. The number of `processor` entries divided by the *hyper-threads* (`siblings`/`cpu cores`) equals the physical cores present.
 
 `Virtual processor(s)`: command `nproc --all` prints all installed processors.
 - The `nproc` command is often used in shell scripts to check the number of available threads.
-- Alternatives include `lscpu | awk -F : '/^CPU\(s\)/ {print $2} | awk '{$1=$1;1}` and `grep -c processor /proc/cpuinfo`.
+- Alternatives include `lscpu | awk -F : '/^CPU\(s\)/ {print $2}' | sed 's/ //g'` and `grep -c processor /proc/cpuinfo`.
 
-`Memory usage`: command `free` uses the data provided by file `/proc/meminfo` (default size 1 kB = 1,024 bytes). Memory total is below the theoretical 2,048 MB because **REASONS**.
+`Available memory`: command `free` uses the data provided by file `/proc/meminfo`. Available memory is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total is below the theoretical installed (i.e., 2,048 MB) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
+- The default size in `free` and `/proc/meminfo` is 1 kB = 1,024 bytes.
 
-
+`Available disk space`: command `df` (disk filesystem) checks disk usage on a mounted filesystem, in 1 kB blocks. Unfortunately, the command includes some *tmpfs* (temporary file system) and one *devtmpfs* for device files (the interfaces between actual physical devices and the user). Both are virtual filesystems created to store files in volatile (RAM) memory… Option `-x` excludes those entries and option `--total` conveniently adds the columns for us. Giga-sized blocks (option `-BG`) are too coarse for an accurate measurement.
 
 [**NOTE**: The number or processors dedicated to the VM was inceased to 2.]
