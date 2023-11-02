@@ -89,16 +89,16 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 
 #### A.2.f Set up users and passwords
 
-> Root password: `Born2becute` (§)<br>
-> Re-enter password to verify: `Born2becute` (§)
+> Root password: `Born2berude` (§)<br>
+> Re-enter password to verify: `Born2berude` (§)
 - Remember to store this and all passwords in a safe location.
 - Root password should comply with all the restrictions listed in the pdf document.
 - Checking the `Show Password in Clear` option is very helpful.
 > Full name for the new user: `Roger Torrent` (§)<br>
 > Username for your account: `rtorrent` (§)
 - As per instructions, an account with the user's 42 login **must** be present.
-> Choose a password for the new user: `Born2berude` (§)<br>
-> Re-enter password to verify: `Born2berude` (§)
+> Choose a password for the new user: `Born2becute` (§)<br>
+> Re-enter password to verify: `Born2becute` (§)
 - Again, comply with the password policy.
 
 #### A.2.g Configure the clock
@@ -145,8 +145,8 @@ Next, create a LV (Logical Volume) with the rest of the free space.
 > Encryption configuration actions: `Finish`<br>
 > Really erase the data on SCSI3 (0,0,0), partition #5 (sda)? `No`
 - Should `Yes` be selected, interrupt the installer by pressing `Cancel` as it overwrites partition #5; it is safe, as there was nothing to hide.
-> Encryption passphrase: `Born2beroot42` (§)<br>
-> Re-enter passphrase to verify: `Born2beroot42` (§)<br>
+> Encryption passphrase: `Born2beroot` (§)<br>
+> Re-enter passphrase to verify: `Born2beroot` (§)<br>
 > `Configure the Logical Volume Manager`<br>
 > Write the changes to disks and configure LVM? `Yes`<br>
 > LVM configuration action: `Create volume group`
