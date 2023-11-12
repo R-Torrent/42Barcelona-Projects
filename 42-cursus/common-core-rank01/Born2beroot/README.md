@@ -531,15 +531,51 @@ type the following Bash commands:
 		ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)
 
 		# DISK available/total GB (%)
-		dska=$(printf '%.2f' $(((df -x tmpfs -x devtmpfs --total | grep ^total | awk '{print $4}')*100/1024/1024)e-2))
-		dskt=$(printf '%.2f' $(((df -x tmpfs -x devtmpfs --total | grep ^total | awk '{print $2}')*100/1024/1024)e-2))
-		dskp=$(printf '%.2f' $((10000*dska/dskt))e-2)
+		temp=$(df -x tmpfs -x devtmpfs --total | grep ^total)
+		tmpa=$(echo $temp | awk '{print $4}')
+		tmpt=$(echo $temp | awk '{print $2}')
+		dska=$(printf '%.2f' $((100*tmpa/1024/1024))e-2)
+		dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)
+		dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
 
-		wall "Architecture: $arch
-		Physical processor(s): $pcpu
-		Virtual processor(s): $vcpu
-		Available memory: $rama/$ramt MB ($ramp%)
-		Available disk space: $dska/$dskt GB ($dskp%)"
+		# CPU utilization rate (%)
+		cpup=$((100-$(vmstat 1 2|tail -1|awk '{print $15}')))
+
+		# Last reboot (yyyy-mm-dd HH:MM:SS)
+		lrbt=$(uptime -s)
+
+		# LVM in use
+		lvmu=$(if grep -q '/dev/mapper/' /etc/fstab
+			then echo yes
+			else echo no
+			fi)
+
+		# Active TCP and UDP connections
+		acon=$(ss -Htu -o state connected | wc -l) 
+
+		# Logged users
+		logu=$(who | wc -l)
+
+		# IPv4 and MAC addresses
+		ipv4=$(ip route | head -1 | awk '{print $(NF-2)}')
+		rowN=$(($(ip address | grep -n $ipv4 | cut -d : -f 1)-1))
+		maca=$(ip address | sed "${rowN}q;d" | awk '{print $2'})
+
+		# sudo usage
+		sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
+
+		wall "	Architecture: $arch
+			Physical processor(s): $pcpu
+			Virtual processor(s): $vcpu
+			Available memory: $rama/$ramt MB ($ramp%)
+			Available disk space: $dska/$dskt GB ($dskp%)
+			CPU usage: $cpup%
+			Last reboot: $lrbt
+			LVM in use? $lvmu
+			Active Internet (TCP and UDP) connections: $acon
+			Logged users: $logu
+			Network: IPv4 $ipv4 MAC $maca
+			Session's executed sudo commands: $sudo"
 
 Finally, change the permissions on the script so everybody can actually execute it:
 
@@ -563,5 +599,19 @@ Finally, change the permissions on the script so everybody can actually execute 
 - The default size in `free` and `/proc/meminfo` is 1 kB = 1,024 bytes.
 
 `Available disk space`: command `df` (disk filesystem) checks disk usage on a mounted filesystem, in 1 kB blocks. Unfortunately, the command includes some *tmpfs* (temporary file system) and one *devtmpfs* for device files (the interfaces between actual physical devices and the user). Both are virtual filesystems created to store files in volatile (RAM) memory… Option `-x` excludes those entries and option `--total` conveniently adds the columns for us. Giga-sized blocks (option `-BG`) are too coarse for an accurate measurement.
+
+`CPU usage`: command `vmstat` displays CPU activity in near-real time. The first argument is the *delay* between updates, while the second sets *count* determinations. The first report produced gives averages since the last reboot, and so we keep the second (last) row. We are interested in column `id` (*idle*, 15th), the complement of the utilization rate.
+- On the other hand, CPU *load* is defined as the number of processes using or waiting to use one core at a single point in time. It can be determined with command `uptime`.
+
+`Last reboot`: command `uptime` running *since* option (`-s`).<br>
+`LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands `df`, `mount`, and `blkid`. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of name, it is also possible to limit the search by device type, *lvm*. In this case, consider command `lsblk`.<br>
+`Active Internet (TCP and UDP) connections`: command `netsat` has been superseded by `ss` (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*.<br>
+`Logged users`: simple count of `who` results.
+- Equally valid is the `users | wc -w` combination.
+
+`Network`: classic command `ifconfig` has also been deprecated, use `ip` instead. The first result of `ip route`, the *default* route, is the desired IP address. Finding the MAC address should be a simple matter of choosing the correct address from the output provided by `ip link`. But, how to match the hardware address we seek to the unique device assigned the IP address we found earlier? Auxiliary variable `rowN` contains the row number of the sought `link` data, found though pattern matching among the information provided by `ip address`.
+- Command `hostname -I` (or `hostname --all-ip-addresses`) is a bit unreliable. It will print *all* IP addresses in no particular order.
+
+`Session's executed sudo commands`: you can look at what `sudo` did by using `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
 
 [**NOTE**: The number or processors dedicated to the VM was inceased to 2.]
