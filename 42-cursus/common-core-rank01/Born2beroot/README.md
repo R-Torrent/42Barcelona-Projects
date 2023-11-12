@@ -33,7 +33,7 @@ Open VirtualBox and select **`New`**.
 > Folder: `cd /System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§)
 - Actual location of the `SGoinfre` folder in the 42 system might vary. A symbolic link in the root directory, `/sgoinfre`, is probably present.
 - User's folder in the public directory may be further protected: `chmod go-rwx rtorrent` (§). Check the local rules governing `SGoinfre` in the `F.A.Q.` link of the *intra*.
-> ISO Image: Should be located in the `Downloads` folder.
+> ISO Image: Probably located in the `Downloads` folder.
 - Further boxes will autofill.
 > `Skip Unattended Installation` **✓** this box
 
@@ -354,7 +354,7 @@ Restart the service to force the changes:
 #### A.3.c Uncomplicated Firewall setup
 
 		apt install ufw
-> Do you want to continue? [Y/n] `⏎` \<a simple `y` in the keyboard would also suffice\>
+> Do you want to continue? [Y/n] `y` \<a simple `⏎` in the keyboard would also suffice\>
 
 Activate UFW for immediate use and enable it on system boot:
 
@@ -454,9 +454,9 @@ Type the following lines into the new file:
 		Defaults	log_input, log_output
 		Defaults	iolog_dir="/var/log/sudo/"
 		Defaults	iolog_file="logs" (§)
-  		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
+		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
 		Defaults	requiretty
-  		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
 `log_input, log_output`: every input and output action has to be archived.
@@ -468,7 +468,7 @@ Type the following lines into the new file:
 `secure_path`: **sudo** will use this value in place of the user's PATH environment variable.
 - Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
-`Defaults   passwd_tries=3` is unnecessary as the default before **sudo** logs a failure and exits is already three attempts.
+`Defaults   passwd_tries=3` is unnecessary as, by default, **sudo** logs a failure and exits after three attempts.
 
 Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 [**NOTE**: A first use of **sudo** from within `root` would also create this folder.]
@@ -483,15 +483,15 @@ To figure out the groups the current user is a member of, type `id -Gn`. Now swi
 
 Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
 
-		groupadd user42 -U rtorrent (§)
+		groupadd -U rtorrent user42 (§)
 
 Now add the same user to the `sudo` group with one of the following commands,
 
-		groupmod sudo -aU rtorrent (§)
+		groupmod -aU rtorrent sudo  (§)
 
 or alternatively,
 
-		usermod rtorrent -aG sudo (§)
+		usermod -aG sudo rtorrent (§)
 
 Both edit the user's details and the group's membership.<br>
 [**NOTE**:  The `-a` option (*append*) is crucial. Without it, the command will completely replace the user/group lists. This is not important with the `groupmod` command **in this case**—because we start with an empty group—, but it would be dramatic in the case of `usermod` to expel the user from all groups, including their own primary group, just to get them into `sudo`!]
@@ -614,4 +614,4 @@ Finally, change the permissions on the script so everybody can actually execute 
 
 `Session's executed sudo commands`: you can look at what `sudo` did by using `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
 
-[**NOTE**: The number or processors dedicated to the VM was inceased to 2.]
+[**NOTE**: The number or processors dedicated to the VM was increased to 2.]
