@@ -9,7 +9,7 @@ Virtualization software: Oracle VM VirtualBox v7.0.8
 - User login throughout this file is `rtorrent`.
 - Any other filename, password, or such marked with a (§) can and **should** be adapted to the user's personal preferences.
 - A text file with user, root, and partition passwords should be kept at hand.
-- Popular text editors available with the bare Debian build are **vi** and **nano**. **Emacs** requires an installation (`apt install emacs`) first. Commands in this tutorial reliant on a text editor are marked with (†).
+- Popular text editors available with the bare Debian build are **vi** and **nano**. **Emacs** requires an installation (`apt install emacs`) first. Commands in this tutorial reliant on the choice of a text editor are marked with (†).
 
 ---
 
@@ -93,7 +93,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > Re-enter password to verify: `Born2berude` (§)
 - Remember to store this and all passwords in a safe location.
 - Root password should comply with all the restrictions listed in the pdf document.
-- Checking the `Show Password in Clear` option is very helpful.
+- Checking the `Show Password in Clear` option is very helpful. Use the space bar to mark particular options while using the install interface.
 > Full name for the new user: `Roger Torrent` (§)<br>
 > Username for your account: `rtorrent` (§)
 - As per instructions, an account with the user's 42 login **must** be present.
@@ -110,7 +110,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > Partitioning method: `Manual`<br>
 > `SCSI3 (0,0,0) (sda) - 33.1 GB ATA VBOX HARDDISK`
 - Location for the new partition table.<br>
-  [**NOTE**: The installer may revert to the SCSI1 or SCSI2 protocols. Don't worry over this.]
+  [**NOTE**: The installer may revert to the SCSI1 or SCSI2 protocols. Don't fret over this.]
 > Create new empty partition table on this device? `Yes`<br>
 > `pri/log 33.1 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
@@ -144,13 +144,13 @@ Next, create a LV (Logical Volume) with the rest of the free space.
 >
 > Encryption configuration actions: `Finish`<br>
 > Really erase the data on SCSI3 (0,0,0), partition #5 (sda)? `No`
-- Should `Yes` be selected, interrupt the installer by pressing `Cancel` as it overwrites partition #5; it is safe, as there was nothing to hide.
+- Should `Yes` be selected, interrupt the installer by pressing `Cancel` as it scrambles partition #5; it is safe, as there was nothing to hide.
 > Encryption passphrase: `Born2beroot` (§)<br>
 > Re-enter passphrase to verify: `Born2beroot` (§)<br>
 > `Configure the Logical Volume Manager`<br>
 > Write the changes to disks and configure LVM? `Yes`<br>
 > LVM configuration action: `Create volume group`
-- Selecting `Display configuration details` at any point of this stage of the installation will show the progress of the configuration as new volumes are included into the group.
+- Selecting `Display configuration details` at any point of this stage of the installation will show the progress of the configuration as new volumes are included into the group. Use this display to check your progress if you lose track of the endeavour.
 > Volume group name: `LVMGroup`
 - This is the name suggested in the project's document.
 > Devices for the new volume group:
@@ -287,6 +287,7 @@ Installation of the OS at this stage may take a while.
 
 #### A.2.m Configuring grub-pc
 
+GNU GRand Unified Bootloader, GRUB, is a boot loader for the Linux system that allows a user the choice to boot one of multiple operating systems installed on a computer or select a specific kernel configuration available on a particular operating system's partitions. 
 > Install the GRUB boot loader to your primary drive? `Yes`<br>
 > Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)`
 - Obviously, the serial number above will be different in each case.
@@ -349,7 +350,7 @@ Restart the service to force the changes:
 
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
-**sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. By contrast, **ssh_config** configures the SSH client one uses to SSH *another* machine. The document does not mandate us to set a client in the virtual machine, and so we shan't tinker any further!
+**sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. By contrast, **ssh_config** configures the SSH client one uses to SSH *another* machine. The document does not mandate us to set this client in the virtual machine, and so we shan't tinker any further!
 
 #### A.3.c Uncomplicated Firewall setup
 
@@ -403,7 +404,7 @@ Locate line 25:
 
 		password   requisite   pam_pwquality.so   retry=3
 Column 1, `password`, is the management group for the service, *Password group* in our case. Other groups we may find are *Auth*, *Account*, and *Session groups*.<br>
-Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. If the requisite is not found or failed to load, it will stop loading other modules and return failure.<br>
+Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. Should the requisite not be found or fails to load, it will stop loading other modules and return failure.<br>
 Column 3, `pam_pwquality.so`, is the *Module* (.so file) used.<br>
 Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:
 
@@ -434,7 +435,7 @@ Type `reboot` to restart the machine if you wish to try the new password conditi
 		apt -y install sudo
 -  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`
 
-One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that, calling the new config `Born2beroot`:
+One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that, calling the new config `Born2beroot` (§):
 
 		vi /etc/sudoers.d/Born2beroot (§)(†)
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
@@ -457,14 +458,15 @@ Type the following lines into the new file:
 		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
 		Defaults	requiretty
 		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
-`badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
-`log_input, log_output`: every input and output action has to be archived.
+  
 - Technically, we could list all the specs of this file into one single command, separated with commas.
 
+`badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
+`log_input, log_output`: every input and output action has to be archived. Rather unfriendly JSON and ...<br>
+`iolog_dir`: folder where the logs will be stored, as instructed by the document.<br>
 `iolog_file`: path relative to `iolog_dir` where input and output streams will be recorded.<br>
 `logfile`: human-readable log file.<br>
-`requiretty` will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).<br>
+`requiretty`: will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).<br>
 `secure_path`: **sudo** will use this value in place of the user's PATH environment variable.
 - Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
@@ -479,7 +481,7 @@ You can find all the groups in the database stored in the `/etc/group` file, inc
 
 		awk -F : '{print $1}' /etc/group | sort | more
 
-To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "Hello"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
+To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
 
 Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
 
@@ -581,7 +583,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 
 		chmod +x /usr/local/sbin/monitoring.sh
 
-`Architecture`: command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited newtwork node hostname (`rtorrent` (§)).<br>
+`Architecture`: simpler command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited network node hostname—`rtorrent42` (§)—.<br>
 `Physical processor(s)`: command `lscpu` displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`. Line `CPU(s)` actually displays the number of *logical* cores, that is, the physical number just calculated multiplied by the *hyper-threads* in each core, `Thread(s) per core`.
 - An alternative (and convoluted) route is to read the contents of the `/proc/cpuinfo` text file. A plethora of data is printed for the *logical* CPUs, each with a unique processor number:<br>
  `processor`: identifies the logical processor.<br>
@@ -598,13 +600,13 @@ Finally, change the permissions on the script so everybody can actually execute 
 `Available memory`: command `free` uses the data provided by file `/proc/meminfo`. Available memory is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total is below the theoretical installed (i.e., 2,048 MB) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
 - The default size in `free` and `/proc/meminfo` is 1 kB = 1,024 bytes.
 
-`Available disk space`: command `df` (disk filesystem) checks disk usage on a mounted filesystem, in 1 kB blocks. Unfortunately, the command includes some *tmpfs* (temporary file system) and one *devtmpfs* for device files (the interfaces between actual physical devices and the user). Both are virtual filesystems created to store files in volatile (RAM) memory… Option `-x` excludes those entries and option `--total` conveniently adds the columns for us. Giga-sized blocks (option `-BG`) are too coarse for an accurate measurement.
+`Available disk space`: command `df` (disk filesystem) checks disk usage on a mounted filesystem, in 1 kB blocks. Unfortunately, the command includes some *tmpfs* (temporary file system) and one *devtmpfs* for device files (the interfaces between actual physical devices and the user). Both are virtual filesystems created to store files in volatile (RAM) memory… Option `-x` excludes those entries and option `--total` conveniently adds the columns for us. Giga-sized blocks (option `-BG`) are too coarse for an accurate measurement and some arithmetic calculations must follow.
 
 `CPU usage`: command `vmstat` displays CPU activity in near-real time. The first argument is the *delay* between updates, while the second sets *count* determinations. The first report produced gives averages since the last reboot, and so we keep the second (last) row. We are interested in column `id` (*idle*, 15th), the complement of the utilization rate.
 - On the other hand, CPU *load* is defined as the number of processes using or waiting to use one core at a single point in time. It can be determined with command `uptime`.
 
 `Last reboot`: command `uptime` running *since* option (`-s`).<br>
-`LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands `df`, `mount`, and `blkid`. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of name, it is also possible to limit the search by device type, *lvm*. In this case, consider command `lsblk`.<br>
+`LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands `df`, `mount`, and `blkid`. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of by name, it is also possible to limit the search by device type, *lvm*. In this case, consider command `lsblk`.<br>
 `Active Internet (TCP and UDP) connections`: command `netsat` has been superseded by `ss` (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*.<br>
 `Logged users`: simple count of `who` results.
 - Equally valid is the `users | wc -w` combination.
@@ -614,4 +616,4 @@ Finally, change the permissions on the script so everybody can actually execute 
 
 `Session's executed sudo commands`: you can look at what `sudo` did by using `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
 
-[**NOTE**: The number or processors dedicated to the VM was increased to 2.]
+[**NOTE**: The number or processors dedicated to the VM was increased to 2 for this screenshot.]
