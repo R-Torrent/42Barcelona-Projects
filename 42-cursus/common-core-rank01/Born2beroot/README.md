@@ -110,7 +110,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > Partitioning method: `Manual`<br>
 > `SCSI3 (0,0,0) (sda) - 33.1 GB ATA VBOX HARDDISK`
 - Location for the new partition table.<br>
-  [**NOTE**: The installer may revert to the SCSI1 or SCSI2 protocols. Don't fret over this.]
+[**NOTE**: The installer may revert to the SCSI1 or SCSI2 protocols. Don't fret over this.]
 > Create new empty partition table on this device? `Yes`<br>
 > `pri/log 33.1 GB FREE SPACE`<br>
 > How to use this free space: `Create a new partition`<br>
@@ -330,23 +330,23 @@ A SSH server should be present in the machine from the software selection phase 
 
 Next, configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor, **vi** in my case:
 
-		vi /etc/ssh/sshd_config (†)
+	vi /etc/ssh/sshd_config (†)
 - Observe that there is also a `ssh_config` file, a `ssh_config.d` folder, and a `sshd_config.d` folder in `/etc/ssh/`. Check your spelling!
 - The config file basically consists of an `Include` directive to call further config files stored in the `sshd_config.d` folder, and a list of *commented out* settings (starting with the `#` character). These are the default settings the server runs on.
 
 Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** listens on:
 
-		Port 4242
+	Port 4242
 
 Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root":
 
-		PermitRootLogin no
+	PermitRootLogin no
 
 - Open the **man** page for further details, `man 5 sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
 
 Restart the service to force the changes:
 
-		service ssh restart
+	service ssh restart
 
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
@@ -354,61 +354,61 @@ Restart the service to force the changes:
 
 #### A.3.c Uncomplicated Firewall setup
 
-		apt install ufw
+	apt install ufw
 > Do you want to continue? [Y/n] `y` \<a simple `⏎` in the keyboard would also suffice\>
 
 Activate UFW for immediate use and enable it on system boot:
 
-		ufw enable
+	ufw enable
 
 As instructed in the document, port 4242 is left open:
 
-		ufw allow 4242
+	ufw allow 4242
 - Confirm this is indeed the case with `ufw status`.
 
 #### A.3.d Strong password policy
 
 Open the configuration file that stores user account parameters, `/etc/login.defs`, with your preferred text editor:
 
-		vi /etc/login.defs (†)
+	vi /etc/login.defs (†)
 
 Find definition `PASS_MAX_DAYS` and edit from `99999` to the mandated `30`.<br>
 Find definition `PASS_MIN_DAYS` and edit from `0` to `2`.<br>
 Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `7` by default.
 
-		#
-		# Password aging controls:
-		#
-		#       PASS_MAX_DAYS   Maximum number of days a password may be used.
-		#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.
-		#       PASS_WARN_AGE   Number of days warning given before a password expires.
-		#
-		PASS_MAX_DAYS   30
-		PASS_MIN_DAYS   2
-		PASS_WARN_AGE   7
+	#
+	# Password aging controls:
+	#
+	#       PASS_MAX_DAYS   Maximum number of days a password may be used.
+	#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.
+	#       PASS_WARN_AGE   Number of days warning given before a password expires.
+	#
+	PASS_MAX_DAYS   30
+	PASS_MIN_DAYS   2
+	PASS_WARN_AGE   7
 - In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
 - This file is accessed by commands such as `useradd` and `groupadd`.
 - Open the **man** page for further details, `man 5 login.defs`.
 
 Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
 
-		apt -y install libpam-pwquality
+	apt -y install libpam-pwquality
 - `-y` option spares us the confirmation request after the `apt` command.
 - You may check if the package is installed with `dpkg -s libpam-pwquality`.
 
 Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
 
-		vi /etc/pam.d/common-password (†)
+	vi /etc/pam.d/common-password (†)
 
 Locate line 25:
 
-		password   requisite   pam_pwquality.so   retry=3
+	password   requisite   pam_pwquality.so   retry=3
 Column 1, `password`, is the management group for the service, *Password group* in our case. Other groups we may find are *Auth*, *Account*, and *Session groups*.<br>
 Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. Should the requisite not be found or fails to load, it will stop loading other modules and return failure.<br>
 Column 3, `pam_pwquality.so`, is the *Module* (.so file) used.<br>
 Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:
 
-		password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
+	password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
 - All parameters should go in the same *line*, that is, before a newline character.
 
 `minlen=10`: minimum acceptable size.<br>
@@ -432,12 +432,12 @@ Type `reboot` to restart the machine if you wish to try the new password conditi
 
 **sudo** (superuser do) will allow any user to adopt omnipotent `root` abilities. Therefore, it must be be properly configured. Start by installing the `sudo` package:
 
-		apt -y install sudo
+	apt -y install sudo
 -  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`
 
 One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that, calling the new config `Born2beroot` (§):
 
-		vi /etc/sudoers.d/Born2beroot (§)(†)
+	vi /etc/sudoers.d/Born2beroot (§)(†)
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 
 **sudoers** mostly contains *users specifications* following the syntax `User Host = (Runas) Command`. This reads as *User may run Command as the Runas user on Host*.
@@ -451,14 +451,14 @@ Any or all of the above may be the special keyword `ALL`, valid for everyone, ev
 
 Type the following lines into the new file:
 
-		Defaults	badpass_message="Prueba otra vez, bobo" (§)
-		Defaults	log_input, log_output
-		Defaults	iolog_dir="/var/log/sudo/"
-		Defaults	iolog_file="logs" (§)
-		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
-		Defaults	requiretty
-		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-  
+	Defaults	badpass_message="Prueba otra vez, bobo" (§)
+	Defaults	log_input, log_output
+	Defaults	iolog_dir="/var/log/sudo/"
+	Defaults	iolog_file="logs" (§)
+	Defaults	logfile="/var/log/sudo/sudo.logs" (§)
+	Defaults	requiretty
+	Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 - Technically, we could list all the specs of this file into one single command, separated with commas.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
@@ -479,21 +479,21 @@ Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 
 You can find all the groups in the database stored in the `/etc/group` file, including their GID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
 
-		awk -F : '{print $1}' /etc/group | sort | more
+	awk -F : '{print $1}' /etc/group | sort | more
 
 To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
 
 Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
 
-		groupadd -U rtorrent user42 (§)
+	groupadd -U rtorrent user42 (§)
 
 Now add the same user to the `sudo` group with one of the following commands,
 
-		groupmod -aU rtorrent sudo  (§)
+	groupmod -aU rtorrent sudo  (§)
 
 or alternatively,
 
-		usermod -aG sudo rtorrent (§)
+	usermod -aG sudo rtorrent (§)
 
 Both edit the user's details and the group's membership.<br>
 [**NOTE**:  The `-a` option (*append*) is crucial. Without it, the command will completely replace the user/group lists. This is not important with the `groupmod` command **in this case**—because we start with an empty group—, but it would be dramatic in the case of `usermod` to expel the user from all groups, including their own primary group, just to get them into `sudo`!]
@@ -509,111 +509,149 @@ The next task is to write a Bash script, **monitoring.sh**. We choose to place t
 
 Using *everyone's* favorite text editor,
 
-		vi /usr/local/sbin/monitoring.sh (†)
+	vi /usr/local/sbin/monitoring.sh (†)
 
 type the following Bash commands:
 
-		#!/bin/bash
+	#!/bin/bash
 
-		# Architecture of OS & kernel version
-		arch=$(uname -srvmo)
+	# Architecture of OS & kernel version
+	arch=$(uname -srvmo)
 
-		# Physical processors
-		pcpu=$(lscpu | awk -F : '
-			/^Core\(s\) per socket/ {mult=$2}
-			/^Socket\(s\)/ {mult*=$2}
-			END {print mult}')
+	# Physical processors
+	pcpu=$(lscpu | awk -F : '
+		/^Core\(s\) per socket/ {mult=$2}
+		/^Socket\(s\)/ {mult*=$2}
+		END {print mult}')
 
-		# Virtual processors
-		vcpu=$(nproc --all)
+	# Virtual processors
+	vcpu=$(nproc --all)
 
-		# RAM available/total MB (%)
-		rama=$(free -m | awk '/^Mem:/ {print $7}')
-		ramt=$(free -m | awk '/^Mem:/ {print $2}')
-		ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)
+	# RAM available/total MB (%)
+	rama=$(free -m | awk '/^Mem:/ {print $7}')
+	ramt=$(free -m | awk '/^Mem:/ {print $2}')
+	ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)
 
-		# DISK available/total GB (%)
-		temp=$(df -x tmpfs -x devtmpfs --total | grep ^total)
-		tmpa=$(echo $temp | awk '{print $4}')
-		tmpt=$(echo $temp | awk '{print $2}')
-		dska=$(printf '%.2f' $((100*tmpa/1024/1024))e-2)
-		dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)
-		dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
+	# DISK available/total GB (%)
+	temp=$(df -x tmpfs -x devtmpfs --total | grep ^total)
+	tmpa=$(echo $temp | awk '{print $4}')
+	tmpt=$(echo $temp | awk '{print $2}')
+	dska=$(printf '%.2f' $((100*tmpa/1024/1024))e-2)
+	dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)
+	dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
 
-		# CPU utilization rate (%)
-		cpup=$((100-$(vmstat 1 2|tail -1|awk '{print $15}')))
+	# CPU utilization rate (%)
+	cpup=$((100-$(vmstat 1 2|tail -1|awk '{print $15}')))
 
-		# Last reboot (yyyy-mm-dd HH:MM:SS)
-		lrbt=$(uptime -s)
+	# Last reboot (yyyy-mm-dd HH:MM:SS)
+	lrbt=$(uptime -s)
 
-		# LVM in use
-		lvmu=$(if grep -q '/dev/mapper/' /etc/fstab
-			then echo yes
-			else echo no
-			fi)
+	# LVM in use
+	lvmu=$(if grep -q '/dev/mapper/' /etc/fstab
+		then echo yes
+		else echo no
+		fi)
 
-		# Active TCP and UDP connections
-		acon=$(ss -Htu -o state connected | wc -l) 
+	# Active TCP and UDP connections
+	acon=$(ss -Htu -o state connected | wc -l) 
 
-		# Logged users
-		logu=$(who | wc -l)
+	# Logged users
+	logu=$(who | wc -l)
 
-		# IPv4 and MAC addresses
-		ipv4=$(ip route | head -1 | awk '{print $(NF-2)}')
-		rowN=$(($(ip address | grep -n $ipv4 | cut -d : -f 1)-1))
-		maca=$(ip address | sed "${rowN}q;d" | awk '{print $2'})
+	# IPv4 and MAC addresses
+	ipv4=$(ip route | head -1 | awk '{print $(NF-2)}')
+	rowN=$(($(ip address | grep -n $ipv4 | cut -d : -f 1)-1))
+	maca=$(ip address | sed "${rowN}q;d" | awk '{print $2'})
 
-		# sudo usage
-		sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
+	# sudo usage
+	sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
 
-		wall "	Architecture: $arch
-			Physical processor(s): $pcpu
-			Virtual processor(s): $vcpu
-			Available memory: $rama/$ramt MB ($ramp%)
-			Available disk space: $dska/$dskt GB ($dskp%)
-			CPU usage: $cpup%
-			Last reboot: $lrbt
-			LVM in use? $lvmu
-			Active Internet (TCP and UDP) connections: $acon
-			Logged users: $logu
-			Network: IPv4 $ipv4 MAC $maca
-			Session's executed sudo commands: $sudo"
+	wall "	Architecture: $arch
+		Physical processor(s): $pcpu
+		Virtual processor(s): $vcpu
+		Available memory: $rama/$ramt MB ($ramp%)
+		Available disk space: $dska/$dskt GB ($dskp%)
+		CPU usage: $cpup%
+		Last reboot: $lrbt
+		LVM in use? $lvmu
+		Active Internet (TCP and UDP) connections: $acon
+		Logged users: $logu
+		Network: IPv4 $ipv4 MAC $maca
+		Session's executed sudo commands: $sudo"
 
 Finally, change the permissions on the script so everybody can actually execute it:
 
-		chmod +x /usr/local/sbin/monitoring.sh
+	chmod +x /usr/local/sbin/monitoring.sh
 
-`Architecture`: simpler command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited network node hostname—`rtorrent42` (§)—.<br>
-`Physical processor(s)`: command `lscpu` displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`. Line `CPU(s)` actually displays the number of *logical* cores, that is, the physical number just calculated multiplied by the *hyper-threads* in each core, `Thread(s) per core`.
+`Architecture`: `uname -srvmo` prints the *kernel name* (-s), *kernel release* (-r), *kernel version* (-v), *machine hardware name* (-m), and *operating system* (-o).
+- A simpler command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited network node hostname—`rtorrent42` (§)—.
+- Manual: `man 1 uname`.
+
+`Physical processor(s)`: `lscpu` displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`. Line `CPU(s)` actually displays the number of *logical* cores, that is, the physical number just calculated multiplied by the *hyper-threads* in each core, `Thread(s) per core`.
 - An alternative (and convoluted) route is to read the contents of the `/proc/cpuinfo` text file. A plethora of data is printed for the *logical* CPUs, each with a unique processor number:<br>
- `processor`: identifies the logical processor.<br>
- `physical id`: identifies the socket.<br>
- `siblings`: number of threads on the socket.<br>
- `core id`: identifies the core on a socket.<br>
- `cpu cores`: number of cores on the socket.<br>
- *Hyper-threading* is engaged when `siblings` differs to `cpu cores`. The number of `processor` entries divided by the *hyper-threads* (`siblings`/`cpu cores`) equals the physical cores present.
+`processor`: identifies the logical processor.<br>
+`physical id`: identifies the socket.<br>
+`siblings`: number of threads on the socket.<br>
+`core id`: identifies the core on a socket.<br>
+`cpu cores`: number of cores on the socket.<br>
+*Hyper-threading* is engaged when `siblings` differs to `cpu cores`. The number of `processor` entries divided by the *hyper-threads* (`siblings`/`cpu cores`) equals the physical cores present.
+- Manual: `man 1 lscpu`.
 
-`Virtual processor(s)`: command `nproc --all` prints all installed processors.
+`Virtual processor(s)`: `nproc --all` prints all installed processors.
 - The `nproc` command is often used in shell scripts to check the number of available threads.
-- Alternatives include `lscpu | awk -F : '/^CPU\(s\)/ {print $2}' | sed 's/ //g'` and `grep -c processor /proc/cpuinfo`.
+- Alternative solutions include `lscpu | awk -F : '/^CPU\(s\)/ {print $2}' | sed 's/ //g'` and `grep -c processor /proc/cpuinfo`.
+- Manual: `man 1 nproc`.
 
-`Available memory`: command `free` uses the data provided by file `/proc/meminfo`. Available memory is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total is below the theoretical installed (i.e., 2,048 MB) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
-- The default size in `free` and `/proc/meminfo` is 1 kB = 1,024 bytes.
+`Available memory`: `free -m` (or `free --mebi`) uses data provided by file `/proc/meminfo`. Available memory (seventh column) is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total (second column) is below the theoretical installed (i.e., 2,048 MB in our machine) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
+- The default size in `free` and `/proc/meminfo` is 1 kB = 1,024 bytes, hence the option `-m` (1 MB = 1,024 kB).
+- Bash operates with integers, not floating-point arithmetic. Notice the trick of multiplying by 100 and appending `e-2` in the `printf` command argument, for obtaining two decimal points.
+- Manuals: `man 1 free`, `man 1 printf`.
 
-`Available disk space`: command `df` (disk filesystem) checks disk usage on a mounted filesystem, in 1 kB blocks. Unfortunately, the command includes some *tmpfs* (temporary file system) and one *devtmpfs* for device files (the interfaces between actual physical devices and the user). Both are virtual filesystems created to store files in volatile (RAM) memory… Option `-x` excludes those entries and option `--total` conveniently adds the columns for us. Giga-sized blocks (option `-BG`) are too coarse for an accurate measurement and some arithmetic calculations must follow.
+`Available disk space`: `df -x tmpfs -x devtmpfs --total` (disk filesystem) checks disk usage on a mounted filesystem, in 1 kB blocks. Unfortunately, the command includes some *tmpfs* (temporary file system) and one *devtmpfs* for device files (the interfaces between actual physical devices and the user). Both are virtual filesystems created to store files in volatile (RAM) memory… Option `-x` (`--exclude-type`) omits those entries and option `--total` conveniently adds the columns for us. Giga-sized blocks (option `-BG`) are too coarse for an accurate measurement and some arithmetic calculations must follow.
+- Manual: `man 1 df`.
 
-`CPU usage`: command `vmstat` displays CPU activity in near-real time. The first argument is the *delay* between updates, while the second sets *count* determinations. The first report produced gives averages since the last reboot, and so we keep the second (last) row. We are interested in column `id` (*idle*, 15th), the complement of the utilization rate.
+`CPU usage`: `vmstat 1 2` (virtual memory statistics) reports CPU activity in near-real time. The first argument is the *delay* between updates in seconds, while the second prescribes *count* determinations. The first report produced gives averages since the last reboot, and so we keep the second (last) row. We are interested in column `id` (*idle*, 15th), the complement of the utilization rate.
 - On the other hand, CPU *load* is defined as the number of processes using or waiting to use one core at a single point in time. It can be determined with command `uptime`.
+- Manual: `man 8 vmstat`.
 
-`Last reboot`: command `uptime` running *since* option (`-s`).<br>
-`LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands `df`, `mount`, and `blkid`. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of by name, it is also possible to limit the search by device type, *lvm*. In this case, consider command `lsblk`.<br>
-`Active Internet (TCP and UDP) connections`: command `netsat` has been superseded by `ss` (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*.<br>
+`Last reboot`: `uptime -s` (or `uptime --since`).
+- Manual: `man 1 uptime`.
+
+`LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands `df`, `mount`, and `blkid`. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of by name, it is also possible to limit the search by device type, *lvm*. In this case, consider command `lsblk`.
+- Manuals: `man 1 df`, `man 8 mount`, `man 8 blkid`, `man 8 lsblk`.
+
+`Active Internet (TCP and UDP) connections`: `ss -Htu -o state connected`. Command `netsat` has been superseded by `ss` (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*.
+- Option `-a` (or `--all`) displays all *established* connections for TCP, but many unwelcomed results for UDP.
+- Manual: `man 8 ss`.
+
 `Logged users`: simple count of `who` results.
 - Equally valid is the `users | wc -w` combination.
+- Manuals: `man 1 who`, `man 1 users`.
 
 `Network`: classic command `ifconfig` has also been deprecated, use `ip` instead. The first result of `ip route`, the *default* route, is the desired IP address. Finding the MAC address should be a simple matter of choosing the correct address from the output provided by `ip link`. But, how to match the hardware address we seek to the unique device assigned the IP address we found earlier? Auxiliary variable `rowN` contains the row number of the sought `link` data, found though pattern matching among the information provided by `ip address`.
 - Command `hostname -I` (or `hostname --all-ip-addresses`) is a bit unreliable. It will print *all* IP addresses in no particular order.
+- Manuals: `man 8 ip`, `man 1 hostname`.
 
-`Session's executed sudo commands`: you can look at what `sudo` did by using `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
+`Session's executed sudo commands`: `journalctl _COMM=sudo`. You can monitor **sudo** activity through `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
+- Manuals: `man 1 journalctl`, `man 1 systemd`, `man 7 systemd.journal-fields` (for details regarding *trusted field* `_COMM`).
+
+Broadcasting the information: `wall` (write to all).
+- The project document leaves the inclusion of the banner as optional. It can be removed with `wall -n` (`--nobanner`).
+- Manual: `man 1 wall`.
+
+![Script broadcast](src/img3.png "Behold the script in all its glory!")
 
 [**NOTE**: The number or processors dedicated to the VM was increased to 2 for this screenshot.]
+
+#### A.3.h Timer scheduling
+
+##### A.3.h.1 Cron scheduling
+
+The project document clearly states that "At server startup, the script will display [...] every 10 minutes". However, one would not err by much if he or she should programa a periodic timer to execute at *fixed* minutes of the clock, in intervals of ten minutes. If one accepts this *sleight of hand*, **cron** offers an easier alternative to **systemd**'s **timer** service.
+
+**cron** is a *daemon*—a program that runs in the background but remains inactive until invoked—that executes scheduled commands. **cron** loads special *crontab* files into memory. Every minute henceforth, **cron** will execute those files marked to run at that specific moment. User *crontab* files (named after accounts in `/etc/passwd`) are located in a "user spool area" (`/var/spool/cron/crontabs/`). There also exists a "system-wide spool" comprising file `/etc/crontab` and the contents of the `/etc/cron.d/` folder. There are some differences in the methods of user vs system-wide *crontab* files.
+- Unfortunately, the daemon sets up a different PATH variable, `/usr/bin:/bin`, leaving our monitoring script out.
+- Much more information is to be found at `man 1 crontab`, `man 5 crontab`, and `man 8 cron`.
+
+We will program `root`'s **crontab** through option `-u`.
+- As such, authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
