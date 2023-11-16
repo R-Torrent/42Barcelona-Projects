@@ -13,7 +13,7 @@ Virtualization software: Oracle VM VirtualBox v7.0.8
 
 ---
 
-## A.- Installing our virtual machine & setting the server
+## A. Installing our virtual machine & setting the server
 
 [Download](https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/) the latest *stable* version of Debian. Currently, this will be image `debian-12.1.0-amd64-netinst.iso`.
 
@@ -287,7 +287,7 @@ Installation of the OS at this stage may take a while.
 
 #### A.2.m Configuring grub-pc
 
-GNU GRand Unified Bootloader, GRUB, is a boot loader for the Linux system that allows a user the choice to boot one of multiple operating systems installed on a computer or select a specific kernel configuration available on a particular operating system's partitions. 
+GNU GRand Unified Bootloader, GRUB, is a boot loader for the Linux system that allows a user the choice to boot one of multiple operating systems installed on a computer or select a specific kernel configuration available on a particular operating system's partitions.
 > Install the GRUB boot loader to your primary drive? `Yes`<br>
 > Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)`
 - Obviously, the serial number above will be different in each case.
@@ -330,23 +330,20 @@ A SSH server should be present in the machine from the software selection phase 
 
 Next, configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor, **vi** in my case:
 
-	vi /etc/ssh/sshd_config (†)
+		vi /etc/ssh/sshd_config (†)
 - Observe that there is also a `ssh_config` file, a `ssh_config.d` folder, and a `sshd_config.d` folder in `/etc/ssh/`. Check your spelling!
 - The config file basically consists of an `Include` directive to call further config files stored in the `sshd_config.d` folder, and a list of *commented out* settings (starting with the `#` character). These are the default settings the server runs on.
 
 Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** listens on:
-
-	Port 4242
+> Port 4242
 
 Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root":
-
-	PermitRootLogin no
-
+> PermitRootLogin no
 - Open the **man** page for further details, `man 5 sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
 
 Restart the service to force the changes:
 
-	service ssh restart
+		service ssh restart
 
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
@@ -354,61 +351,59 @@ Restart the service to force the changes:
 
 #### A.3.c Uncomplicated Firewall setup
 
-	apt install ufw
+		apt install ufw
 > Do you want to continue? [Y/n] `y` \<a simple `⏎` in the keyboard would also suffice\>
 
 Activate UFW for immediate use and enable it on system boot:
 
-	ufw enable
+		ufw enable
 
 As instructed in the document, port 4242 is left open:
 
-	ufw allow 4242
+		ufw allow 4242
 - Confirm this is indeed the case with `ufw status`.
 
 #### A.3.d Strong password policy
 
 Open the configuration file that stores user account parameters, `/etc/login.defs`, with your preferred text editor:
 
-	vi /etc/login.defs (†)
+		vi /etc/login.defs (†)
 
 Find definition `PASS_MAX_DAYS` and edit from `99999` to the mandated `30`.<br>
 Find definition `PASS_MIN_DAYS` and edit from `0` to `2`.<br>
 Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `7` by default.
-
-	#
-	# Password aging controls:
-	#
-	#       PASS_MAX_DAYS   Maximum number of days a password may be used.
-	#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.
-	#       PASS_WARN_AGE   Number of days warning given before a password expires.
-	#
-	PASS_MAX_DAYS   30
-	PASS_MIN_DAYS   2
-	PASS_WARN_AGE   7
+> #
+> # Password aging controls:<br>
+> #<br>
+> #       PASS_MAX_DAYS   Maximum number of days a password may be used.<br>
+> #       PASS_MIN_DAYS   Minimum number of days allowed between password changes.<br>
+> #       PASS_WARN_AGE   Number of days warning given before a password expires.<br>
+> #<br>
+> PASS_MAX_DAYS   30<br>
+> PASS_MIN_DAYS   2<br>
+> PASS_WARN_AGE   7
 - In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
 - This file is accessed by commands such as `useradd` and `groupadd`.
 - Open the **man** page for further details, `man 5 login.defs`.
 
 Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
 
-	apt -y install libpam-pwquality
+		apt -y install libpam-pwquality
 - `-y` option spares us the confirmation request after the `apt` command.
 - You may check if the package is installed with `dpkg -s libpam-pwquality`.
 
 Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
 
-	vi /etc/pam.d/common-password (†)
+		vi /etc/pam.d/common-password (†)
 
 Locate line 25:
+> password   requisite   pam_pwquality.so   retry=3
 
-	password   requisite   pam_pwquality.so   retry=3
 Column 1, `password`, is the management group for the service, *Password group* in our case. Other groups we may find are *Auth*, *Account*, and *Session groups*.<br>
 Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. Should the requisite not be found or fails to load, it will stop loading other modules and return failure.<br>
 Column 3, `pam_pwquality.so`, is the *Module* (.so file) used.<br>
 Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:
-
-	password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
+> password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
 - All parameters should go in the same *line*, that is, before a newline character.
 
 `minlen=10`: minimum acceptable size.<br>
@@ -432,12 +427,12 @@ Type `reboot` to restart the machine if you wish to try the new password conditi
 
 **sudo** (superuser do) will allow any user to adopt omnipotent `root` abilities. Therefore, it must be be properly configured. Start by installing the `sudo` package:
 
-	apt -y install sudo
+		apt -y install sudo
 -  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`
 
 One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that, calling the new config `Born2beroot` (§):
 
-	vi /etc/sudoers.d/Born2beroot (§)(†)
+		vi /etc/sudoers.d/Born2beroot (§)(†)
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 
 **sudoers** mostly contains *users specifications* following the syntax `User Host = (Runas) Command`. This reads as *User may run Command as the Runas user on Host*.
@@ -450,15 +445,13 @@ Any or all of the above may be the special keyword `ALL`, valid for everyone, ev
 - It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (paying special attention to the **Runas_Spec** section).
 
 Type the following lines into the new file:
-
-	Defaults	badpass_message="Prueba otra vez, bobo" (§)
-	Defaults	log_input, log_output
-	Defaults	iolog_dir="/var/log/sudo/"
-	Defaults	iolog_file="logs" (§)
-	Defaults	logfile="/var/log/sudo/sudo.logs" (§)
-	Defaults	requiretty
-	Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
+> Defaults	badpass_message="Prueba otra vez, bobo" (§)<br>
+> Defaults	log_input, log_output<br>
+> Defaults	iolog_dir="/var/log/sudo/"<br>
+> Defaults	iolog_file="logs" (§)<br>
+> Defaults	logfile="/var/log/sudo/sudo.logs" (§)<br>
+> Defaults	requiretty<br>
+> Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 - Technically, we could list all the specs of this file into one single command, separated with commas.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
@@ -479,21 +472,21 @@ Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 
 You can find all the groups in the database stored in the `/etc/group` file, including their GID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
 
-	awk -F : '{print $1}' /etc/group | sort | more
+		awk -F : '{print $1}' /etc/group | sort | more
 
 To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
 
 Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
 
-	groupadd -U rtorrent user42 (§)
+		groupadd -U rtorrent user42 (§)
 
 Now add the same user to the `sudo` group with one of the following commands,
 
-	groupmod -aU rtorrent sudo  (§)
+		groupmod -aU rtorrent sudo  (§)
 
 or alternatively,
 
-	usermod -aG sudo rtorrent (§)
+		usermod -aG sudo rtorrent (§)
 
 Both edit the user's details and the group's membership.<br>
 [**NOTE**:  The `-a` option (*append*) is crucial. Without it, the command will completely replace the user/group lists. This is not important with the `groupmod` command **in this case**—because we start with an empty group—, but it would be dramatic in the case of `usermod` to expel the user from all groups, including their own primary group, just to get them into `sudo`!]
@@ -509,79 +502,79 @@ The next task is to write a Bash script, **monitoring.sh**. We choose to place t
 
 Using *everyone's* favorite text editor,
 
-	vi /usr/local/sbin/monitoring.sh (†)
+		vi /usr/local/sbin/monitoring.sh (†)
 
 type the following Bash commands:
 
-	#!/bin/bash
-
-	# Architecture of OS & kernel version
-	arch=$(uname -srvmo)
-
-	# Physical processors
-	pcpu=$(lscpu | awk -F : '
-		/^Core\(s\) per socket/ {mult=$2}
-		/^Socket\(s\)/ {mult*=$2}
-		END {print mult}')
-
-	# Virtual processors
-	vcpu=$(nproc --all)
-
-	# RAM available/total MB (%)
-	rama=$(free -m | awk '/^Mem:/ {print $7}')
-	ramt=$(free -m | awk '/^Mem:/ {print $2}')
-	ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)
-
-	# DISK available/total GB (%)
-	temp=$(df -x tmpfs -x devtmpfs --total | grep ^total)
-	tmpa=$(echo $temp | awk '{print $4}')
-	tmpt=$(echo $temp | awk '{print $2}')
-	dska=$(printf '%.2f' $((100*tmpa/1024/1024))e-2)
-	dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)
-	dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
-
-	# CPU utilization rate (%)
-	cpup=$((100-$(vmstat 1 2|tail -1|awk '{print $15}')))
-
-	# Last reboot (yyyy-mm-dd HH:MM:SS)
-	lrbt=$(uptime -s)
-
-	# LVM in use
-	lvmu=$(if grep -q '/dev/mapper/' /etc/fstab
-		then echo yes
-		else echo no
-		fi)
-
-	# Active TCP and UDP connections
-	acon=$(ss -Htu -o state connected | wc -l) 
-
-	# Logged users
-	logu=$(who | wc -l)
-
-	# IPv4 and MAC addresses
-	ipv4=$(ip route | head -1 | awk '{print $(NF-2)}')
-	rowN=$(($(ip address | grep -n $ipv4 | cut -d : -f 1)-1))
-	maca=$(ip address | sed "${rowN}q;d" | awk '{print $2'})
-
-	# sudo usage
-	sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
-
-	wall "	Architecture: $arch
-		Physical processor(s): $pcpu
-		Virtual processor(s): $vcpu
-		Available memory: $rama/$ramt MB ($ramp%)
-		Available disk space: $dska/$dskt GB ($dskp%)
-		CPU usage: $cpup%
-		Last reboot: $lrbt
-		LVM in use? $lvmu
-		Active Internet (TCP and UDP) connections: $acon
-		Logged users: $logu
-		Network: IPv4 $ipv4 MAC $maca
-		Session's executed sudo commands: $sudo"
+> #!/bin/bash<br>
+><br>
+> # Architecture of OS & kernel version<br>
+> arch=$(uname -srvmo)<br>
+><br>
+> # Physical processors<br>
+> pcpu=$(lscpu | awk -F : '<br>
+>	/^Core\(s\) per socket/ {mult=$2}<br>
+>	/^Socket\(s\)/ {mult*=$2}<br>
+>	END {print mult}')<br>
+><br>
+> # Virtual processors<br>
+> vcpu=$(nproc --all)<br>
+><br>
+> # RAM available/total MB (%)<br>
+> rama=$(free -m | awk '/^Mem:/ {print $7}')<br>
+> ramt=$(free -m | awk '/^Mem:/ {print $2}')<br>
+> ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)<br>
+><br>
+> # Disk available/total GB (%)<br>
+> temp=$(df -x tmpfs -x devtmpfs --total | grep ^total)<br>
+> tmpa=$(echo $temp | awk '{print $4}')<br>
+> tmpt=$(echo $temp | awk '{print $2}')<br>
+> dska=$(printf '%.2f' $((100*tmpa/1024/1024))e-2)<br>
+> dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)<br>
+> dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)<br>
+><br>
+> # CPU utilization rate (%)<br>
+> cpup=$((100-$(vmstat 1 2|tail -1|awk '{print $15}')))<br>
+><br>
+> # Last reboot (yyyy-mm-dd HH:MM:SS)<br>
+> lrbt=$(uptime -s)<br>
+><br>
+> # LVM in use<br>
+> lvmu=$(if grep -q '/dev/mapper/' /etc/fstab<br>
+>	then echo yes<br>
+>	else echo no<br>
+>	fi)<br>
+><br>
+> # Active TCP and UDP connections<br>
+> acon=$(ss -Htu -o state connected | wc -l)<br>
+><br>
+> # Logged users<br>
+> logu=$(who | wc -l)<br>
+><br>
+> # IPv4 and MAC addresses<br>
+> ipv4=$(ip route | head -1 | awk '{print $(NF-2)}')<br>
+> rowN=$(($(ip address | grep -n $ipv4 | cut -d : -f 1)-1))<br>
+> maca=$(ip address | sed "${rowN}q;d" | awk '{print $2'})<br>
+><br>
+> # sudo usage<br>
+> sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)<br>
+><br>
+> wall "	Architecture: $arch<br>
+>	Physical processor(s): $pcpu<br>
+>	Virtual processor(s): $vcpu<br>
+>	Available memory: $rama/$ramt MB ($ramp%)<br>
+>	Available disk space: $dska/$dskt GB ($dskp%)<br>
+>	CPU usage: $cpup%<br>
+>	Last reboot: $lrbt<br>
+>	LVM in use? $lvmu<br>
+>	Active Internet (TCP and UDP) connections: $acon<br>
+>	Logged users: $logu<br>
+>	Network: IPv4 $ipv4 MAC $maca<br>
+>	Session's executed sudo commands: $sudo"
 
 Finally, change the permissions on the script so everybody can actually execute it:
 
-	chmod +x /usr/local/sbin/monitoring.sh
+		chmod +x /usr/local/sbin/monitoring.sh
 
 `Architecture`: `uname -srvmo` prints the *kernel name* (-s), *kernel release* (-r), *kernel version* (-v), *machine hardware name* (-m), and *operating system* (-o).
 - A simpler command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited network node hostname—`rtorrent42` (§)—.
@@ -645,13 +638,69 @@ Broadcasting the information: `wall` (write to all).
 
 #### A.3.h Timer scheduling
 
+- As such, authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
+
 ##### A.3.h.1 Cron scheduling
 
 The project document clearly states that "At server startup, the script will display [...] every 10 minutes". However, one would not err by much if he or she should programa a periodic timer to execute at *fixed* minutes of the clock, in intervals of ten minutes. If one accepts this *sleight of hand*, **cron** offers an easier alternative to **systemd**'s **timer** service.
 
-**cron** is a *daemon*—a program that runs in the background but remains inactive until invoked—that executes scheduled commands. **cron** loads special *crontab* files into memory. Every minute henceforth, **cron** will execute those files marked to run at that specific moment. User *crontab* files (named after accounts in `/etc/passwd`) are located in a "user spool area" (`/var/spool/cron/crontabs/`). There also exists a "system-wide spool" comprising file `/etc/crontab` and the contents of the `/etc/cron.d/` folder. There are some differences in the methods of user vs system-wide *crontab* files.
+**cron** is a *daemon*—a program that runs in the background but remains inactive until invoked—that executes scheduled commands. **cron** loads special *crontab* files into memory. Every minute henceforth, **cron** wakes and will execute those files marked to run at that specific moment. User *crontab* files (named after accounts in `/etc/passwd`) are located in a "user spool area" (`/var/spool/cron/crontabs/`). There also exists a "system-wide spool" comprising file `/etc/crontab` and the contents of the `/etc/cron.d/` folder. There are some differences in the methods of user vs system-wide *crontab* files.
 - Unfortunately, the daemon sets up a different PATH variable, `/usr/bin:/bin`, leaving our monitoring script out.
-- Much more information is to be found at `man 1 crontab`, `man 5 crontab`, and `man 8 cron`.
+- Much more information is to be found at `man 1 crontab` and `man 8 cron`.
 
-We will program `root`'s **crontab** through option `-u`.
-- As such, authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
+1. A first solution is to set `roots`'s *crontab* file in the "user spool". Command `crontab`, specifying the user (`-u`) and set to edit (`-e`), will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
+
+		crontab -u root -e
+
+and type at the bottom of the file that pops up
+> */10 * * * * /usr/local/sbin/monitoring.sh
+
+The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *day of week*. Whenever the clock agrees with these, the trailing command will be executed. An asterisk stands for the range *first-last*, i.e., all. The first field includes `/10`, meaning *skip 10* over the range.
+- One can check the contents of *crontab* files in the "user spool area" with option `-l`: `crontab -l` for the current login, `crontab -l -u rtorrent` (§) for our hero.
+- *Crontab* syntax is best described in `man 5 crontab`.
+
+2. A second **cron** solution involves manually editing the system-wide *crontab*:
+
+		vi /etc/crontab (†)
+
+and attach a new instruction at the bottom of the file, after the example tests,
+> */10 * * * * root monitoring.sh
+
+Notice that this solution includes a sixth field with the intended user's login. Interestingly, the eighth line of the file is a PATH redefinition that includes our script's location, much simplifying the command. 
+
+Additionally, **cron** checks each minute to see if its spool directory's modification time (or the modification time on `/etc/crontab`) has changed, and if it has, **cron** will then examine the modification time on all *crontabs* and reload those which have changed. Thus **cron** need not be restarted whenever a *crontab* file is modified.
+
+---
+
+### A.4 Setting a WordPress website
+
+Our virtual machine would be quite useless without a purpose. So let's make it four times worthy with as many installed services.
+
+---
+
+### A.5 The final signature
+
+Power off the machine, **never again** to restart it.
+
+The final stage of **Born2beroot** is to compute a checksum out of the machine's *VirtualBox Disk Image*, and *push* this result into the project repository for evaluation. We are instructed to use the SHA-1 algorithm and to leave the signature in a text file named `signature.txt`. (In a real world case, we would not employ SHA-1, cryptographically deprecated more than a decade ago, and the checksum file itself should also be signed for proof against tampering with some sort of public key.)
+
+Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§), and locate the image. It will be a chunky file ending with the `.vdi` extension, in my case `Born2beroot_Debian12.1.0.vdi` (§).
+
+		sha1sum Born2beroot_Debian12.1.0.vdi` > signature.txt (§)
+
+The output's format will resemble
+> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi
+- An alternative to the `sha1sum` command is the `shasum` Perl script, which falls back to SHA-1 as its default algorithm.
+- Check manuals `man 1 sha1sum` and `man 1 shasum`.
+
+Verifying the integrity of the virtual machine—**do not** power the machine as *any* change in its content, however slim, will alter any subsequent checksums from the evaluators—is as easy as running 
+
+		sha1sum -c signature.txt
+
+Move `signature.txt` to the **empty** folder where **git** cloned the project, and finish the ordeal.
+
+Congratulations!
+
+---
+
+## B. Preparing for the project defense
