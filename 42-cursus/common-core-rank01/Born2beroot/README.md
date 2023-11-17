@@ -637,7 +637,7 @@ The project document clearly states that "At server startup, the script will dis
 - Unfortunately, the daemon sets up a different PATH variable, `/usr/bin:/bin`, leaving our monitoring script out.
 - Much more information is to be found at `man 1 crontab` and `man 8 cron`.
 
-1. A first solution is to set `roots`'s *crontab* file in the "user spool". Command `crontab`, specifying the user (`-u`) and set to edit (`-e`), will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
+1.- A first solution is to set `roots`'s *crontab* file in the "user spool". Command `crontab`, specifying the user (`-u`) and set to edit (`-e`), will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
 > crontab -u root -e
 
 and type at the bottom of the file that pops up
@@ -648,10 +648,10 @@ The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *
 - One can check the contents of *crontab* files in the "user spool area" with option `-l`: `crontab -l` for the current login, `crontab -l -u rtorrent` (§) for our hero.
 - *Crontab* syntax is best described in `man 5 crontab`.
 
-2. A second **cron** solution involves manually editing the system-wide *crontab*:
+2.- A second **cron** solution involves manually editing the system-wide *crontab*:
 > vi /etc/crontab (†)
 
-and attach a new instruction at the bottom of the file, after the example tests,
+and attaching a new instruction at the bottom of the file, after the example tests,
 
 		*/10 * * * * root monitoring.sh
 
@@ -684,7 +684,7 @@ The output's format will resemble
 Verifying the integrity of the virtual machine—**do not** power the machine as *any* change in its content, however slim, will alter any subsequent checksums from the evaluators—is as easy as running 
 > sha1sum -c signature.txt
 
-Move `signature.txt` to the **empty** folder where **git** cloned the project, and finish the ordeal.
+Move `signature.txt` to the **empty** folder where **git** cloned the *intra*'s project, and finish the ordeal.
 
 Congratulations!
 
