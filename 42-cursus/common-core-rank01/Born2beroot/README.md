@@ -289,7 +289,7 @@ Installation of the OS at this stage may take a while.
 GNU GRand Unified Bootloader, GRUB, is a boot loader for the Linux system that allows a user the choice to boot one of multiple operating systems installed on a computer or select a specific kernel configuration available on a particular operating system's partitions.
 > Install the GRUB boot loader to your primary drive? `Yes`<br>
 > Device for boot loader installation: `/dev/sda (ata-VBOX_HARDDISK_VB6f2eb40c-0d001e88)`
-- Obviously, the serial number above will be different in each case.
+- Obviously, the disk model and identifier above will be different in each case.
 
 #### A.2.n Finish the installation
 
@@ -446,7 +446,8 @@ The project does not instruct us to tamper with the **sudo** specifications. If 
 		# Allow members of group sudo to execute any command
 		%sudo	ALL=(ALL:ALL) ALL
 
-But we are instructed to tweak its configuration. Type the following lines into the new config file:
+But we are instructed to tweak its configuration. Type the following lines into the new config file—`Born2beroot` (§)—:
+
 		Defaults	badpass_message="Prueba otra vez, bobo" (§)
 		Defaults	log_input, log_output
 		Defaults	iolog_dir="/var/log/sudo/"
@@ -454,6 +455,7 @@ But we are instructed to tweak its configuration. Type the following lines into 
 		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
 		Defaults	requiretty
 		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 - Technically, we could list all the specs of this file into one single command, separated with commas.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
@@ -497,6 +499,7 @@ There is an alternative solution to the commands used in this section: `addgroup
 #### A.3.g Simple script
 
 The next task is to write a Bash script, **monitoring.sh**. We choose to place this script in the `/usr/local/sbin` folder, which conveniently is included in the PATH environment variable of our Linux system. (You can check this fact with `printenv PATH`.) Thus placed, the script can be executed everywhere without specifying its full path.
+- A non-administrator's PATH does not include the `/sbin` folders.
 
 Using *everyone's* favorite text editor,
 > vi /usr/local/sbin/monitoring.sh (†)
@@ -549,9 +552,10 @@ type the following Bash commands (or *copy and paste* the code you will find in 
 		logu=$(who | wc -l)
 
 		# IPv4 and MAC addresses
-		ipv4=$(ip route | head -1 | awk '{print $(NF-2)}')
-		rowN=$(($(ip address | grep -n $ipv4 | cut -d : -f 1)-1))
-		maca=$(ip address | sed "${rowN}q;d" | awk '{print $2'})
+
+		defd=$(ip route | grep default | awk '{print $NF}')
+		ipv4=$(ip address show $defd | grep -Eo 'inet ([0-9]*\.){3}[0-9]*' | awk '{print $2}')
+		maca=$(ip link show $defd | grep link | awk '{print $2}')
 
 		# sudo usage
 		sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
@@ -567,7 +571,7 @@ type the following Bash commands (or *copy and paste* the code you will find in 
 			Active Internet (TCP and UDP) connections: $acon
 			Logged users: $logu
 			Network: IPv4 $ipv4 MAC $maca
-			Session's executed sudo commands: $sudo"
+			Executed sudo commands: $sudo"
 
 Finally, change the permissions on the script so everybody can actually execute it:
 > chmod +x /usr/local/sbin/monitoring.sh
@@ -617,11 +621,12 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Equally valid is the `users | wc -w` combination.
 - Manuals: `man 1 who`, `man 1 users`.
 
-`Network`: classic command `ifconfig` has also been deprecated, use `ip` instead. The first result of `ip route`, the *default* route, is the desired IP address. Finding the MAC address should be a simple matter of choosing the correct address from the output provided by `ip link`. But, how to match the hardware address we seek to the unique device assigned the IP address we found earlier? Auxiliary variable `rowN` contains the row number of the sought `link` data, found though pattern matching among the information provided by `ip address`.
+`Network`: classic command `ifconfig` has also been deprecated, use `ip` instead. The first step is to identify the *default* device in the routing table, `ip route`. With this id, finding the required addresses is but a simple scan for certain keywords among the protocol address management, `ip address`, and the network device configuration, `ip link`.
+- The matching regular expression after the `ip address show` command is particular to the IPv4 protocol. We can forgo the `-4` option in `ip -4 address show`, short for `-family inet`.
 - Command `hostname -I` (or `hostname --all-ip-addresses`) is a bit unreliable. It will print *all* IP addresses in no particular order.
-- Manuals: `man 8 ip`, `man 1 hostname`.
+- Manuals: `man 8 ip`, `man 8 ip-address`, `man 8 ip-route`, `man 8 ip-link`, `man 1 hostname`.
 
-`Session's executed sudo commands`: `journalctl _COMM=sudo`. You can monitor **sudo** activity through `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
+`Executed sudo commands`: `journalctl _COMM=sudo`. You can monitor **sudo** activity through `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
 - Manuals: `man 1 journalctl`, `man 1 systemd`, `man 7 systemd.journal-fields` (for details regarding *trusted field* `_COMM`).
 
 Broadcasting the information: `wall` (write to all).
@@ -630,7 +635,7 @@ Broadcasting the information: `wall` (write to all).
 
 ![Script broadcast](src/img3.png "Behold the script in all its glory!")
 
-[**NOTE**: The number or processors dedicated to the VM was increased to 2 for this screenshot.]
+[**NOTE**: For this screenshot, the number or processors dedicated to the VM was increased to two. Three concurrent users had logged, two via **ssh**.]
 
 #### A.3.h Timer scheduling
 
@@ -644,12 +649,13 @@ The project document clearly states that "At server startup, the script will dis
 - Unfortunately, the daemon sets up a different PATH variable, `/usr/bin:/bin`, leaving our monitoring script out.
 - Much more information is to be found at `man 1 crontab` and `man 8 cron`.
 
-1.- A first solution is to set `roots`'s *crontab* file in the "user spool". Command `crontab`, specifying the user (`-u`) and set to edit (`-e`), will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
-> crontab -u root -e
+1.- A first solution is to set `roots`'s *crontab* file in the "user spool". Command `crontab` set to edit (`-e`) will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
+> crontab -e
+- Specify user `root` if, for any reason, you are not logged as such (`crontab -u root -e`).
 
 and type at the bottom of the file that pops up
 
-		*/10 * * * * /usr/local/sbin/monitoring.sh
+		*/10 * * * *	/usr/local/sbin/monitoring.sh
 
 The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *day of week*. Whenever the clock agrees with these, the trailing command will be executed. An asterisk stands for the range *first-last*, i.e., all. The first field includes `/10`, meaning *skip 10* over the range.
 - One can check the contents of *crontab* files in the "user spool area" with option `-l`: `crontab -l` for the current login, `crontab -l -u rtorrent` (§) for our hero.
@@ -660,11 +666,11 @@ The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *
 
 and attaching a new instruction at the bottom of the file, after the example tests,
 
-		*/10 * * * * root monitoring.sh
+		*/10 * * * *	root monitoring.sh
 
 Notice that this solution includes a sixth field with the intended user's login. Interestingly, the eighth line of the file is a PATH redefinition that includes our script's location, much simplifying the command. 
 
-Additionally, **cron** checks each minute to see if its spool directory's modification time (or the modification time on `/etc/crontab`) has changed, and if it has, **cron** will then examine the modification time on all *crontabs* and reload those which have changed. Thus **cron** need not be restarted whenever a *crontab* file is modified.
+Additionally, **cron** checks each minute to see if its spool directory's modification time (or the modification time on `/etc/crontab`) has changed, and if it has, **cron** will then examine the modification time on all *crontabs* and reload those which have changed. Thus, **cron** need not be restarted whenever a *crontab* file is modified.
 
 ---
 
