@@ -438,8 +438,15 @@ Any or all of the above may be the special keyword `ALL`, valid for everyone, ev
 - The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**. In its absence, the assumed identity will be *superuser*, i.e. `root`.
 - It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (paying special attention to the **Runas_Spec** section).
 
-Type the following lines into the new file:
+The project does not instruct us to tamper with the **sudo** specifications. If fact, the two active in `/etc/sudoers` remain
 
+		# User privilege specification
+		root	ALL=(ALL:ALL) ALL
+
+		# Allow members of group sudo to execute any command
+		%sudo	ALL=(ALL:ALL) ALL
+
+But we are instructed to tweak its configuration. Type the following lines into the new config file:
 		Defaults	badpass_message="Prueba otra vez, bobo" (§)
 		Defaults	log_input, log_output
 		Defaults	iolog_dir="/var/log/sudo/"
@@ -468,7 +475,7 @@ Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 You can find all the groups in the database stored in the `/etc/group` file, including their GID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
 > awk -F : '{print $1}' /etc/group | sort | more
 
-To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group.
+To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group. Recall from the previous section (**A.3.e sudo installation & configuration**) that only `root` and members of group `sudo` have permission to run **sudo**.
 
 Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
 > groupadd -U rtorrent user42 (§)
@@ -524,7 +531,7 @@ type the following Bash commands (or *copy and paste* the code you will find in 
 		dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
 
 		# CPU utilization rate (%)
-		cpup=$((100-$(vmstat 1 2|tail -1|awk '{print $15}')))
+		cpup=$((100-$(vmstat 1 2 | tail -1 | awk '{print $15}')))
 
 		# Last reboot (yyyy-mm-dd HH:MM:SS)
 		lrbt=$(uptime -s)
@@ -565,7 +572,7 @@ type the following Bash commands (or *copy and paste* the code you will find in 
 Finally, change the permissions on the script so everybody can actually execute it:
 > chmod +x /usr/local/sbin/monitoring.sh
 
-`Architecture`: `uname -srvmo` prints the *kernel name* (-s), *kernel release* (-r), *kernel version* (-v), *machine hardware name* (-m), and *operating system* (-o).
+`Architecture`: `uname -srvmo` prints the *kernel name* (`-s`), *kernel release* (`-r`), *kernel version* (`-v`), *machine hardware name* (`-m`), and *operating system* (`-o`).
 - A simpler command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited network node hostname—`rtorrent42` (§)—.
 - Manual: `man 1 uname`.
 
@@ -592,7 +599,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 `Available disk space`: `df -x tmpfs -x devtmpfs --total` (disk filesystem) checks disk usage on a mounted filesystem, in 1 kB blocks. Unfortunately, the command includes some *tmpfs* (temporary file system) and one *devtmpfs* for device files (the interfaces between actual physical devices and the user). Both are virtual filesystems created to store files in volatile (RAM) memory… Option `-x` (`--exclude-type`) omits those entries and option `--total` conveniently adds the columns for us. Giga-sized blocks (option `-BG`) are too coarse for an accurate measurement and some arithmetic calculations must follow.
 - Manual: `man 1 df`.
 
-`CPU usage`: `vmstat 1 2` (virtual memory statistics) reports CPU activity in near-real time. The first argument is the *delay* between updates in seconds, while the second prescribes *count* determinations. The first report produced gives averages since the last reboot, and so we keep the second (last) row. We are interested in column `id` (*idle*, 15th), the complement of the utilization rate.
+`CPU usage`: `vmstat 1 2` (virtual memory statistics) reports CPU activity in near-real time. The first argument is the *delay* between updates in seconds, while the second prescribes *count* determinations. The first report produced gives averages since the last reboot, not what we are after, and so we turn our attention to the second (last) row. We are interested in column `id` (*idle*, 15th), the complement of the utilization rate.
 - On the other hand, CPU *load* is defined as the number of processes using or waiting to use one core at a single point in time. It can be determined with command `uptime`.
 - Manual: `man 8 vmstat`.
 
@@ -602,7 +609,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 `LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands `df`, `mount`, and `blkid`. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of by name, it is also possible to limit the search by device type, *lvm*. In this case, consider command `lsblk`.
 - Manuals: `man 1 df`, `man 8 mount`, `man 8 blkid`, `man 8 lsblk`.
 
-`Active Internet (TCP and UDP) connections`: `ss -Htu -o state connected`. Command `netsat` has been superseded by `ss` (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*.
+`Active Internet (TCP and UDP) connections`: `ss -Htu -o state connected`. Command `netsat` has been superseded by `ss` (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*. Option `-H` (`--no-header`) simplifies the tally by suppressing the header.
 - Option `-a` (or `--all`) displays all *established* connections for TCP, but many unwelcomed results for UDP.
 - Manual: `man 8 ss`.
 
@@ -677,7 +684,9 @@ Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Pe
 > sha1sum Born2beroot_Debian12.1.0.vdi` > signature.txt (§)
 
 The output's format will resemble
-> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi
+
+		XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi (§)
+
 - An alternative to the `sha1sum` command is the `shasum` Perl script, which falls back to SHA-1 as its default algorithm.
 - Check manuals `man 1 sha1sum` and `man 1 shasum`.
 
