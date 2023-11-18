@@ -62,4 +62,4 @@ wall "	Architecture: $arch
 	Active Internet (TCP and UDP) connections: $acon
 	Logged users: $logu
 	Network: IPv4 $ipv4 MAC $maca
-	Session's executed sudo commands: $sudo"
+	Executed sudo commands: $sudo"
