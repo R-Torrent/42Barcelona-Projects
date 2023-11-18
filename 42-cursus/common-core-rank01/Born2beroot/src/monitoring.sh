@@ -26,7 +26,7 @@ dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)
 dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
 
 # CPU utilization rate (%)
-cpup=$((100-$(vmstat 1 2|tail -1|awk '{print $15}')))
+cpup=$((100-$(vmstat 1 2 | tail -1 | awk '{print $15}')))
 
 # Last reboot (yyyy-mm-dd HH:MM:SS)
 lrbt=$(uptime -s)
@@ -44,9 +44,9 @@ acon=$(ss -Htu -o state connected | wc -l)
 logu=$(who | wc -l)
 
 # IPv4 and MAC addresses
-ipv4=$(ip route | head -1 | awk '{print $(NF-2)}')
-rowN=$(($(ip address | grep -n $ipv4 | cut -d : -f 1)-1))
-maca=$(ip address | sed "${rowN}q;d" | awk '{print $2'})
+defd=$(ip route | grep default | awk '{print $NF}')
+ipv4=$(ip address show $defd | grep -Eo 'inet ([0-9]*\.){3}[0-9]*' | awk '{print $2}')
+maca=$(ip link show $defd | grep link | awk '{print $2}')
 
 # sudo usage
 sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
