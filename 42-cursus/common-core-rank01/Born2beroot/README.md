@@ -329,8 +329,8 @@ A SSH server should be present in the machine from the software selection phase 
 
 Next, configure the daemon to suit the document's specifications. Open the main configuration file `/etc/ssh/sshd_config` with your preferred text editor, **vi** in my case:
 > vi /etc/ssh/sshd_config (†)
-- Observe that there is also a `ssh_config` file, a `ssh_config.d` folder, and a `sshd_config.d` folder in `/etc/ssh/`. Check your spelling!
-- The config file basically consists of an `Include` directive to call further config files stored in the `sshd_config.d` folder, and a list of *commented out* settings (starting with the `#` character). These are the default settings the server runs on.
+- Observe that there is also a **ssh_config** file, a **ssh_config.d** folder, and a **sshd_config.d** folder in `/etc/ssh/`. Check your spelling!
+- The config file basically consists of an `Include` directive to call further config files stored in the **sshd_config.d** folder, and a list of *commented out* settings (starting with the `#` character). These are the default settings the server runs on.
 
 Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** listens on:
 
@@ -339,7 +339,6 @@ Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** li
 Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root":
 
 		PermitRootLogin no
-
 - Open the **man** page for further details, `man 5 sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
 
 Restart the service to force the changes:
@@ -379,12 +378,12 @@ Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `
 		PASS_MIN_DAYS   2
 		PASS_WARN_AGE   7
 - In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
-- This file is accessed by commands such as `useradd` and `groupadd`.
+- This file is accessed by commands such as **useradd** and **groupadd**.
 - Open the **man** page for further details, `man 5 login.defs`.
 
-Some of the options in `login.defs` are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
+Some of the options in **login.defs** are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
 > apt -y install libpam-pwquality
-- `-y` option spares us the confirmation request after the `apt` command.
+- `-y` option spares us the confirmation request after the **apt** command.
 - You may check if the package is installed with `dpkg -s libpam-pwquality`.
 
 Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
@@ -415,18 +414,16 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
 - For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
 
-Type `reboot` to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
+Type **reboot** to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
 - Notice that the `root` user does not have to present the current password before typing a new one, neither for itself nor other users. Therefore, the minimum 7-character difference with the old password rule is not applicable to `root`, in accordance with the project document!
 
 #### A.3.e sudo installation & configuration
 
-**sudo** (superuser do) will allow any user to adopt omnipotent `root` abilities. Therefore, it must be be properly configured. Start by installing the `sudo` package:
+**sudo** (superuser do) will allow any user to adopt omnipotent `root` abilities. Therefore, it must be be properly configured. Start by installing the **sudo** package:
 > apt -y install sudo
 -  You may print the **sudo** version string (and any configured plugin) with `sudo -V | more`.
 
-One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try `visudo` in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead. Let's do that, calling the new config `Born2beroot` (§):
-> vi /etc/sudoers.d/Born2beroot (§)(†)
-- Any filename not ending with tilde `~` or containing a dot `.` will do.
+One could add to the main configuration file, `/etc/sudoers`, directly. But in it—try **visudo** in the command line interface—one reads that new content should be incorporated through the `/etc/sudoers.d` folder instead.
 
 **sudoers** mostly contains *users specifications* following the syntax `User Host = (Runas) Command`. This reads as *User may run Command as the Runas user on Host*.
 
@@ -438,7 +435,7 @@ Any or all of the above may be the special keyword `ALL`, valid for everyone, ev
 - The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**. In its absence, the assumed identity will be *superuser*, i.e. `root`.
 - It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (paying special attention to the **Runas_Spec** section).
 
-The project does not instruct us to tamper with the **sudo** specifications. If fact, the two active in `/etc/sudoers` remain
+The project does not instruct us to tamper with the **sudo** specifications. If fact, the two active lines in **sudoers** remain
 
 		# User privilege specification
 		root	ALL=(ALL:ALL) ALL
@@ -446,7 +443,9 @@ The project does not instruct us to tamper with the **sudo** specifications. If 
 		# Allow members of group sudo to execute any command
 		%sudo	ALL=(ALL:ALL) ALL
 
-But we are instructed to tweak its configuration. Type the following lines into the new config file—`Born2beroot` (§)—:
+But we are instructed to tweak its configuration with additional **sudo** parameters. Let's do that, calling the new config **Born2beroot** (§):
+- Any filename not ending with tilde `~` or containing a dot `.` will do.
+> vi /etc/sudoers.d/Born2beroot (§)(†)
 
 		Defaults	badpass_message="Prueba otra vez, bobo" (§)
 		Defaults	log_input, log_output
@@ -455,15 +454,17 @@ But we are instructed to tweak its configuration. Type the following lines into 
 		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
 		Defaults	requiretty
 		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
-- Technically, we could list all the specs of this file into one single command, separated with commas.
+- Technically, we could list all the paramenters of this file into a single line, separated with commas.
+- For more details on the *Default_Entry* lines, search in the manual for the **Sudoers Options** section.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
 `log_input, log_output`: every input and output action has to be archived. Rather unfriendly JSON and ...<br>
+- Output logs may be viewed with the **sudoreplay** utility, which can also be used to list or search the available logs. Check `man 8 sudoreplay`.
+
 `iolog_dir`: folder where the logs will be stored, as instructed by the document.<br>
 `iolog_file`: path relative to `iolog_dir` where input and output streams will be recorded.<br>
 `logfile`: human-readable log file.<br>
-`requiretty`: will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly prepare).<br>
+`requiretty`: will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly see).<br>
 `secure_path`: **sudo** will use this value in place of the user's PATH environment variable.
 - Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
@@ -477,9 +478,9 @@ Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 You can find all the groups in the database stored in the `/etc/group` file, including their GID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
 > awk -F : '{print $1}' /etc/group | sort | more
 
-To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple `exit` command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group. Recall from the previous section (**A.3.e sudo installation & configuration**) that only `root` and members of group `sudo` have permission to run **sudo**.
+To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple **exit** command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group. Recall from the previous section (**A.3.e sudo installation & configuration**) that only `root` and members of group `sudo` have permission to run **sudo**.
 
-Back as `root`, create the new `user42` group the document asks for AND include the ordinary-login user to it:
+Back as `root`, create the new `user42` group the document asks for and include the ordinary-login user to it:
 > groupadd -U rtorrent user42 (§)
 
 Now add the same user to the `sudo` group with one of the following commands,
@@ -489,12 +490,12 @@ or alternatively,
 > usermod -aG sudo rtorrent (§)
 
 Both edit the user's details and the group's membership.<br>
-[**NOTE**:  The `-a` option (*append*) is crucial. Without it, the command will completely replace the user/group lists. This is not important with the `groupmod` command **in this case**—because we start with an empty group—, but it would be dramatic in the case of `usermod` to expel the user from all groups, including their own primary group, just to get them into `sudo`!]
+[**NOTE**:  The `-a` option (*append*) is crucial. Without it, the command will completely replace the user/group lists. This is not important with the **groupmod** command *in this case*—because we start with an empty group—, but it would be dramatic in the case of **usermod** to expel the user from all groups, including their own primary group, just to get them into `sudo`!]
 - Open the **man** pages for further details: `man 8 groupadd`, `man 8 groupmod`, and `man 8 usermod`.
 
 Double-check everything went right with `id rtorrent -Gn` (§). If you switch users again, **sudo** should now work with the login user.
 
-There is an alternative solution to the commands used in this section: `addgroup` and `adduser`. These are actually *interactive* Perl scripts working with the original bin commands. You may locate them with `which addgroup` and `which adduser`, and find more information in the **man** page, common for both, `man 8 adduser`.
+There is an alternative solution to the commands used in this section: **addgroup** and **adduser**. These are actually *interactive* Perl scripts working with the original bin commands. You may locate them with `which addgroup` and `which adduser`, and find more information in the **man** page, common for both, `man 8 adduser`.
 
 #### A.3.g Simple script
 
@@ -580,7 +581,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 - A simpler command `uname -a` (or `uname --all`) prints *all* system information, including the unsolicited network node hostname—`rtorrent42` (§)—.
 - Manual: `man 1 uname`.
 
-`Physical processor(s)`: `lscpu` displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`. Line `CPU(s)` actually displays the number of *logical* cores, that is, the physical number just calculated multiplied by the *hyper-threads* in each core, `Thread(s) per core`.
+`Physical processor(s)`: **lscpu** displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`. Line `CPU(s)` actually displays the number of *logical* cores, that is, the physical number just calculated multiplied by the *hyper-threads* in each core, `Thread(s) per core`.
 - An alternative (and convoluted) route is to read the contents of the `/proc/cpuinfo` text file. A plethora of data is printed for the *logical* CPUs, each with a unique processor number:<br>
 `processor`: identifies the logical processor.<br>
 `physical id`: identifies the socket.<br>
@@ -591,12 +592,12 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Manual: `man 1 lscpu`.
 
 `Virtual processor(s)`: `nproc --all` prints all installed processors.
-- The `nproc` command is often used in shell scripts to check the number of available threads.
+- The **nproc** command is often used in shell scripts to check the number of available threads.
 - Alternative solutions include `lscpu | awk -F : '/^CPU\(s\)/ {print $2}' | sed 's/ //g'` and `grep -c processor /proc/cpuinfo`.
 - Manual: `man 1 nproc`.
 
 `Available memory`: `free -m` (or `free --mebi`) uses data provided by file `/proc/meminfo`. Available memory (seventh column) is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total (second column) is below the theoretical installed (i.e., 2,048 MB in our machine) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
-- The default size in `free` and `/proc/meminfo` is 1 kB = 1,024 bytes, hence the option `-m` (1 MB = 1,024 kB).
+- The default size in **free** and `/proc/meminfo` is 1 kB = 1,024 bytes, hence the option `-m` (1 MB = 1,024 kB).
 - Bash operates with integers, not floating-point arithmetic. Notice the trick of multiplying by 100 and appending `e-2` in the `printf` command argument, for obtaining two decimal points.
 - Manuals: `man 1 free`, `man 1 printf`.
 
@@ -604,32 +605,32 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Manual: `man 1 df`.
 
 `CPU usage`: `vmstat 1 2` (virtual memory statistics) reports CPU activity in near-real time. The first argument is the *delay* between updates in seconds, while the second prescribes *count* determinations. The first report produced gives averages since the last reboot, not what we are after, and so we turn our attention to the second (last) row. We are interested in column `id` (*idle*, 15th), the complement of the utilization rate.
-- On the other hand, CPU *load* is defined as the number of processes using or waiting to use one core at a single point in time. It can be determined with command `uptime`.
+- On the other hand, CPU *load* is defined as the number of processes using or waiting to use one core at a single point in time. It can be determined with command **uptime**.
 - Manual: `man 8 vmstat`.
 
 `Last reboot`: `uptime -s` (or `uptime --since`).
 - Manual: `man 1 uptime`.
 
-`LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands `df`, `mount`, and `blkid`. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of by name, it is also possible to limit the search by device type, *lvm*. In this case, consider command `lsblk`.
+`LVM in use`? one needs to find a single mounted filesystem whose device name starts with `/dev/mapper/`. Available options are commands **df**, **mount**, and **blkid**. Alternatively, one can read the system configuration file `/etc/fstab`. Instead of by name, it is also possible to limit the search by device type, *lvm*. In this case, consider command **lsblk**.
 - Manuals: `man 1 df`, `man 8 mount`, `man 8 blkid`, `man 8 lsblk`.
 
-`Active Internet (TCP and UDP) connections`: `ss -Htu -o state connected`. Command `netsat` has been superseded by `ss` (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*. Option `-H` (`--no-header`) simplifies the tally by suppressing the header.
+`Active Internet (TCP and UDP) connections`: `ss -Htu -o state connected`. Command **netsat** has been superseded by **ss** (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*. Option `-H` (`--no-header`) simplifies the tally by suppressing the header.
 - Option `-a` (or `--all`) displays all *established* connections for TCP, but many unwelcomed results for UDP.
 - Manual: `man 8 ss`.
 
-`Logged users`: simple count of `who` results.
+`Logged users`: simple count of **who** results.
 - Equally valid is the `users | wc -w` combination.
 - Manuals: `man 1 who`, `man 1 users`.
 
-`Network`: classic command `ifconfig` has also been deprecated, use `ip` instead. The first step is to identify the *default* device in the routing table, `ip route`. With this id, finding the required addresses is but a simple scan for certain keywords among the protocol address management, `ip address`, and the network device configuration, `ip link`.
+`Network`: classic command **ifconfig** has also been deprecated, use **ip** instead. The first step is to identify the *default* device in the routing table, `ip route`. With this id, finding the required addresses is but a simple scan for certain keywords among the protocol address management, `ip address`, and the network device configuration, `ip link`.
 - The matching regular expression after the `ip address show` command is particular to the IPv4 protocol. We can forgo the `-4` option in `ip -4 address show`, short for `-family inet`.
 - Command `hostname -I` (or `hostname --all-ip-addresses`) is a bit unreliable. It will print *all* IP addresses in no particular order.
 - Manuals: `man 8 ip`, `man 8 ip-address`, `man 8 ip-route`, `man 8 ip-link`, `man 1 hostname`.
 
-`Executed sudo commands`: `journalctl _COMM=sudo`. You can monitor **sudo** activity through `journalctl`. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
+`Executed sudo commands`: `journalctl _COMM=sudo`. You can monitor **sudo** activity through **journalctl**. This is a system logging program that comes with every Linux distribution that uses **systemd**, a software suite that provides all manner of services and utilities.
 - Manuals: `man 1 journalctl`, `man 1 systemd`, `man 7 systemd.journal-fields` (for details regarding *trusted field* `_COMM`).
 
-Broadcasting the information: `wall` (write to all).
+Broadcasting the information: **wall** (write to all).
 - The project document leaves the inclusion of the banner as optional. It can be removed with `wall -n` (`--nobanner`).
 - Manual: `man 1 wall`.
 
@@ -649,9 +650,9 @@ The project document clearly states that "At server startup, the script will dis
 - Unfortunately, the daemon sets up a different PATH variable, `/usr/bin:/bin`, leaving our monitoring script out.
 - Much more information is to be found at `man 1 crontab` and `man 8 cron`.
 
-1.- A first solution is to set `roots`'s *crontab* file in the "user spool". Command `crontab` set to edit (`-e`) will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
+1.- A first solution is to set `roots`'s *crontab* file in the "user spool". Command **crontab** set to edit (`-e`) will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
 > crontab -e
-- Specify user `root` if, for any reason, you are not logged as such (`crontab -u root -e`).
+- Specify user `root` if, for any reason, you are not logged as such (`sudo crontab -u root -e`).
 
 and type at the bottom of the file that pops up
 
@@ -666,7 +667,7 @@ The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *
 
 and attaching a new instruction at the bottom of the file, after the example tests,
 
-		*/10 * * * *	root monitoring.sh
+		*/10 * * * *	root	monitoring.sh
 
 Notice that this solution includes a sixth field with the intended user's login. Interestingly, the eighth line of the file is a PATH redefinition that includes our script's location, much simplifying the command. 
 
@@ -687,19 +688,18 @@ Power off the machine, **never again** to restart it.
 The final stage of **Born2beroot** is to compute a checksum out of the machine's *VirtualBox Disk Image*, and *push* this result into the project repository for evaluation. We are instructed to use the SHA-1 algorithm and to leave the signature in a text file named `signature.txt`. (In a real world case, we would not employ SHA-1, cryptographically deprecated more than a decade ago, and the checksum file itself should also be signed for proof against tampering with some sort of public key.)
 
 Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§), and locate the image. It will be a chunky file ending with the `.vdi` extension, in my case `Born2beroot_Debian12.1.0.vdi` (§).
-> sha1sum Born2beroot_Debian12.1.0.vdi` > signature.txt (§)
+> shasum Born2beroot_Debian12.1.0.vdi` > signature.txt (§)
 
 The output's format will resemble
 
 		XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi (§)
+- Inside the VM, the preferred Debian command would have been **sha1sum**. **shasum** is acutally a Perl script, which falls back to SHA-1 as its default algorithm.
+- Check manuals `man 1 shasum` and `man 1 sha1sum` (the latter from within Debian).
 
-- An alternative to the `sha1sum` command is the `shasum` Perl script, which falls back to SHA-1 as its default algorithm.
-- Check manuals `man 1 sha1sum` and `man 1 shasum`.
+Verifying the integrity of the virtual machine—***do not*** power the machine as *any* change in its content, however slim, will alter any subsequent checksums from the evaluators—is as easy as running 
+> shasum -c signature.txt
 
-Verifying the integrity of the virtual machine—**do not** power the machine as *any* change in its content, however slim, will alter any subsequent checksums from the evaluators—is as easy as running 
-> sha1sum -c signature.txt
-
-Move `signature.txt` to the **empty** folder where **git** cloned the *intra*'s project, and finish the ordeal.
+Move `signature.txt` to the empty folder where **git** cloned the *intra*'s project, and finish this ordeal.
 
 Congratulations!
 
