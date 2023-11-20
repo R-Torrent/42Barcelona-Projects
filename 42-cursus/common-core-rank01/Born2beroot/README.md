@@ -7,7 +7,7 @@ Virtualization software: Oracle VM VirtualBox v7.0.8
 
 **NOTES**:
 - User login throughout this file is `rtorrent`.
-- Any other filename, password, or such marked with a (§) can and **should** be adapted to the user's personal preferences.
+- Any other filename, password, or such marked with a (§) can and ***should*** be adapted to the user's personal preferences.
 - A text file with user, root, and partition passwords should be kept at hand.
 - Popular text editors available with the bare Debian build are **vi** and **nano**. **Emacs** requires an installation (`apt install emacs`) first. Commands in this tutorial reliant on the choice of a text editor are marked with (†).
 
@@ -39,7 +39,7 @@ Open VirtualBox and select **`New`**.
 #### A.1.b Hardware
 
 > Base Memory: Leave as recommended, 2048 MB.<br>
-> Processors: In my experience, OS installation at 42's facilities **will crash** with more than `1` CPU selected. We *may* choose to increase the number after the installation is complete.
+> Processors: In my experience, OS installation at 42's facilities ***will crash*** with more than `1` CPU selected. We *may* choose to increase the number after the installation is complete.
 
 #### A.1.c Hard Disk
 
@@ -83,7 +83,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 #### A.2.e Configure the network
 
 > Hostname: `rtorrent42` (§)
-- As per instructions, hostname **must** be the user's 42 login ending with 42.
+- As per instructions, hostname ***must*** be the user's 42 login ending with 42.
 > Domain name: ` ` \<leave empty\>
 
 #### A.2.f Set up users and passwords
@@ -95,7 +95,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 - Checking the `Show Password in Clear` option is very helpful. Use the space bar to mark particular options while using the install interface.
 > Full name for the new user: `Roger Torrent` (§)<br>
 > Username for your account: `rtorrent` (§)
-- As per instructions, an account with the user's 42 login **must** be present.
+- As per instructions, an account with the user's 42 login ***must*** be present.
 > Choose a password for the new user: `Born2becute` (§)<br>
 > Re-enter password to verify: `Born2becute` (§)
 - Again, comply with the password policy.
@@ -317,7 +317,7 @@ Expand to the `Advanced` options and press the **`Port Forwarding`** button.
 Add a new rule (green button in the top right corner):
 > `Name     Protocol    Host Port   Guest Port`<br>
 > `Rule 1   TCP         1717        4242      ` (§)
-- *Host port* may be any port of our liking, `1717` (§) in this case, but it **must** be rerouted to *guest port* `4242` in our virtual machine.
+- *Host port* may be any port of our liking, `1717` (§) in this case, but it ***must*** be rerouted to *guest port* `4242` in our virtual machine.
 
 Turn the machine on and login as `root` user to continue with the project:
 > rtorrent42 login: `root` (§)<br>
@@ -334,11 +334,11 @@ Next, configure the daemon to suit the document's specifications. Open the main 
 
 Uncomment `Port` selection in line 14, modifying the default port 22 **sshd** listens on:
 
-		Port 4242
+	Port 4242
 
 Uncomment `PermitRootLogin` selection in line 33 as, per instructions, "it must not be possible to connect using SSH as root":
 
-		PermitRootLogin no
+	PermitRootLogin no
 - Open the **man** page for further details, `man 5 sshd_config`. Again, the manual should be present in the system from the software selection phase. Should the package be missing, you may install it with `apt install man-db`. Confirm with `y`.
 
 Restart the service to force the changes:
@@ -367,16 +367,16 @@ Find definition `PASS_MAX_DAYS` and edit from `99999` to the mandated `30`.<br>
 Find definition `PASS_MIN_DAYS` and edit from `0` to `2`.<br>
 Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `7` by default.
 
-		#
-		# Password aging controls:
-		#
-		#       PASS_MAX_DAYS   Maximum number of days a password may be used.
-		#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.
-		#       PASS_WARN_AGE   Number of days warning given before a password expires.
-		#
-		PASS_MAX_DAYS   30
-		PASS_MIN_DAYS   2
-		PASS_WARN_AGE   7
+	#
+	# Password aging controls:
+	#
+	#       PASS_MAX_DAYS   Maximum number of days a password may be used.
+	#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.
+	#       PASS_WARN_AGE   Number of days warning given before a password expires.
+	#
+	PASS_MAX_DAYS   30
+	PASS_MIN_DAYS   2
+	PASS_WARN_AGE   7
 - In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
 - This file is accessed by commands such as **useradd** and **groupadd**.
 - Open the **man** page for further details, `man 5 login.defs`.
@@ -391,14 +391,14 @@ Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
 
 Locate line 25:
 
-		password   requisite   pam_pwquality.so   retry=3
+	password   requisite   pam_pwquality.so   retry=3
 
 Column 1, `password`, is the management group for the service, *Password group* in our case. Other groups we may find are *Auth*, *Account*, and *Session groups*.<br>
 Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. Should the requisite not be found or fails to load, it will stop loading other modules and return failure.<br>
 Column 3, `pam_pwquality.so`, is the *Module* (.so file) used.<br>
 Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:
 
-		password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
+	password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
 - All parameters should go in the same *line*, that is, before a newline character.
 
 `minlen=10`: minimum acceptable size.<br>
@@ -437,28 +437,28 @@ Any or all of the above may be the special keyword `ALL`, valid for everyone, ev
 
 The project does not instruct us to tamper with the **sudo** specifications. If fact, the two active lines in **sudoers** remain
 
-		# User privilege specification
-		root	ALL=(ALL:ALL) ALL
+	# User privilege specification
+	root	ALL=(ALL:ALL) ALL
 
-		# Allow members of group sudo to execute any command
-		%sudo	ALL=(ALL:ALL) ALL
+	# Allow members of group sudo to execute any command
+	%sudo	ALL=(ALL:ALL) ALL
 
 But we are instructed to tweak its configuration with additional **sudo** parameters. Let's do that, calling the new config **Born2beroot** (§):
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 > vi /etc/sudoers.d/Born2beroot (§)(†)
 
-		Defaults	badpass_message="Prueba otra vez, bobo" (§)
-		Defaults	log_input, log_output
-		Defaults	iolog_dir="/var/log/sudo/"
-		Defaults	iolog_file="logs" (§)
-		Defaults	logfile="/var/log/sudo/sudo.logs" (§)
-		Defaults	requiretty
-		Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+	Defaults	badpass_message="Prueba otra vez, bobo" (§)
+	Defaults	log_input, log_output
+	Defaults	iolog_dir="/var/log/sudo/"
+	Defaults	iolog_file="logs" (§)
+	Defaults	logfile="/var/log/sudo/sudo.logs" (§)
+	Defaults	requiretty
+	Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 - Technically, we could list all the paramenters of this file into a single line, separated with commas.
 - For more details on the *Default_Entry* lines, search in the manual for the **Sudoers Options** section.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
-`log_input, log_output`: every input and output action has to be archived. Rather unfriendly JSON and ...<br>
+`log_input, log_output`: every input and output action has to be archived.
 - Output logs may be viewed with the **sudoreplay** utility, which can also be used to list or search the available logs. Check `man 8 sudoreplay`.
 
 `iolog_dir`: folder where the logs will be stored, as instructed by the document.<br>
@@ -507,72 +507,72 @@ Using *everyone's* favorite text editor,
 
 type the following Bash commands (or *copy and paste* the code you will find in the `/src` folder of this repository):
 
-		#!/bin/bash
+	#!/bin/bash
 
-		Architecture of OS & kernel version
-		arch=$(uname -srvmo)
+	Architecture of OS & kernel version
+	arch=$(uname -srvmo)
 
-		# Physical processors<br>
-		pcpu=$(lscpu | awk -F : '
-			/^Core\(s\) per socket/ {mult=$2}
-			/^Socket\(s\)/ {mult*=$2}
-			END {print mult}')
+	# Physical processors<br>
+	pcpu=$(lscpu | awk -F : '
+		/^Core\(s\) per socket/ {mult=$2}
+		/^Socket\(s\)/ {mult*=$2}
+		END {print mult}')
 
-		# Virtual processors
-		vcpu=$(nproc --all)
+	# Virtual processors
+	vcpu=$(nproc --all)
 
-		# RAM available/total MB (%)
-		rama=$(free -m | awk '/^Mem:/ {print $7}')
-		ramt=$(free -m | awk '/^Mem:/ {print $2}')
-		ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)
+	# RAM available/total MB (%)
+	rama=$(free -m | awk '/^Mem:/ {print $7}')
+	ramt=$(free -m | awk '/^Mem:/ {print $2}')
+	ramp=$(printf '%.2f' $((10000*rama/ramt))e-2)
 
-		# Disk available/total GB (%)
-		temp=$(df -x tmpfs -x devtmpfs --total | grep ^total)
-		tmpa=$(echo $temp | awk '{print $4}')
-		tmpt=$(echo $temp | awk '{print $2}')
-		dska=$(printf '%.2f' $((100*tmpa/1024/1024))e-2)
-		dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)
-		dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
+	# Disk available/total GB (%)
+	temp=$(df -x tmpfs -x devtmpfs --total | grep ^total)
+	tmpa=$(echo $temp | awk '{print $4}')
+	tmpt=$(echo $temp | awk '{print $2}')
+	dska=$(printf '%.2f' $((100*tmpa/1024/1024))e-2)
+	dskt=$(printf '%.2f' $((100*tmpt/1024/1024))e-2)
+	dskp=$(printf '%.2f' $((10000*tmpa/tmpt))e-2)
 
-		# CPU utilization rate (%)
-		cpup=$((100-$(vmstat 1 2 | tail -1 | awk '{print $15}')))
+	# CPU utilization rate (%)
+	cpup=$((100-$(vmstat 1 2 | tail -1 | awk '{print $15}')))
 
-		# Last reboot (yyyy-mm-dd HH:MM:SS)
-		lrbt=$(uptime -s)
+	# Last reboot (yyyy-mm-dd HH:MM:SS)
+	lrbt=$(uptime -s)
 
-		# LVM in use
-		lvmu=$(if grep -q '/dev/mapper/' /etc/fstab
-			then echo yes
-			else echo no
-			fi)
+	# LVM in use
+	lvmu=$(if grep -q '/dev/mapper/' /etc/fstab
+		then echo yes
+		else echo no
+		fi)
 
-		# Active TCP and UDP connections
-		acon=$(ss -Htu -o state connected | wc -l)
+	# Active TCP and UDP connections
+	acon=$(ss -Htu -o state connected | wc -l)
 
-		# Logged users
-		logu=$(who | wc -l)
+	# Logged users
+	logu=$(who | wc -l)
 
-		# IPv4 and MAC addresses
+	# IPv4 and MAC addresses
 
-		defd=$(ip route | grep default | awk '{print $NF}')
-		ipv4=$(ip address show $defd | grep -Eo 'inet ([0-9]*\.){3}[0-9]*' | awk '{print $2}')
-		maca=$(ip link show $defd | grep link | awk '{print $2}')
+	defd=$(ip route | grep default | awk '{print $NF}')
+	ipv4=$(ip address show $defd | grep -Eo 'inet ([0-9]*\.){3}[0-9]*' | awk '{print $2}')
+	maca=$(ip link show $defd | grep link | awk '{print $2}')
 
-		# sudo usage
-		sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
+	# sudo usage
+	sudo=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
 
-		wall "	Architecture: $arch
-			Physical processor(s): $pcpu
-			Virtual processor(s): $vcpu
-			Available memory: $rama/$ramt MB ($ramp%)
-			Available disk space: $dska/$dskt GB ($dskp%)
-			CPU usage: $cpup%
-			Last reboot: $lrbt
-			LVM in use? $lvmu
-			Active Internet (TCP and UDP) connections: $acon
-			Logged users: $logu
-			Network: IPv4 $ipv4 MAC $maca
-			Executed sudo commands: $sudo"
+	wall "	Architecture: $arch
+		Physical processor(s): $pcpu
+		Virtual processor(s): $vcpu
+		Available memory: $rama/$ramt MB ($ramp%)
+		Available disk space: $dska/$dskt GB ($dskp%)
+		CPU usage: $cpup%
+		Last reboot: $lrbt
+		LVM in use? $lvmu
+		Active Internet (TCP and UDP) connections: $acon
+		Logged users: $logu
+		Network: IPv4 $ipv4 MAC $maca
+		Executed sudo commands: $sudo"
 
 Finally, change the permissions on the script so everybody can actually execute it:
 > chmod +x /usr/local/sbin/monitoring.sh
@@ -640,7 +640,42 @@ Broadcasting the information: **wall** (write to all).
 
 #### A.3.h Timer scheduling
 
-- As such, authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
+Another handy utility in the **systemd** service manager is the ability to establish timers. **Systemd** operates through a system of *units*, wherein information on the processes to run is stored. With the task at hand, two such *units* are required: *Timer units* contain a special `[Timer]` section which defines when and how the timer activates. These specialized *units* end with filename extension `.timer`. *Service units* execute the processes provided in a `[Service]` section—**monitoring.sh** script for us—. Their filename extension is `.service`. Programming *units* is a field of it own, and the interested person may find `man 1 systemd`, `man 5 systemd.unit`, `man 5 systemd.timer`, and `man 7 systemd.time` useful.
+
+I've opted to call both units **monitoring** (§), for obvious reasons.
+
+> vi /etc/systemd/system/monitoring.timer (§)(†)
+
+	[Unit]
+	Description='monitoring' broadcast service timer
+
+	[Timer]
+	OnBoot
+	Unit=monitoring.service
+
+	[Install]
+	WantedBy=multi-user.target
+
+> vi /etc/systemd/system/monitoring.service (§)(†)
+
+	[Unit]
+	Description=Run the 'monitoring' broadcast script
+
+	[Service]
+	ExecStart=monitoring.sh
+
+All that is left is to inform **systemd** about the new units with
+> systemctl daemon-reload
+
+start the timer
+> systemctl start monitoring.timer (§)
+
+and keep it around after a reboot
+> systemctl enable monitoring.timer (§)
+- Check on the timer with `systemctl status monitoring.timer` (§).
+- As with any other **systemd** unit, you may check the journal: `journalctl -fu monitoring.service` (§).
+- Run `systemctl list-timers` to output a list of the active *timer units* in the system.
+- Authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
 
 ##### A.3.h.1 Cron scheduling [ *Not recommended!* ]
 
@@ -656,7 +691,7 @@ The project document clearly states that "At server startup, the script will dis
 
 and type at the bottom of the file that pops up
 
-		*/10 * * * *	/usr/local/sbin/monitoring.sh
+	*/10 * * * *	/usr/local/sbin/monitoring.sh
 
 The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *day of week*. Whenever the clock agrees with these, the trailing command will be executed. An asterisk stands for the range *first-last*, i.e., all. The first field includes `/10`, meaning *skip 10* over the range.
 - One can check the contents of *crontab* files in the "user spool area" with option `-l`: `crontab -l` for the current login, `crontab -l -u rtorrent` (§) for our hero.
@@ -667,9 +702,9 @@ The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *
 
 and attaching a new instruction at the bottom of the file, after the example tests,
 
-		*/10 * * * *	root	monitoring.sh
+	*/10 * * * *	root	monitoring.sh
 
-Notice that this solution includes a sixth field with the intended user's login. Interestingly, the eighth line of the file is a PATH redefinition that includes our script's location, much simplifying the command. 
+Notice that this solution includes a sixth field with the intended user's login. Interestingly, the eighth line of the file is a PATH redefinition that includes our script's location, much simplifying the command.
 
 Additionally, **cron** checks each minute to see if its spool directory's modification time (or the modification time on `/etc/crontab`) has changed, and if it has, **cron** will then examine the modification time on all *crontabs* and reload those which have changed. Thus, **cron** need not be restarted whenever a *crontab* file is modified.
 
@@ -683,23 +718,23 @@ Our virtual machine would be quite useless without a purpose. So let's make it f
 
 ### A.5 The final signature
 
-Power off the machine, **never again** to restart it.
+Power off the machine, ***never again*** to restart it.
 
-The final stage of **Born2beroot** is to compute a checksum out of the machine's *VirtualBox Disk Image*, and *push* this result into the project repository for evaluation. We are instructed to use the SHA-1 algorithm and to leave the signature in a text file named `signature.txt`. (In a real world case, we would not employ SHA-1, cryptographically deprecated more than a decade ago, and the checksum file itself should also be signed for proof against tampering with some sort of public key.)
+The final stage of **Born2beroot** is to compute a checksum out of the machine's *VirtualBox Disk Image*, and *push* this result into the project repository for evaluation. We are instructed to use the SHA-1 algorithm and to leave the signature in a text file named **signature.txt**. (In a real world case, we would not employ SHA-1, cryptographically deprecated more than a decade ago, and the checksum file itself should also be signed for proof against tampering with some sort of public key.)
 
-Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§), and locate the image. It will be a chunky file ending with the `.vdi` extension, in my case `Born2beroot_Debian12.1.0.vdi` (§).
+Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§), and locate the image. It will be a chunky file ending with the `.vdi` extension, in my case **Born2beroot_Debian12.1.0.vdi** (§).
 > shasum Born2beroot_Debian12.1.0.vdi` > signature.txt (§)
 
 The output's format will resemble
 
-		XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi (§)
+	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi (§)
 - Inside the VM, the preferred Debian command would have been **sha1sum**. **shasum** is acutally a Perl script, which falls back to SHA-1 as its default algorithm.
 - Check manuals `man 1 shasum` and `man 1 sha1sum` (the latter from within Debian).
 
-Verifying the integrity of the virtual machine—***do not*** power the machine as *any* change in its content, however slim, will alter any subsequent checksums from the evaluators—is as easy as running 
+Verifying the integrity of the virtual machine—***do not*** power the machine as *any* change in its content, however slim, will alter any subsequent checksums from the evaluators—is as easy as running
 > shasum -c signature.txt
 
-Move `signature.txt` to the empty folder where **git** cloned the *intra*'s project, and finish this ordeal.
+Move **signature.txt** to the empty folder where **git** cloned the *intra*'s project, and finish this ordeal.
 
 Congratulations!
 
