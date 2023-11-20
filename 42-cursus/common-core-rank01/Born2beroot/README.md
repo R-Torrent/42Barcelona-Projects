@@ -32,7 +32,7 @@ Open VirtualBox and select **`New`**.
 > Folder: `cd /System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§)
 - Actual location of the `SGoinfre` folder in the 42 system might vary. A symbolic link in the root directory, `/sgoinfre`, is probably present.
 - User's folder in the public directory may be further protected: `chmod go-rwx rtorrent` (§). Check the local rules governing `SGoinfre` in the `F.A.Q.` link of the *intra*.
-> ISO Image: Probably located in the `Downloads` folder.
+> ISO Image: Probably located in the student's `Downloads` folder.
 - Further boxes will autofill.
 > `Skip Unattended Installation` **✓** this box
 
@@ -640,23 +640,35 @@ Broadcasting the information: **wall** (write to all).
 
 #### A.3.h Timer scheduling
 
-Another handy utility in the **systemd** service manager is the ability to establish timers. **Systemd** operates through a system of *units*, wherein information on the processes to run is stored. With the task at hand, two such *units* are required: *Timer units* contain a special `[Timer]` section which defines when and how the timer activates. These specialized *units* end with filename extension `.timer`. *Service units* execute the processes provided in a `[Service]` section—**monitoring.sh** script for us—. Their filename extension is `.service`. Programming *units* is a field of it own, and the interested person may find `man 1 systemd`, `man 5 systemd.unit`, `man 5 systemd.timer`, and `man 7 systemd.time` useful.
+Another handy utility in the **systemd** service manager is the ability to establish timers. **systemd** operates through a system of *units*, wherein information on the processes to run is stored. With the task at hand, two such *units* are required: *Timer units* contain a special `[Timer]` section which defines when and how the timer activates. These specialized *units* end with filename extension `.timer`. *Service units* execute the processes provided in a `[Service]` section—**monitoring.sh** script for us—. Their filename extension is `.service`. Programming *units* is a field of it own, and the interested person may find `man 1 systemd`, `man 1 systemctl`, and `man 5 systemd.unit` useful.
 
-I've opted to call both units **monitoring** (§), for obvious reasons.
+It is recommended that the *unit* name that is activated and the *unit* name of the timer be named identically, except for the suffix. I've opted to call both *units* **monitoring** (§), for obvious reasons.
 
-> vi /etc/systemd/system/monitoring.timer (§)(†)
+> systemctl edit --force --full monitoring.timer (§)
 
 	[Unit]
 	Description='monitoring' broadcast service timer
 
 	[Timer]
-	OnBoot
-	Unit=monitoring.service
+	OnBootSec=10min
+	OnUnitActive=10min
+	AccuracySec=1msec
 
 	[Install]
-	WantedBy=multi-user.target
+	WantedBy=timers.target
 
-> vi /etc/systemd/system/monitoring.service (§)(†)
+- [Unit] section option:<br>
+`Description`: A human readable name for the *unit*. This is used by **systemd** (and other UIs) as the label for the *unit*, so this string should identify rather than describe it.
+- [Timer] section options:<br>
+`OnBootSec`: defines a timer relative to when the machine was booted up.<br>
+`OnUnitActiveSec`: defines a timer relative to when the *unit* the timer is activating was last activated.<br>
+`AccuracySec`: specifies the accuracy the timer shall elapse with, that is, a time window starting with the time specified in `OnBootSec=` and `OnUnitActiveSec=` and ending the time configured with `AccuracySec=` later. Defaults to `1min`.<br>
+`Unit` <not included>: the unit to activate when this timer elapses. This value defaults to a service that has the same name as the *timer unit* (but with the `.service` suffix).
+- [Install] section option:<br>
+`timer.target`: A special *target unit* that sets up all *timer units* and activates after boot. See `man 5 systemd.target` for details on *target units*, `man 7 systemd.special` for information on this particular target, and `man 7 bootup` for a rather fetching chart displaying the order in which *units* are pulled during the system boot-up.
+- *Unit*-specific manuals: `man 5 systemd.timer` and `man 7 systemd.time`.
+
+> systemctl edit --force --full monitoring.service (§)
 
 	[Unit]
 	Description=Run the 'monitoring' broadcast script
@@ -664,22 +676,24 @@ I've opted to call both units **monitoring** (§), for obvious reasons.
 	[Service]
 	ExecStart=monitoring.sh
 
-All that is left is to inform **systemd** about the new units with
-> systemctl daemon-reload
+- [Service} section option:<br>
+`ExecStart`: commands that are executed when this service is started.
+- *Unit*-specific manual: `man 5 systemd.service`.
 
-start the timer
-> systemctl start monitoring.timer (§)
-
-and keep it around after a reboot
-> systemctl enable monitoring.timer (§)
+**systemctl** will inform **systemd** about the new units. All that is left for us is to start the timer (option `--now`), and keep it around after a reboot (command `enable`):
+> systemctl enable --now  monitoring.timer (§)
 - Check on the timer with `systemctl status monitoring.timer` (§).
-- As with any other **systemd** unit, you may check the journal: `journalctl -fu monitoring.service` (§).
+- As with any other **systemd** unit, you may check the journal: `journalctl --follow --unit monitoring.service` (§).
 - Run `systemctl list-timers` to output a list of the active *timer units* in the system.
-- Authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
+- By default, **systemd** services are configured to run as `root` user. That being the case, authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
+- Should you prefer, you may incorporate the new *units* into **systemd** with a regular text editor and then reload the *whole* configuration (rerun all *generators*—executables of dynamic *units*—, reload all *unit* files, and recreate the entire dependency tree):<br>
+> vi /etc/systemd/system/monitoring.timer (§)(†)<br>
+> vi /etc/systemd/system/monitoring.service (§)(†)<br>
+> systemctl daemon-reload
 
 ##### A.3.h.1 Cron scheduling [ *Not recommended!* ]
 
-The project document clearly states that "At server startup, the script will display [...] every 10 minutes". However, one would not err by much if he or she might programa a periodic timer to execute at *fixed* minutes of the clock, in intervals of ten minutes. If one accepts this *sleight of hand*, **cron** offers an easier alternative to **systemd**'s **timer** service.
+The project document clearly states that "At server startup, the script will display [...] every 10 minutes". However, one would not err by much if he or she might programa a periodic timer to execute at *fixed* minutes of the clock, in intervals of ten minutes. If one accepts this *sleight of hand*, **cron** offers an easier alternative to **systemd**'s timer service.
 
 **cron** is a *daemon*—a program that runs in the background but remains inactive until invoked—that executes scheduled commands. **cron** loads special *crontab* files into memory. Every minute henceforth, **cron** wakes and will execute those files marked to run at that specific moment. User *crontab* files (named after accounts in `/etc/passwd`) are located in a "user spool area" (`/var/spool/cron/crontabs/`). There also exists a "system-wide spool" comprising file `/etc/crontab` and the contents of the `/etc/cron.d/` folder. There are some differences in the methods of user vs system-wide *crontab* files.
 - Unfortunately, the daemon sets up a different PATH variable, `/usr/bin:/bin`, leaving our monitoring script out.
@@ -694,7 +708,7 @@ and type at the bottom of the file that pops up
 	*/10 * * * *	/usr/local/sbin/monitoring.sh
 
 The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *day of week*. Whenever the clock agrees with these, the trailing command will be executed. An asterisk stands for the range *first-last*, i.e., all. The first field includes `/10`, meaning *skip 10* over the range.
-- One can check the contents of *crontab* files in the "user spool area" with option `-l`: `crontab -l` for the current login, `crontab -l -u rtorrent` (§) for our hero.
+- One can check the contents of *crontab* files in the "user spool area" with option `-l`: `crontab -l` for the current login, `crontab -u rtorrent -l` (§) for our hero.
 - *Crontab* syntax is best described in `man 5 crontab`.
 
 2.- A second **cron** solution involves manually editing the system-wide *crontab*:
@@ -712,11 +726,25 @@ Additionally, **cron** checks each minute to see if its spool directory's modifi
 
 ### A.4 Setting a WordPress website
 
-Our virtual machine would be quite useless without a purpose. So let's make it four times worthy with as many installed services.
+---
+
+### A.5 Furnishing the website with services
+
+Our virtual machine would be quite useless without a purpose. So let's make it four times worthy with as many installed services!
+
+#### A.5.a Lightppd
+
+#### A.5.b MariaDB
+
+#### A.5.c PHP
+
+#### A.5.d MongoDB (§)
+
+[**NOTE**: Replace this content with a fourth service of ***your*** choice!]
 
 ---
 
-### A.5 The final signature
+### A.6 The final signature
 
 Power off the machine, ***never again*** to restart it.
 
@@ -728,8 +756,8 @@ Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Pe
 The output's format will resemble
 
 	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi (§)
-- Inside the VM, the preferred Debian command would have been **sha1sum**. **shasum** is acutally a Perl script, which falls back to SHA-1 as its default algorithm.
-- Check manuals `man 1 shasum` and `man 1 sha1sum` (the latter from within Debian).
+- Inside the VM, the preferred Debian command would have been **sha1sum**. **shasum** is actually a Perl script, which falls back to SHA-1 as its default algorithm.
+- Check manuals `man 1 shasum` and `man 1 sha1sum` (the latter only from within Debian).
 
 Verifying the integrity of the virtual machine—***do not*** power the machine as *any* change in its content, however slim, will alter any subsequent checksums from the evaluators—is as easy as running
 > shasum -c signature.txt
