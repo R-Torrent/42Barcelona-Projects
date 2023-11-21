@@ -1,13 +1,13 @@
 # Born2beroot
 
-**Instructions for common-core-rank01/Born2beroot project, mandatory & *bonus* parts.**
+**Guide to solve common-core-rank01/Born2beroot (version 2) project, mandatory & *bonus* parts.**
 
 Operating system: Debian "Bookworm" v12.1.0<br>
 Virtualization software: Oracle VM VirtualBox v7.0.8
 
 **NOTES**:
 - User login throughout this file is `rtorrent`.
-- Any other filename, password, or such marked with a (§) can and ***should*** be adapted to the user's personal preferences.
+- Any login, filename, password, or such marked with a (§) can and ***should*** be adapted to the user's personal preferences.
 - A text file with user, root, and partition passwords should be kept at hand.
 - Popular text editors available with the bare Debian build are **vi** and **nano**. **Emacs** requires an installation (`apt install emacs`) first. Commands in this tutorial reliant on the choice of a text editor are marked with (†).
 
@@ -663,10 +663,10 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 `OnBootSec`: defines a timer relative to when the machine was booted up.<br>
 `OnUnitActiveSec`: defines a timer relative to when the *unit* the timer is activating was last activated.<br>
 `AccuracySec`: specifies the accuracy the timer shall elapse with, that is, a time window starting with the time specified in `OnBootSec=` and `OnUnitActiveSec=` and ending the time configured with `AccuracySec=` later. Defaults to `1min`.<br>
-`Unit` <not included>: the unit to activate when this timer elapses. This value defaults to a service that has the same name as the *timer unit* (but with the `.service` suffix).
+`Unit` \<not included\>: the unit to activate when this timer elapses. This value defaults to a service that has the same name as the *timer unit* (but with the `.service` suffix).
 - [Install] section option:<br>
 `timer.target`: A special *target unit* that sets up all *timer units* and activates after boot. See `man 5 systemd.target` for details on *target units*, `man 7 systemd.special` for information on this particular target, and `man 7 bootup` for a rather fetching chart displaying the order in which *units* are pulled during the system boot-up.
-- *Unit*-specific manuals: `man 5 systemd.timer` and `man 7 systemd.time`.
+- Timer-specific manuals: `man 5 systemd.timer` and `man 7 systemd.time`.
 
 > systemctl edit --force --full monitoring.service (§)
 
@@ -678,15 +678,15 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 
 - [Service} section option:<br>
 `ExecStart`: commands that are executed when this service is started.
-- *Unit*-specific manual: `man 5 systemd.service`.
+- Service-specific manual: `man 5 systemd.service`.
 
-**systemctl** will inform **systemd** about the new units. All that is left for us is to start the timer (option `--now`), and keep it around after a reboot (command `enable`):
+**systemctl** will inform **systemd** about the new *units*. All that is left for us is to start the timer (option `--now`), and keep it around after a reboot (command `enable`):
 > systemctl enable --now  monitoring.timer (§)
 - Check on the timer with `systemctl status monitoring.timer` (§).
-- As with any other **systemd** unit, you may check the journal: `journalctl --follow --unit monitoring.service` (§).
+- As with any other **systemd** *unit*, you may check the journal: `journalctl --follow --unit monitoring.service` (§).
 - Run `systemctl list-timers` to output a list of the active *timer units* in the system.
-- By default, **systemd** services are configured to run as `root` user. That being the case, authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
-- Should you prefer, you may incorporate the new *units* into **systemd** with a regular text editor and then reload the *whole* configuration (rerun all *generators*—executables of dynamic *units*—, reload all *unit* files, and recreate the entire dependency tree):<br>
+- By default, **systemd** services are configured to run as `root` user. That being the case, authorship of the broadcast will be superuser's and all other users logged to the server will not be able to block the (rather annoying) message popping every ten minutes using `mesg n`. More information on this command may be found at `man 1 mesg`.
+- Should you prefer, you may incorporate the new *units* into **systemd** with a regular text editor and then reload the ***whole*** configuration (rerun all *generators*—executables of dynamic *units*—, reload all *unit* files, and recreate the entire dependency tree):<br>
 > vi /etc/systemd/system/monitoring.timer (§)(†)<br>
 > vi /etc/systemd/system/monitoring.service (§)(†)<br>
 > systemctl daemon-reload
@@ -740,7 +740,7 @@ Our virtual machine would be quite useless without a purpose. So let's make it f
 
 #### A.5.d MongoDB (§)
 
-[**NOTE**: Replace this content with a fourth service of ***your*** choice!]
+[**NOTE**: Replace the content of this section with a fourth service of ***your*** choice!]
 
 ---
 
@@ -769,3 +769,41 @@ Congratulations!
 ---
 
 ## B. Preparing for the project defense
+
+### B.1 Introduction
+
+---
+
+### B.2 Guidelines
+
+---
+
+### B.3 Preliminaries
+
+---
+
+### B.4 General instructions
+
+---
+
+### B.5 Mandatory part
+
+#### B.5.a Project overview
+
+#### B.5.b Simple setup
+
+#### B.5.c User
+
+#### B.5.d Hostname and partitions
+
+#### B.5.e Sudo
+
+#### B.5.f UFW
+
+#### B.5.g SSH
+
+#### B.5.h Script monitoring
+
+---
+
+### B.6 Bonus
