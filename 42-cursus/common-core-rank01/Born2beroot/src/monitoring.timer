@@ -1,0 +1,10 @@
+[Unit]
+Description='monitoring' broadcast service timer
+
+[Timer]
+OnBootSec=10min
+OnUnitActive=10min
+AccuracySec=1msec
+
+[Install]
+WantedBy=timers.target

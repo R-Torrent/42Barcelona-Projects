@@ -1,0 +1,5 @@
+[Unit]
+Description=Run the 'monitoring' broadcast script
+
+[Service]
+ExecStart=monitoring.sh
