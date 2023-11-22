@@ -1,6 +1,6 @@
 # Born2beroot
 
-**Guide to solve common-core-rank01/Born2beroot (version 2) project, mandatory & *bonus* parts.**
+**Guide to solve common-core-rank01/Born2beroot (version 2) project, *mandatory* & *bonus* parts.**
 
 Operating system: Debian "Bookworm" v12.1.0<br>
 Virtualization software: Oracle VM VirtualBox v7.0.8
@@ -248,7 +248,7 @@ We now have to specify the use and mounting points for each of the volumes in th
 
 > `Finish partitioning and write changes to disk`
 
-![Partition disks overview](src/img1.png "Your screen should look similar to this!")
+![Partition disks overview](src/img00.png "Your screen should look similar to this!")
 
 > Write the changes to disks? `Yes`
 
@@ -312,7 +312,7 @@ But before continuing, power the machine off and enable the ports.
 Navigate to the `Network` menu, either by pressing the **`Settings`** button or the `Network` reticule of the machine's `Display` view.<br>
 Expand to the `Advanced` options and press the **`Port Forwarding`** button.
 
-![Port Forwarding](src/img2.png "Press the 'Port Forwarding' button")
+![Port Forwarding](src/img01.png "Press the 'Port Forwarding' button")
 
 Add a new rule (green button in the top right corner):
 > `Name     Protocol    Host Port   Guest Port`<br>
@@ -634,7 +634,7 @@ Broadcasting the information: **wall** (write to all).
 - The project document leaves the inclusion of the banner as optional. It can be removed with `wall -n` (`--nobanner`).
 - Manual: `man 1 wall`.
 
-![Script broadcast](src/img3.png "Behold the script in all its glory!")
+![Script broadcast](src/img02.png "Behold the script in all its glory!")
 
 [**NOTE**: For this screenshot, the number or processors dedicated to the VM was increased to two. Three concurrent users had logged, two via **ssh**.]
 
@@ -780,9 +780,13 @@ Congratulations!
 
 ### B.3 Preliminaries
 
+#### B.3.a Preliminary tests
+
 ---
 
 ### B.4 General instructions
+
+#### B.4.a General instructions
 
 ---
 
@@ -807,3 +811,5 @@ Congratulations!
 ---
 
 ### B.6 Bonus
+
+#### B.6.a Bonus
