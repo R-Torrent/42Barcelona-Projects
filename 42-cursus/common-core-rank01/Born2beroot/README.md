@@ -2,8 +2,8 @@
 
 **Guide to solve common-core-rank01/Born2beroot (version 2) project, *mandatory* & *bonus* parts.**
 
-Operating system: Debian "Bookworm" v12.1.0<br>
-Virtualization software: Oracle VM VirtualBox v7.0.8
+Operating system: **Debian "Bookworm" v12.1.0**<br>
+Virtualization software: **Oracle VM VirtualBox v7.0.8**
 
 **NOTES**:
 - User login throughout this file is `rtorrent`.
@@ -447,6 +447,8 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 > vi /etc/sudoers.d/Born2beroot (§)(†)
 
+[**TIP**: Copying these lines is burdensome and prone to errors. A better solution is to **SSH** yourself into the guest machine from the host—check how in **§ B.5.g SSH**—, **su** into `root`, and *copy-paste* the code from the GitHub repository or the `/src` folder into the newly created file.]
+
 	Defaults	badpass_message="Prueba otra vez, bobo" (§)
 	Defaults	log_input, log_output
 	Defaults	iolog_dir="/var/log/sudo/"
@@ -478,7 +480,7 @@ Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
 You can find all the groups in the database stored in the `/etc/group` file, including their GID numbers and members. If you are interested in printing their names only, consider using the following piped commands:
 > awk -F : '{print $1}' /etc/group | sort | more
 
-To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple **exit** command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group. Recall from the previous section (**A.3.e sudo installation & configuration**) that only `root` and members of group `sudo` have permission to run **sudo**.
+To figure out the groups the current user is a member of, type `id -Gn`. Now switch from the `root` user you are (probably) logged as, to your typical login account—`su rtorrent` (§)—, and try again. You may return to `root` with a simple **exit** command. But before you do, attempt to use **sudo** from the ordinary account: `sudo echo "hello, world"`. You should get an error message ("XXX is not in the sudoers file.") because user XXX is not a member of the `sudo` group. Recall from the previous section (**§ A.3.e sudo installation & configuration**) that only `root` and members of group `sudo` have permission to run **sudo**.
 
 Back as `root`, create the new `user42` group the document asks for and include the ordinary-login user to it:
 > groupadd -U rtorrent user42 (§)
@@ -505,7 +507,7 @@ The next task is to write a Bash script, **monitoring.sh**. We choose to place t
 Using *everyone's* favorite text editor,
 > vi /usr/local/sbin/monitoring.sh (†)
 
-type the following Bash commands (or *copy and paste* the code you will find in the `/src` folder of this repository):
+type the following Bash commands (or follow the TIP found in **§ A.3.e sudo installation & configuration**):
 
 	#!/bin/bash
 
@@ -751,11 +753,11 @@ Power off the machine, ***never again*** to restart it.
 The final stage of **Born2beroot** is to compute a checksum out of the machine's *VirtualBox Disk Image*, and *push* this result into the project repository for evaluation. We are instructed to use the SHA-1 algorithm and to leave the signature in a text file named **signature.txt**. (In a real world case, we would not employ SHA-1, cryptographically deprecated more than a decade ago, and the checksum file itself should also be signed for proof against tampering with some sort of public key.)
 
 Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Perso/rtorrent/` (§), and locate the image. It will be a chunky file ending with the `.vdi` extension, in my case **Born2beroot_Debian12.1.0.vdi** (§).
-> shasum Born2beroot_Debian12.1.0.vdi` > signature.txt (§)
+> shasum Born2beroot_Debian12.1.0.vdi > signature.txt (§)
 
 The output's format will resemble
 
-	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Born2beroot_Debian12.1.0.vdi (§)
+	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Born2beroot_Debian12.1.0.vdi (§)
 - Inside the VM, the preferred Debian command would have been **sha1sum**. **shasum** is actually a Perl script, which falls back to SHA-1 as its default algorithm.
 - Check manuals `man 1 shasum` and `man 1 sha1sum` (the latter only from within Debian).
 
@@ -788,11 +790,49 @@ Congratulations!
 
 #### B.4.a General instructions
 
+Navigate to the student's folder where the `.vdi` image resides (check **§ A.1.a Name and Operating System**), somewhere in the `SGoinfre` folder, and type
+> shasum -c [*path-to-cloned-git-project/*]signature.txt
+
+The answer should be a resounding `Born2beroot_Debian12.1.0.vdi: OK` (§).
+
+Comparing the SHA checksums with the **diff** command is also acceptable. Check that the **signature.txt** text file and the `shasum Born2beroot_Debian12.1.0.vdi` output are equally formatted before pronouncing a no-good result.
+
+**IMPORTANT: Clone the disk image with VirtualBox before proceeding *any* further.**
+
 ---
 
 ### B.5 Mandatory part
 
 #### B.5.a Project overview
+
+[Q] Explain simply how a virtual machine works.
+
+[A] A virtual machine packages an operating system and application with a description of the compute resources needed to run it, such as the CPU, memory, storage, and networking. When this virtual machine is deployed to a host computer, software called a *hypervisor* reads the description and provides the requested hardware resources. "Type 1" *hypervisors* run directly on the hardware of the host machine, and are best suited to server, desktop and application virtualization. "Type 2" *hypervisors*, such as **Oracle**'s **VirtualBox** run on top of the host's OS, which manages calls to the hardware resources. They are more of a developing and testing tool.
+
+[Q] Explain simply the choice of operating system.
+
+[A] Between **Debian** and **Rocky Linux**, the choice was immediate. At home, my **Raspberry Pi** single-board computer runs on **Raspbian** OS, a fork from the **Debian Linux** distribution. It was a case of going with what is familiar.
+
+[Q] Explain simply the differences between **Rocky** and **Debian**.
+
+[A] **Rocky Linux** is a distribution 100% compatible with **Red Hat Enterprise Linux**, a different Linux family altogether from **Debian Linux**. These families manifestly differ in the package manager/dependency resolver combo: **RPM** for **Rocky** with **yum** as its front-end *vs* **dpkg** for **Debian** with **APT** as its user interface. It's in their philosophies where they wholly diverge: **Rocky** strives to mantain compatibility with a commercial Linux distribution while keeping *open source*, whereas **Debian** embraces *free software*. The latter has quicker development time, easier and regular updating, and a more numerous following that translates into faster bug-fixing.
+
+[Q] Explain simply the purpose of virtual machines.
+
+[A] Three purposes come to mind: First, a VM provides an environment that is isolated from the rest of a system, so whatever is running inside a VM won’t interfere with anything else running on the host hardware. Because VMs are isolated, they are a good option for testing new applications or setting up a production environment. Second, you can also run a single purpose VM to support a specific process, *independent* of the actual host platform. And third, most operating system and application deployments only use a small amount of the physical resources available to them if deployed "bare metal". By virtualizing the servers, many can be placed onto each physical server to improve hardware utilization.
+
+[Q] Explain simply the difference between **aptitude** and **apt**, and what **APPArmor** is.
+
+[A] **APT** is a vast undertaking developed by the Debian Project to simplify the process of managing software through the  automation of the retrieval, configuration, and installation of software pacakges. Its first front-end was command-line based **apt-get** (`man 8 apt-get`), followed by **apt** (`man 8 apt`), which also includes **apt-cache**'s functionalities (`man 8 apt-cache`). **aptitude** is an external project that functions over the same libraries and provides a terminal menu interface. Effectively, there are but a few minor differences.
+
+**APPArmor** is a security extension for the Linux kernel that confines programs to a limited set of resources.<br>
+Find out if **APPArmor** is enabled (returns `Y` if true):
+> cat /sys/module/apparmor/parameters/enabled
+
+List all loaded **APPArmor** profiles for applications and processes and detail their status (*enforced*, *complain*, *unconfined*):
+> sudo aa-status
+
+**APPArmor** profiles live in `/etc/apparmor.d/`.
 
 #### B.5.b Simple setup
 
@@ -800,7 +840,7 @@ Congratulations!
 
 #### B.5.d Hostname and partitions
 
-#### B.5.e Sudo
+#### B.5.e sudo
 
 #### B.5.f UFW
 
