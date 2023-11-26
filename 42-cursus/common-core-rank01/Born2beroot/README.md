@@ -379,7 +379,8 @@ Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `
 	PASS_WARN_AGE   7
 - In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
 - This file is accessed by commands such as **useradd** and **groupadd**.
-- Open the **man** page for further details, `man 5 login.defs`.
+- Account aging information can be checked and edited for specific users with **chage**.
+- Open the **man** pages for further details, `man 5 login.defs` and `man 1 chage`.
 
 Some of the options in **login.defs** are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
 > apt -y install libpam-pwquality
@@ -416,6 +417,9 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 
 Type **reboot** to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
 - Notice that the `root` user does not have to present the current password before typing a new one, neither for itself nor other users. Therefore, the minimum 7-character difference with the old password rule is not applicable to `root`, in accordance with the project document!
+
+Another interesting item one can modify in `/etc/pam.d/common-password` is the algorithm used to encrypt the passwords. User account information is kept in `/etc/passwd`—accessible through `getent passwd`—, while the passwords are stored in `/etc/shadow`. The nifty way to open/edit this file is with command **vipw**.
+- Find more on these files in the **man** pages `man 5 passwd` and `man 5 shadow`.
 
 #### A.3.e sudo installation & configuration
 
@@ -772,6 +776,8 @@ Congratulations!
 
 ## B. Preparing for the project defense
 
+**NOTE**: Answers to questions from the evaluator, marked with `[A]` in this guide, may be very opinionated or completely unrelated to the reader's experience. Use common sense and supply your own answers where personal observations are expected.
+
 ### B.1 Introduction
 
 ---
@@ -823,7 +829,7 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 [Q] Explain simply the difference between **aptitude** and **apt**, and what **APPArmor** is.
 
-[A] **APT** is a vast undertaking developed by the Debian Project to simplify the process of managing software through the  automation of the retrieval, configuration, and installation of software pacakges. Its first front-end was command-line based **apt-get** (`man 8 apt-get`), followed by **apt** (`man 8 apt`), which also includes **apt-cache**'s functionalities (`man 8 apt-cache`). **aptitude** is an external project that functions over the same libraries and provides a terminal menu interface. Effectively, there are but a few minor differences.
+[A] **APT** is a vast undertaking developed by the Debian Project to simplify the process of managing software through the  automation of the retrieval, configuration, and installation of software pacakges. Its first front-end was command-line based **apt-get** (`man 8 apt-get`), followed by **apt** (`man 8 apt`), which also includes **apt-cache**'s functionalities (`man 8 apt-cache`). **aptitude** is an external project that functions over the same libraries with few minor differences and yet, it provides a terminal menu interface.
 
 **APPArmor** is a security extension for the Linux kernel that confines programs to a limited set of resources.<br>
 Find out if **APPArmor** is enabled (returns `Y` if true):
@@ -836,7 +842,72 @@ List all loaded **APPArmor** profiles for applications and processes and detail 
 
 #### B.5.b Simple setup
 
+Launch the clone VM, use the passphrase to decrypt the LVM partitions, and follow with a non-administrator account to login into the machine, `rtorrent` (§). The password should respect the restrictions imposed by the document.
+
+The lack of a graphic envirornment should be obvious, but it can be verified with
+> echo $DESKTOP_SESSION
+
+or
+> ls /usr/bin/*session
+
+where one should only find `/usr/bin/dbus-run-session`, or even
+> type Xorg
+
+where `Xorg` should not be found.
+
+Verify that UFW is up and running with
+> sudo ufw status
+
+or
+> sudo service ufw status
+
+Same for the SSH service
+> sudo service ssh status
+
+The OS can be determined with
+> uname -o
+
+which will print `XXXX`.
+
 #### B.5.c User
+
+We can confirm the presence of our login with
+> cat /etc/passwd | sed -n /^rtorrent/p (§)
+
+but the following is more straightforward
+> getent passwd rtorrent (§)
+
+Next, we list the members of `sudo` and `user42` groups
+> cat /etc/group | sed -n /^sudo/p<br>
+> cat /etc/group | sed -n /^user42/p
+
+but, again, better with the `getent` command
+> getent group sudo<br>
+> getent group user42
+
+or just list the groups the user is a member of with
+> id -Gn
+
+Now for the new user, say `evaluator` (§), just as we did in **§ A.3.f Adding new groups**, we are going to favor the native bin command (**useradd**, see `man 8 useradd`) over the "user friendly" Perl script (**adduser**, see `man 8 adduser`) that runs on said command:
+> sudo useradd evaluator (§)
+
+Default values for this new user can be examined with `useradd -D`, which actually displays information stored in `/etc/default/useradd`. As anticipated in **§ A.3.d Strong password policy**, the configuration variables in `/etc/login.defs` change the behavior of this tool. For example, **useradd** plus `USERGROUPS_ENAB yes` will create by default a group with the name of the user. This is readily established with
+> getent passwd evaluator (§)
+
+It is very easy to verify the passwords' aging rules with
+> sudo chage -l evaluator (§)
+
+We are asked to create an `evaluator` group and to assign the new user to it. We can do both with
+> sudo groupadd -U evaluator evaluating (§)
+
+As per instructions, we can check that the user belongs to this group:
+> getent group evaluating
+
+[Q] Explain the advantages of the password policy, as well as the advantages and disadvantages of its implementation.
+
+[A] Really *any* password policy that forces out some effort from the users is desirable. Left to their own devices, people will produce such lazy watchwords as "123456", "qwerty", "password", or "baby".
+
+The advantage of this project's implementation is that its merits as a secure scheme—the encrypted passwords and the PAM module—have been ascertained by countless users for decades. Personally however, as a disadvantage, I can't find the rule "Your password has to expire every 30 days." very practical. I can imagine many users forgoing any whiff of security by writing their monthly *secret* passwords on Post-its and sticking them to their screens.
 
 #### B.5.d Hostname and partitions
 
