@@ -3,7 +3,7 @@ Description='monitoring' broadcast service timer
 
 [Timer]
 OnBootSec=10min
-OnUnitActive=10min
+OnUnitActiveSec=10min
 AccuracySec=1msec
 
 [Install]

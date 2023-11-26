@@ -1,6 +1,6 @@
 # Born2beroot
 
-**Guide to solve common-core-rank01/Born2beroot (version 2) project, *mandatory* & *bonus* parts.**
+**Guide to solve `common-core-rank01/Born2beroot` (version 2) project, *mandatory* & *bonus* parts.**
 
 Operating system: **Debian "Bookworm" v12.1.0**<br>
 Virtualization software: **Oracle VM VirtualBox v7.0.8**
@@ -143,7 +143,7 @@ Next, create a LV (Logical Volume) with the rest of the free space.
 >
 > Encryption configuration actions: `Finish`<br>
 > Really erase the data on SCSI3 (0,0,0), partition #5 (sda)? `No`
-- Should `Yes` be selected, interrupt the installer by pressing `Cancel` as it scrambles partition #5; it is safe, as there was nothing to hide.
+- Should `Yes` be selected, interrupt the installer by pressing `Cancel` as it scrambles partition #5; it is perfectly safe, as there was nothing there to hide.
 > Encryption passphrase: `Born2beroot` (§)<br>
 > Re-enter passphrase to verify: `Born2beroot` (§)<br>
 > `Configure the Logical Volume Manager`<br>
@@ -248,7 +248,7 @@ We now have to specify the use and mounting points for each of the volumes in th
 
 > `Finish partitioning and write changes to disk`
 
-![Partition disks overview](src/img00.png "Your screen should look similar to this!")
+![Partition disks overview](src/img00.png "Your screen should look like this!")
 
 > Write the changes to disks? `Yes`
 
@@ -282,7 +282,8 @@ Installation of the OS at this stage may take a while.
 >> `[ ] web server                `<br>
 >> `[*] SSH server                `<br>
 >> `[*] standard system utilities `
-- Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands. Alternatively, just deselect everything; later on you may install the precise packages yourself.
+- Deselect all preselected options except for the last, and install the predefined SSH collection (OpenSSH). The `standard system utilities` option gives us access to the **man** pages of the commands.<br>
+  Alternatively, just deselect everything; later on you may install the precise packages yourself.
 
 #### A.2.m Configuring grub-pc
 
@@ -408,18 +409,18 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 `dcredit=-1`: minimum number of digits. (‡)<br>
 `maxrepeat=3`: limit on repeated consecutive characters.<br>
 `reject_username`: rejects the new password if it contains the login, either in straight or reversed form.<br>
-`difok=7`: number of changes (inserts, removals, or replacements) in the new password vs the old.<br>
+`difok=7`: number of changes (inserts, removals, or replacements) in the new password *vs* the old.<br>
 `enforce_for_root`: as per instructions!
 
 (‡) **NOTE**: It is possible to use a *credit* system, wherein `ucredit`, `lcredit`, `dcredit` and `ocredit`—for *other*—are tallied against the `minlen` requirement. In this system, the value numbers are positive.
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
 - For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
 
+Another interesting item one can modify in `/etc/pam.d/common-password` is the algorithm used to encrypt the passwords. User account information is kept in `/etc/passwd`—accessible through `getent passwd`—, while the passwords are stored in `/etc/shadow`. The nifty way to open/edit this file is with command **vipw**.
+- Find more on these files in the **man** pages, `man 5 passwd` and `man 5 shadow`.
+
 Type **reboot** to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
 - Notice that the `root` user does not have to present the current password before typing a new one, neither for itself nor other users. Therefore, the minimum 7-character difference with the old password rule is not applicable to `root`, in accordance with the project document!
-
-Another interesting item one can modify in `/etc/pam.d/common-password` is the algorithm used to encrypt the passwords. User account information is kept in `/etc/passwd`—accessible through `getent passwd`—, while the passwords are stored in `/etc/shadow`. The nifty way to open/edit this file is with command **vipw**.
-- Find more on these files in the **man** pages `man 5 passwd` and `man 5 shadow`.
 
 #### A.3.e sudo installation & configuration
 
@@ -451,7 +452,7 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 > vi /etc/sudoers.d/Born2beroot (§)(†)
 
-[**TIP**: Copying these lines is burdensome and prone to errors. A better solution is to **SSH** yourself into the guest machine from the host—check how in **§ B.5.g SSH**—, **su** into `root`, and *copy-paste* the code from the GitHub repository or the `/src` folder into the newly created file.]
+[**TIP**: Copying these lines is burdensome and prone to errors. A better solution is to **SSH** yourself into the guest machine from the host—check how in **§ B.5.g SSH**—, **su** into `root`, and *copy-paste* the code from this guide or the `/src` folder into the newly created file.]
 
 	Defaults	badpass_message="Prueba otra vez, bobo" (§)
 	Defaults	log_input, log_output
@@ -588,7 +589,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Manual: `man 1 uname`.
 
 `Physical processor(s)`: **lscpu** displays information on the CPU architecture. The number of physical cores is the product of `Core(s) per socket` with `Socket(s)`. Line `CPU(s)` actually displays the number of *logical* cores, that is, the physical number just calculated multiplied by the *hyper-threads* in each core, `Thread(s) per core`.
-- An alternative (and convoluted) route is to read the contents of the `/proc/cpuinfo` text file. A plethora of data is printed for the *logical* CPUs, each with a unique processor number:<br>
+- An alternative (and convoluted) route is to read the contents of the `/proc/cpuinfo` text file. A plethora of data is printed for the *logical* CPUs, grouped beneath each numbered processor:<br>
 `processor`: identifies the logical processor.<br>
 `physical id`: identifies the socket.<br>
 `siblings`: number of threads on the socket.<br>
@@ -602,7 +603,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Alternative solutions include `lscpu | awk -F : '/^CPU\(s\)/ {print $2}' | sed 's/ //g'` and `grep -c processor /proc/cpuinfo`.
 - Manual: `man 1 nproc`.
 
-`Available memory`: `free -m` (or `free --mebi`) uses data provided by file `/proc/meminfo`. Available memory (seventh column) is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total (second column) is below the theoretical installed (i.e., 2,048 MB in our machine) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
+`Available memory`: `free -m` (or `free --mebi`) uses data provided by file `/proc/meminfo`. Available memory (seventh column in **free**'s ouptut) is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total (second column) is below the theoretical installed (i.e., 2,048 MB in our machine) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
 - The default size in **free** and `/proc/meminfo` is 1 kB = 1,024 bytes, hence the option `-m` (1 MB = 1,024 kB).
 - Bash operates with integers, not floating-point arithmetic. Notice the trick of multiplying by 100 and appending `e-2` in the `printf` command argument, for obtaining two decimal points.
 - Manuals: `man 1 free`, `man 1 printf`.
@@ -621,7 +622,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Manuals: `man 1 df`, `man 8 mount`, `man 8 blkid`, `man 8 lsblk`.
 
 `Active Internet (TCP and UDP) connections`: `ss -Htu -o state connected`. Command **netsat** has been superseded by **ss** (socket statistics). Options `-tu` will display only sockets of the TCP and UDP protocols, filtered with `-o state connected` to allow all states except *listening* and *closed*. Option `-H` (`--no-header`) simplifies the tally by suppressing the header.
-- Option `-a` (or `--all`) displays all *established* connections for TCP, but many unwelcomed results for UDP.
+- Option `-a` (or `--all`) displays all *established* connections for TCP, but many unwelcomed results for UDP as well.
 - Manual: `man 8 ss`.
 
 `Logged users`: simple count of **who** results.
@@ -629,7 +630,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Manuals: `man 1 who`, `man 1 users`.
 
 `Network`: classic command **ifconfig** has also been deprecated, use **ip** instead. The first step is to identify the *default* device in the routing table, `ip route`. With this id, finding the required addresses is but a simple scan for certain keywords among the protocol address management, `ip address`, and the network device configuration, `ip link`.
-- The matching regular expression after the `ip address show` command is particular to the IPv4 protocol. We can forgo the `-4` option in `ip -4 address show`, short for `-family inet`.
+- The matching regular expression after the `ip address show` command is particular to the IPv4 protocol—32-bit valid range from `0.0.0.0` to `255.255.255.255`—. We can forgo the `-4` option in `ip -4 address show`, short for `-family inet`.
 - Command `hostname -I` (or `hostname --all-ip-addresses`) is a bit unreliable. It will print *all* IP addresses in no particular order.
 - Manuals: `man 8 ip`, `man 8 ip-address`, `man 8 ip-route`, `man 8 ip-link`, `man 1 hostname`.
 
@@ -657,7 +658,7 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 
 	[Timer]
 	OnBootSec=10min
-	OnUnitActive=10min
+	OnUnitActiveSec=10min
 	AccuracySec=1msec
 
 	[Install]
@@ -701,7 +702,7 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 
 The project document clearly states that "At server startup, the script will display [...] every 10 minutes". However, one would not err by much if he or she might programa a periodic timer to execute at *fixed* minutes of the clock, in intervals of ten minutes. If one accepts this *sleight of hand*, **cron** offers an easier alternative to **systemd**'s timer service.
 
-**cron** is a *daemon*—a program that runs in the background but remains inactive until invoked—that executes scheduled commands. **cron** loads special *crontab* files into memory. Every minute henceforth, **cron** wakes and will execute those files marked to run at that specific moment. User *crontab* files (named after accounts in `/etc/passwd`) are located in a "user spool area" (`/var/spool/cron/crontabs/`). There also exists a "system-wide spool" comprising file `/etc/crontab` and the contents of the `/etc/cron.d/` folder. There are some differences in the methods of user vs system-wide *crontab* files.
+**cron** is a *daemon*—a program that runs in the background but remains inactive until invoked—that executes scheduled commands. **cron** loads special *crontab* files into memory. Every minute henceforth, **cron** wakes and will execute those files marked to run at that specific moment. User *crontab* files (named after accounts in `/etc/passwd`) are located in a "user spool area" (`/var/spool/cron/crontabs/`). There also exists a "system-wide spool" comprising file `/etc/crontab` and the contents of the `/etc/cron.d/` folder. There are some differences in the methods of user *vs* system-wide *crontab* files.
 - Unfortunately, the daemon sets up a different PATH variable, `/usr/bin:/bin`, leaving our monitoring script out.
 - Much more information is to be found at `man 1 crontab` and `man 8 cron`.
 
@@ -817,11 +818,11 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 [Q] Explain simply the choice of operating system.
 
-[A] Between **Debian** and **Rocky Linux**, the choice was immediate. At home, my **Raspberry Pi** single-board computer runs on **Raspbian** OS, a fork from the **Debian Linux** distribution. It was a case of going with what is familiar.
+[A] Between **Debian** and **Rocky Linux**, my choice was immediate. At home, my **Raspberry Pi** single-board computer runs on **Raspbian** OS, a fork from the **Debian Linux** distribution. It was a case of going with what is familiar.
 
 [Q] Explain simply the differences between **Rocky** and **Debian**.
 
-[A] **Rocky Linux** is a distribution 100% compatible with **Red Hat Enterprise Linux**, a different Linux family altogether from **Debian Linux**. These families manifestly differ in the package manager/dependency resolver combo: **RPM** for **Rocky** with **yum** as its front-end *vs* **dpkg** for **Debian** with **APT** as its user interface. It's in their philosophies where they wholly diverge: **Rocky** strives to mantain compatibility with a commercial Linux distribution while keeping *open source*, whereas **Debian** embraces *free software*. The latter has quicker development time, easier and regular updating, and a more numerous following that translates into faster bug-fixing.
+[A] **Rocky Linux** is a distribution 100% compatible with **Red Hat Enterprise Linux**, a different Linux family altogether from **Debian Linux**. These families manifestly differ in the package manager/dependency resolver combo: **RPM** for **Rocky** with **yum** as its front-end *vs* **dpkg** for **Debian** with **APT** as its user interface. It's in their philosophies where these distros wholly diverge: **Rocky** strives to mantain compatibility with a commercial Linux distribution while keeping *open source*, whereas **Debian** embraces *free software*. The latter has quicker development time, easier (for the end-user) and regular updating, and a more numerous following that translates into faster bug-fixing.
 
 [Q] Explain simply the purpose of virtual machines.
 
@@ -885,14 +886,19 @@ but, again, better with the `getent` command
 > getent group sudo<br>
 > getent group user42
 
-or just list the groups the user is a member of with
+or best, just list the groups the user is a member of with
 > id -Gn
 
 Now for the new user, say `evaluator` (§), just as we did in **§ A.3.f Adding new groups**, we are going to favor the native bin command (**useradd**, see `man 8 useradd`) over the "user friendly" Perl script (**adduser**, see `man 8 adduser`) that runs on said command:
 > sudo useradd evaluator (§)
 
+[**NOTE**: This is the moment to prove that new passwords adhere to the policy; try-out various forbidden patterns.]
+
 Default values for this new user can be examined with `useradd -D`, which actually displays information stored in `/etc/default/useradd`. As anticipated in **§ A.3.d Strong password policy**, the configuration variables in `/etc/login.defs` change the behavior of this tool. For example, **useradd** plus `USERGROUPS_ENAB yes` will create by default a group with the name of the user. This is readily established with
 > getent passwd evaluator (§)
+
+and
+> id evaluator (§)
 
 It is very easy to verify the passwords' aging rules with
 > sudo chage -l evaluator (§)
@@ -907,7 +913,7 @@ As per instructions, we can check that the user belongs to this group:
 
 [A] Really *any* password policy that forces out some effort from the users is desirable. Left to their own devices, people will produce such lazy watchwords as "123456", "qwerty", "password", or "baby".
 
-The advantage of this project's implementation is that its merits as a secure scheme—the encrypted passwords and the PAM module—have been ascertained by countless users for decades. Personally however, as a disadvantage, I can't find the rule "Your password has to expire every 30 days." very practical. I can imagine many users forgoing any whiff of security by writing their monthly *secret* passwords on Post-its and sticking them to their screens.
+The advantage of this project's implementation is that its merits as a secure scheme—the encrypted passwords and the PAM module—have been ascertained by countless users for decades. Personally however, as a disadvantage, I can't find the rule "Your password has to expire every 30 days." very practical. I can imagine *many* users forgoing any whiff of security by writing their monthly *secret* passwords on Post-its and sticking them to their screens.
 
 #### B.5.d Hostname and partitions
 
