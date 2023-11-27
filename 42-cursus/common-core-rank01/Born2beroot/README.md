@@ -44,7 +44,7 @@ Open VirtualBox and select **`New`**.
 #### A.1.c Hard Disk
 
 > `Create a Virtual Hard Disk Now` **☉** this button
-- Hard Disk File location for the .vdi (VirtualBox Disk Image) should be automatically selected in our VM's folder.
+- Hard Disk File location for the `.vdi` (VirtualBox Disk Image) should be automatically selected in our VM's folder.
 - Increase size to `30.80 GB` for the *bonus* sections of this project.<br>
   [**NOTE**: Both Debian and VirtualBox use the *traditional* 1 GB = (1,024)^3 = 1,073,741,824 bytes. However, Debian's installer uses the *modern* 1 GB = 1,000,000,000 bytes, perhaps to accomodate hardware manufacturers' scheming of inflated HD sizes.]
 - Do not *Pre-allocate Full Size*, as you will exceed your assigned space quota in disk.
@@ -91,7 +91,7 @@ Before continuing, resize the Machine's Window by pressing `⌘ + C`. Use the mo
 > Root password: `Born2berude` (§)<br>
 > Re-enter password to verify: `Born2berude` (§)
 - Remember to store this and all passwords in a safe location.
-- Root password should comply with all the restrictions listed in the pdf document.
+- Root password should comply with all the restrictions listed in the `.pdf` document.
 - Checking the `Show Password in Clear` option is very helpful. Use the space bar to mark particular options while using the install interface.
 > Full name for the new user: `Roger Torrent` (§)<br>
 > Username for your account: `rtorrent` (§)
@@ -437,7 +437,7 @@ One could add to the main configuration file, `/etc/sudoers`, directly. But in i
 `Command` is the full path to an executable.
 
 Any or all of the above may be the special keyword `ALL`, valid for everyone, everywhere, and everything.
-- The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**. In its absence, the assumed identity will be *superuser*, i.e. `root`.
+- The optional clause `Runas` controls the target user and group **sudo** will run the `Command` as. It determines which combinations of `-u` and `-g` will be valid with **sudo**. In its absence, the assumed identity will be *superuser*, *i.e.* `root`.
 - It is possible to fine-grain the permissions to an incredible detail. For more information, check the **man** page at `man 5 sudoers` (paying special attention to the **Runas_Spec** section).
 
 The project does not instruct us to tamper with the **sudo** specifications. If fact, the two active lines in **sudoers** remain
@@ -603,7 +603,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Alternative solutions include `lscpu | awk -F : '/^CPU\(s\)/ {print $2}' | sed 's/ //g'` and `grep -c processor /proc/cpuinfo`.
 - Manual: `man 1 nproc`.
 
-`Available memory`: `free -m` (or `free --mebi`) uses data provided by file `/proc/meminfo`. Available memory (seventh column in **free**'s ouptut) is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total (second column) is below the theoretical installed (i.e., 2,048 MB in our machine) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
+`Available memory`: `free -m` (or `free --mebi`) uses data provided by file `/proc/meminfo`. Available memory (seventh column in **free**'s ouptut) is an estimation of how much memory is avaliable for starting new applications without relying on swapping. It considers memory lost to paging and other unclaimable bits. Memory total (second column) is below the theoretical installed (*i.e.*, 2,048 MB in our machine) because the kernel keeps some for itself. Another chunk is probably gobbled by the hardware.
 - The default size in **free** and `/proc/meminfo` is 1 kB = 1,024 bytes, hence the option `-m` (1 MB = 1,024 kB).
 - Bash operates with integers, not floating-point arithmetic. Notice the trick of multiplying by 100 and appending `e-2` in the `printf` command argument, for obtaining two decimal points.
 - Manuals: `man 1 free`, `man 1 printf`.
@@ -714,7 +714,7 @@ and type at the bottom of the file that pops up
 
 	*/10 * * * *	/usr/local/sbin/monitoring.sh
 
-The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *day of week*. Whenever the clock agrees with these, the trailing command will be executed. An asterisk stands for the range *first-last*, i.e., all. The first field includes `/10`, meaning *skip 10* over the range.
+The first five fields stand for *minute*, *hour*, *day of month*, *month*, and *day of week*. Whenever the clock agrees with these, the trailing command will be executed. An asterisk stands for the range *first-last*, *i.e.*, all. The first field includes `/10`, meaning *skip 10* over the range.
 - One can check the contents of *crontab* files in the "user spool area" with option `-l`: `crontab -l` for the current login, `crontab -u rtorrent -l` (§) for our hero.
 - *Crontab* syntax is best described in `man 5 crontab`.
 
@@ -867,8 +867,12 @@ Same for the SSH service
 
 The OS can be determined with
 > uname -o
+which will print `XXXX`,
 
-which will print `XXXX`.
+and
+> head -n 2 /etc/os-release
+
+with a nicer looking `PRETTY_NAME="XXX"` and `NAME="XXXX"`.
 
 #### B.5.c User
 
@@ -917,7 +921,56 @@ The advantage of this project's implementation is that its merits as a secure sc
 
 #### B.5.d Hostname and partitions
 
+The hostname of the VM should be obvious to all as it is included in the CLI prompt of the terminal: `[*user-login*]42`, in my case `rtorrent42` (§). Just to drive the point further, use command **hostname**.
+
+The document asks us to rename it, and so
+> sudo vi /etc/hostname (†)<br>
+> sudo vi /etc/hosts (†)
+
+where we substitute all mentions of `rtorrent42` for `evaluator42` (§). Next, one should reload the network configuration. However, the *lazy* approach is much preferable:
+> sudo reboot
+
+To restore the name back, we shall employ the wow method, that is, **systemd**'s utility **hostnamectl**:
+> hostnamectl set-hostname rtorrent42 (§)
+- For reference, `man 1 hostnamectl`.
+
+We can exhibit the machine's partitions with command **lsblk** (list block devices):
+
+![**lsblk** output](src/img03.png "Notice all the *bonus* partitions")
+
+[Q] Explain simply how **LVM** works and what it is all about.
+
+[A] **LV** stands for Logical Volume Manager, a tool that allows you to create, resize, delete, and extend partitions on Linux servers. It breaks physical volumes—hard disks, their partitions, external storage devices…—into physical chunks (*physical extents*, PEs) which are mapped one-to-one into *logical extents*, LEs. These are pooled together to form *logical groups*, whence LEs are concatenated, split, and merged at will into *logical volumes* acting as virtual disk partitions.
+
 #### B.5.e sudo
+
+With `sudo -V` we can read the version of the installed **sudo** (and the versions of the security policy and I/O plugins). We can unequivocally verify if the package is installed with `dpkg -s sudo`.
+
+Adding the new user into `sudo` group is relatively easy:
+> groupmod -aU evaluator sudo (§)
+
+or
+> usermod -aG sudo evaluator (§)
+
+**sudo** is a very special command that allows selected users to run designated commands, on designated machines, while impersonating other designated users. It is a very critical operation that necessitates the fine adjustment of a special file, `/etc/sudoers/` and the rest of the configuration files added into the `/etc/sudoers.d` folder. It is used mostly to appropriate `root`'s privileges, but any user or group can be feigned.
+
+As a simple demonstration,
+> whomai<br>
+> sudo whoami<br>
+> sudo -u rtorrent whoami
+
+The **sudoers** file actually enables all members of the `sudo` group to "execute any command", as can be read off its specifications:
+> sudo visudo
+
+The project document mandated a set of additional restrictions on **sudo** that are kept in the **sudoers.d** folder:
+> sudo cat /etc/sudoers.d/Born2beroot (§)
+
+Notice one actually needs admin status, *i.e.* `root`, to access the config files!
+
+The `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These are kept in a "human-readable" file, **sudo.logs**, and not so friendly streams accesible with the **sudoreplay** command:
+> cd /etc/var/log<br>
+> cat sudo.logs (§)<br>
+> sudoreplay
 
 #### B.5.f UFW
 
