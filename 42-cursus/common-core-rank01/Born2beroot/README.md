@@ -355,7 +355,7 @@ Restart the service to force the changes:
 Activate UFW for immediate use and enable it on system boot:
 > ufw enable
 
-As instructed in the document, port 4242 is left open:
+As instructed in the document, port `4242` is left open:
 > ufw allow 4242
 - Confirm this is indeed the case with `ufw status`.
 
@@ -380,7 +380,7 @@ Seven-day warning to password expiration (`PASS_WARN_AGE`) is correctly set to `
 	PASS_WARN_AGE   7
 - In addition to password aging controls, the file directs other parameters, such as mailbox location and the password encryption method.
 - This file is accessed by commands such as **useradd** and **groupadd**.
-- Account aging information can be checked and edited for specific users with **chage**.
+- Account aging information can be checked and edited for specific users with **chage**. There's a use for it in **§ B.5.c User**.
 - Open the **man** pages for further details, `man 5 login.defs` and `man 1 chage`.
 
 Some of the options in **login.defs** are obsolete and are handled by PAM (Pluggable Authentication Modules). So let us install the required PAM password management module next:
@@ -466,7 +466,7 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
 `log_input, log_output`: every input and output action has to be archived.
-- Output logs may be viewed with the **sudoreplay** utility, which can also be used to list or search the available logs. Check `man 8 sudoreplay`.
+- Output logs may be viewed with the **sudoreplay** utility, which can also be used to list or search the available logs. Check `man 8 sudoreplay`, and **§ B.5.e sudo** for a working example.
 
 `iolog_dir`: folder where the logs will be stored, as instructed by the document.<br>
 `iolog_file`: path relative to `iolog_dir` where input and output streams will be recorded.<br>
@@ -698,6 +698,8 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 > vi /etc/systemd/system/monitoring.service (§)(†)<br>
 > systemctl daemon-reload
 
+This timer works like "dominoes falling". Only the first broadcat, `OnBootSec`, is controlled by an external event. Every broadcast thereafter depends on its previous activation, `OnUnitActiveSec`. Therefore, if more than ten minutes have elapsed since system boot, nothing will happen unless you **reboot**.
+
 ##### A.3.h.1 Cron scheduling [ *Not recommended!* ]
 
 The project document clearly states that "At server startup, the script will display [...] every 10 minutes". However, one would not err by much if he or she might programa a periodic timer to execute at *fixed* minutes of the clock, in intervals of ten minutes. If one accepts this *sleight of hand*, **cron** offers an easier alternative to **systemd**'s timer service.
@@ -814,7 +816,7 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 [Q] Explain simply how a virtual machine works.
 
-[A] A virtual machine packages an operating system and application with a description of the compute resources needed to run it, such as the CPU, memory, storage, and networking. When this virtual machine is deployed to a host computer, software called a *hypervisor* reads the description and provides the requested hardware resources. "Type 1" *hypervisors* run directly on the hardware of the host machine, and are best suited to server, desktop and application virtualization. "Type 2" *hypervisors*, such as **Oracle**'s **VirtualBox** run on top of the host's OS, which manages calls to the hardware resources. They are more of a developing and testing tool.
+[A] A virtual machine packages an operating system and application with a description of the compute resources needed to run it, such as the CPU, memory, storage, and networking. When this virtual machine is deployed to a host computer, software called a *hypervisor* reads the description and provides the requested hardware resources. "Type 1" *hypervisors* run directly on the hardware of the host machine, and are best suited to server, desktop and application virtualization. "Type 2" *hypervisors*, such as **Oracle**'s **VirtualBox**, run on top of the host's OS managing calls to the hardware resources. They are more of a developing and testing tool.
 
 [Q] Explain simply the choice of operating system.
 
@@ -822,7 +824,7 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 [Q] Explain simply the differences between **Rocky** and **Debian**.
 
-[A] **Rocky Linux** is a distribution 100% compatible with **Red Hat Enterprise Linux**, a different Linux family altogether from **Debian Linux**. These families manifestly differ in the package manager/dependency resolver combo: **RPM** for **Rocky** with **yum** as its front-end *vs* **dpkg** for **Debian** with **APT** as its user interface. It's in their philosophies where these distros wholly diverge: **Rocky** strives to mantain compatibility with a commercial Linux distribution while keeping *open source*, whereas **Debian** embraces *free software*. The latter has quicker development time, easier (for the end-user) and regular updating, and a more numerous following that translates into faster bug-fixing.
+[A] **Rocky Linux** is a distribution 100% compatible with **Red Hat Enterprise Linux**, a different Linux family altogether from **Debian Linux**. These families manifestly differ in the package manager/dependency resolver combo: **RPM** for **Rocky** with **yum** as its front-end *vs* **dpkg** for **Debian** with **APT** as its user interface. But it's in their philosophies where these distros completely diverge: **Rocky** strives to mantain compatibility with a commercial Linux distribution while keeping *open source*, whereas **Debian** embraces *free software*. The latter has quicker development time, easier (for the end-user) and regular updating, and a more numerous following that translates into faster bug-fixing.
 
 [Q] Explain simply the purpose of virtual machines.
 
@@ -832,11 +834,12 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 [A] **APT** is a vast undertaking developed by the Debian Project to simplify the process of managing software through the  automation of the retrieval, configuration, and installation of software pacakges. Its first front-end was command-line based **apt-get** (`man 8 apt-get`), followed by **apt** (`man 8 apt`), which also includes **apt-cache**'s functionalities (`man 8 apt-cache`). **aptitude** is an external project that functions over the same libraries with few minor differences and yet, it provides a terminal menu interface.
 
-**APPArmor** is a security extension for the Linux kernel that confines programs to a limited set of resources.<br>
-Find out if **APPArmor** is enabled (returns `Y` if true):
+**APPArmor** is a security extension for the Linux kernel that confines programs to a limited set of resources.
+
+We can find out if **APPArmor** is enabled (returns `Y` if true):
 > cat /sys/module/apparmor/parameters/enabled
 
-List all loaded **APPArmor** profiles for applications and processes and detail their status (*enforced*, *complain*, *unconfined*):
+and list all loaded **APPArmor** profiles for applications and processes and detail their status (*enforced*, *complain*, *unconfined*):
 > sudo aa-status
 
 **APPArmor** profiles live in `/etc/apparmor.d/`.
@@ -867,9 +870,8 @@ Same for the SSH service
 
 The OS can be determined with
 > uname -o
-which will print `XXXX`,
 
-and
+which will print `XXXX`, and
 > head -n 2 /etc/os-release
 
 with a nicer looking `PRETTY_NAME="XXX"` and `NAME="XXXX"`.
@@ -893,29 +895,29 @@ but, again, better with the `getent` command
 or best, just list the groups the user is a member of with
 > id -Gn
 
-Now for the new user, say `evaluator` (§), just as we did in **§ A.3.f Adding new groups**, we are going to favor the native bin command (**useradd**, see `man 8 useradd`) over the "user friendly" Perl script (**adduser**, see `man 8 adduser`) that runs on said command:
-> sudo useradd evaluator (§)
+Now for the new user, say `newuser` (§), just as we did in **§ A.3.f Adding new groups**, we are going to favor the native bin command (**useradd**, see `man 8 useradd`) over the "user friendly" Perl script (**adduser**, see `man 8 adduser`) that runs on said command:
+> sudo useradd newuser (§)
 
 [**NOTE**: This is the moment to prove that new passwords adhere to the policy; try-out various forbidden patterns.]
 
 Default values for this new user can be examined with `useradd -D`, which actually displays information stored in `/etc/default/useradd`. As anticipated in **§ A.3.d Strong password policy**, the configuration variables in `/etc/login.defs` change the behavior of this tool. For example, **useradd** plus `USERGROUPS_ENAB yes` will create by default a group with the name of the user. This is readily established with
-> getent passwd evaluator (§)
+> getent passwd newuser (§)
 
 and
-> id evaluator (§)
+> id newuser (§)
 
 It is very easy to verify the passwords' aging rules with
-> sudo chage -l evaluator (§)
+> sudo chage -l newuser (§)
 
-We are asked to create an `evaluator` group and to assign the new user to it. We can do both with
-> sudo groupadd -U evaluator evaluating (§)
+We are asked to create an `evaluating` group and to assign the new user to it. We can do both with
+> sudo groupadd -U newuser evaluating (§)
 
 As per instructions, we can check that the user belongs to this group:
 > getent group evaluating
 
 [Q] Explain the advantages of the password policy, as well as the advantages and disadvantages of its implementation.
 
-[A] Really *any* password policy that forces out some effort from the users is desirable. Left to their own devices, people will produce such lazy watchwords as "123456", "qwerty", "password", or "baby".
+[A] Really *any* password policy that forces out some effort from the users is desirable. Left to their own devices, people will produce such lazy watchwords as "123456", "qwerty", "password", or "baby"!
 
 The advantage of this project's implementation is that its merits as a secure scheme—the encrypted passwords and the PAM module—have been ascertained by countless users for decades. Personally however, as a disadvantage, I can't find the rule "Your password has to expire every 30 days." very practical. I can imagine *many* users forgoing any whiff of security by writing their monthly *secret* passwords on Post-its and sticking them to their screens.
 
@@ -927,8 +929,10 @@ The document asks us to rename it, and so
 > sudo vi /etc/hostname (†)<br>
 > sudo vi /etc/hosts (†)
 
-where we substitute all mentions of `rtorrent42` for `evaluator42` (§). Next, one should reload the network configuration. However, the *lazy* approach is much preferable:
+where we substitute all mentions of `rtorrent42` for `newuser42` (§). Next, one should reload the network configuration. However, the *lazy* approach is much preferable:
 > sudo reboot
+
+**Login with the new user's account.**
 
 To restore the name back, we shall employ the wow method, that is, **systemd**'s utility **hostnamectl**:
 > hostnamectl set-hostname rtorrent42 (§)
@@ -940,7 +944,7 @@ We can exhibit the machine's partitions with command **lsblk** (list block devic
 
 [Q] Explain simply how **LVM** works and what it is all about.
 
-[A] **LV** stands for Logical Volume Manager, a tool that allows you to create, resize, delete, and extend partitions on Linux servers. It breaks physical volumes—hard disks, their partitions, external storage devices…—into physical chunks (*physical extents*, PEs) which are mapped one-to-one into *logical extents*, LEs. These are pooled together to form *logical groups*, whence LEs are concatenated, split, and merged at will into *logical volumes* acting as virtual disk partitions.
+[A] **LVM** stands for Logical Volume Manager, a tool that allows you to create, resize, delete, and extend partitions on Linux servers. It breaks physical volumes—hard disks, their partitions, external storage devices…—into physical chunks (*physical extents*, PEs) which are mapped one-to-one into *logical extents*, LEs. These are pooled together to form *logical groups*, whence LEs are concatenated, split, and merged at will into *logical volumes* acting as virtual disk partitions.
 
 #### B.5.e sudo
 
@@ -959,22 +963,60 @@ As a simple demonstration,
 > sudo whoami<br>
 > sudo -u rtorrent whoami
 
-The **sudoers** file actually enables all members of the `sudo` group to "execute any command", as can be read off its specifications:
+The **sudoers** file actually enables all members of the `sudo` group to "execute any command", as can be read off its specifications, near the bottom:
 > sudo visudo
 
 The project document mandated a set of additional restrictions on **sudo** that are kept in the **sudoers.d** folder:
 > sudo cat /etc/sudoers.d/Born2beroot (§)
 
-Notice one actually needs admin status, *i.e.* `root`, to access the config files!
+Notice one actually needs admin status, *i.e.* `root`, to access both config files!
 
 The `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These are kept in a "human-readable" file, **sudo.logs**, and not so friendly streams accesible with the **sudoreplay** command:
 > cd /etc/var/log<br>
 > cat sudo.logs (§)<br>
-> sudoreplay
+> sudoreplay -l ...
 
 #### B.5.f UFW
 
+We have already checked that the service is running, in **§ B.5.b Simple setup**, but we can also prove that it has been correctly installed:
+> dpkg -s ufw
+
+[Q] Explain simply what **UFW** is and the value of using it.
+
+[A] Uncomplicated Firewall (**UFW**) is an easy-to-use firewall utility that works on the Linux **iptables** (`man 8 iptables`) for configuration. A firewall is a network security system that monitors and controls incoming and outcoming network traffic based on predetermined security rules. Specifically, it is an administration tool for IPv4/IPv6 packet filtering and network address translation (**NAT**, a mapping table between public and private/internal IP addresses). **UFW**'s value is its intuitive simplicity.
+
+To list its active rules—with a bit more information than heretofore seen—,
+> sudo ufw status verbose
+
+Clearly, only port `4242` accepts traffic.
+
+We are requested by the document to open another port, `8080`:
+> sudo ufw allow 8080
+
+We can confirm that port `8080` is indeed open with another `ufw status`, this time "numbering" the rules:
+> sudo ufw status numbered
+
+There are two ways to remove the additional new rules:
+
+1.- By rule number. This justifies the need of the previous `numbered` display,
+> sudo ufw delete 2,4
+
+2.- By specification. This reverts a previous command,
+> sudo ufw delete allow 8080
+
+End with a `sudo ufw status` to attest that everything is back to the starting conditions.
+
 #### B.5.g SSH
+
+As before, we know the service is up and running from **§ B.5.b Simple setup**, but we can also prove that it has been correctly installed:
+> dpkg -s openssh-server
+
+[Q] Explain basically what **SSH** is and the value of using it.
+
+[A]
+
+The **SSH** daemon is listening to port `4242`, something easily proven with
+> ...
 
 #### B.5.h Script monitoring
 
