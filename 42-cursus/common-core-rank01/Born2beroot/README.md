@@ -358,6 +358,7 @@ Activate UFW for immediate use and enable it on system boot:
 As instructed in the document, port `4242` is left open:
 > ufw allow 4242
 - Confirm this is indeed the case with `ufw status`.
+- Check the **man** page if needed, `man 8 ufw`.
 
 #### A.3.d Strong password policy
 
@@ -393,14 +394,14 @@ Password policies are defined in `/etc/pam.d/common-password`. Edit the file:
 
 Locate line 25:
 
-	password   requisite   pam_pwquality.so   retry=3
+	password   requisite   pam_pwquality.so retry=3
 
 Column 1, `password`, is the management group for the service, *Password group* in our case. Other groups we may find are *Auth*, *Account*, and *Session groups*.<br>
 Column 2, `requisite`, is the *Control flag* in the service file. *Requisite* is the strongest flag. Should the requisite not be found or fails to load, it will stop loading other modules and return failure.<br>
 Column 3, `pam_pwquality.so`, is the *Module* (.so file) used.<br>
 Column 4, `retry=3`, contains *Module parameters*. The document does not specify a number of retries—the default value is `1`—, so replace this parameter with the specified requirements:
 
-	password   requisite   pam_pwquality.so   minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
+	password   requisite   pam_pwquality.so minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
 - All parameters should go in the same *line*, that is, before a newline character.
 
 `minlen=10`: minimum acceptable size.<br>
@@ -836,10 +837,12 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 **APPArmor** is a security extension for the Linux kernel that confines programs to a limited set of resources.
 
-We can find out if **APPArmor** is enabled (returns `Y` if true):
-> cat /sys/module/apparmor/parameters/enabled
+We can find out if **APPArmor** is enabled with
+> aa-enabled
 
-and list all loaded **APPArmor** profiles for applications and processes and detail their status (*enforced*, *complain*, *unconfined*):
+and get a reassuring `Yes` back. A tortuous alternative is `cat /sys/module/apparmor/parameters/enabled` (contains `Y` if true).
+
+To list all loaded **APPArmor** profiles for applications and processes and detail their status (*enforced*, *complain*, *unconfined*):
 > sudo aa-status
 
 **APPArmor** profiles live in `/etc/apparmor.d/`.
@@ -859,10 +862,7 @@ where one should only find `/usr/bin/dbus-run-session`, or even
 
 where `Xorg` should not be found.
 
-Verify that UFW is up and running with
-> sudo ufw status
-
-or
+Verify that UFW service is up and running with
 > sudo service ufw status
 
 Same for the SSH service
@@ -940,7 +940,7 @@ To restore the name back, we shall employ the wow method, that is, **systemd**'s
 
 We can exhibit the machine's partitions with command **lsblk** (list block devices):
 
-![**lsblk** output](src/img03.png "Notice all the *bonus* partitions")
+![**lsblk** output](src/img03.png "Notice all the bonus partitions")
 
 [Q] Explain simply how **LVM** works and what it is all about.
 
@@ -981,6 +981,8 @@ The `.pdf` also expects that **sudo** activity be monitored and logged into the 
 We have already checked that the service is running, in **§ B.5.b Simple setup**, but we can also prove that it has been correctly installed:
 > dpkg -s ufw
 
+To show **UFW**'s version number, `ufw version`.
+
 [Q] Explain simply what **UFW** is and the value of using it.
 
 [A] Uncomplicated Firewall (**UFW**) is an easy-to-use firewall utility that works on the Linux **iptables** (`man 8 iptables`) for configuration. A firewall is a network security system that monitors and controls incoming and outcoming network traffic based on predetermined security rules. Specifically, it is an administration tool for IPv4/IPv6 packet filtering and network address translation (**NAT**, a mapping table between public and private/internal IP addresses). **UFW**'s value is its intuitive simplicity.
@@ -1010,6 +1012,8 @@ End with a `sudo ufw status` to attest that everything is back to the starting c
 
 As before, we know the service is up and running from **§ B.5.b Simple setup**, but we can also prove that it has been correctly installed:
 > dpkg -s openssh-server
+
+To display **SSH**'s version number, `ssh -V`.
 
 [Q] Explain basically what **SSH** is and the value of using it.
 
