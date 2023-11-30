@@ -895,22 +895,22 @@ but, again, better with the `getent` command
 or best, just list the groups the user is a member of with
 > id -Gn
 
-Now for the new user, say `newuser` (§), just as we did in **§ A.3.f Adding new groups**, we are going to favor the native bin command (**useradd**, see `man 8 useradd`) over the "user friendly" Perl script (**adduser**, see `man 8 adduser`) that runs on said command:
-> sudo useradd newuser (§)
+Now for the new user, say `new_user` (§), just as we did in **§ A.3.f Adding new groups**, we are going to favor the native bin command (**useradd**, see `man 8 useradd`) over the "user friendly" Perl script (**adduser**, see `man 8 adduser`) that runs on said command:
+> sudo useradd new_user (§)
 
 [**NOTE**: This is the moment to prove that new passwords adhere to the policy; try-out various forbidden patterns.]
 
 Default values for this new user can be examined with `useradd -D`, which actually displays information stored in `/etc/default/useradd`. As anticipated in **§ A.3.d Strong password policy**, the configuration variables in `/etc/login.defs` change the behavior of this tool. For example, **useradd** plus `USERGROUPS_ENAB yes` will create by default a group with the name of the user. This is readily established with
-> getent passwd newuser (§)
+> getent passwd new_user (§)
 
 and
-> id newuser (§)
+> id new_user (§)
 
 It is very easy to verify the passwords' aging rules with
-> sudo chage -l newuser (§)
+> sudo chage -l new_user (§)
 
 We are asked to create an `evaluating` group and to assign the new user to it. We can do both with
-> sudo groupadd -U newuser evaluating (§)
+> sudo groupadd -U new_user evaluating (§)
 
 As per instructions, we can check that the user belongs to this group:
 > getent group evaluating
@@ -929,7 +929,7 @@ The document asks us to rename it, and so
 > sudo vi /etc/hostname (†)<br>
 > sudo vi /etc/hosts (†)
 
-where we substitute all mentions of `rtorrent42` for `newuser42` (§). Next, one should reload the network configuration. However, the *lazy* approach is much preferable:
+where we substitute all mentions of `rtorrent42` for `new_user42` (§). Next, one should reload the network configuration. However, the *lazy* approach is much preferable:
 > sudo reboot
 
 **Login with the new user's account.**
@@ -951,10 +951,10 @@ We can exhibit the machine's partitions with command **lsblk** (list block devic
 With `sudo -V` we can read the version of the installed **sudo** (and the versions of the security policy and I/O plugins). We can unequivocally verify if the package is installed with `dpkg -s sudo`.
 
 Adding the new user into `sudo` group is relatively easy:
-> groupmod -aU evaluator sudo (§)
+> groupmod -aU new_user sudo (§)
 
 or
-> usermod -aG sudo evaluator (§)
+> usermod -aG sudo new_user (§)
 
 **sudo** is a very special command that allows selected users to run designated commands, on designated machines, while impersonating other designated users. It is a very critical operation that necessitates the fine adjustment of a special file, `/etc/sudoers/` and the rest of the configuration files added into the `/etc/sudoers.d` folder. It is used mostly to appropriate `root`'s privileges, but any user or group can be feigned.
 
@@ -1013,12 +1013,59 @@ As before, we know the service is up and running from **§ B.5.b Simple setup**,
 
 [Q] Explain basically what **SSH** is and the value of using it.
 
-[A]
+[A] Secure Shell (**SSH**) is a protocol for secure remote access and file transfer over an unsafe network. It uses public-key cryptography to authenticate clients and servers, and encrypt the connection. Its value is obvious: to prevent a malicious third party from eavesdropping.
 
 The **SSH** daemon is listening to port `4242`, something easily proven with
 > ...
 
+We can connect into our Debian machine from the *host* machine's terminal with a simple **ssh** command after supplying the *host port* we selected in **§ A.3.a Setting the ports**—`1717` (§) in this guide—
+> ssh new_user@localhost -p 1717 (§)
+- **VirtualBox** is responsible for rerouting the connection to port `4242` in the *guest* machine.
+
+On the other hand, the `root` account is not available via **SSH**, as instructed in the document: Similar command `ssh root@localhost -p 1717` (§) ***should*** fail.
+
 #### B.5.h Script monitoring
+
+[Q] Explain simply how the script works by showing the code.
+
+[A] Refer to **§ A.3.g Simple script** for details.
+
+[Q] Explain simply what **cron** is.
+
+[A] Refer to **§ A.3.h.1 Cron scheduling** for details.
+
+[Q] Explain simply how the student being evaluated set up their script so that it runs every 10 minutes from when the server starts.
+
+[A] Refer to **§ A.3.h Timer scheduling** for details.
+
+**NOTE**: If **cron** was used to program the 10-minute broadcasts, jump to **§ B.5.h.1 Cron rescheduling**. If it was done through a **systemd** timer, keep reading.
+
+...
+
+
+##### B.5.h.1 Cron rescheduling [ Not recommended! ]
+
+The next step will depend on which *crontab* is responsible for running the script. If that *crontab* is `root`'s, then
+> sudo crontab -u root -e
+
+and edit the instruction at the bottom of the file so that it executes every minute of the clock:
+
+	* * * * *	/usr/local/sbin/monitoring.sh
+
+But if the system-wide *crontab* is in command, then 
+> vi /etc/crontab (†)
+
+and remove too the `/10` from the final instruction, after all the example tests:
+
+	* * * * *	root	monitoring.sh
+
+No need to restart **cron**. The change should take hold the minute after.
+
+After being satisfied with the change, one is instructed to suspend **cron**:
+
+
+...
+
 
 ---
 
