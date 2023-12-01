@@ -677,6 +677,8 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 `timer.target`: A special *target unit* that sets up all *timer units* and activates after boot. See `man 5 systemd.target` for details on *target units*, `man 7 systemd.special` for information on this particular target, and `man 7 bootup` for a rather fetching chart displaying the order in which *units* are pulled during the system boot-up.
 - Timer-specific manuals: `man 5 systemd.timer` and `man 7 systemd.time`.
 
+Option `--force` to open a new *unit* file for editing if non existent—just our case—. Option `--full` to work on the original file, not a *drop-in*. *Drop-in* files are useful to alter an existing file without losing the original data. A *drop-in* will be used during the evaluation to override this 10-minute broadcast, see **§ B.5.h Script monitoring**.
+
 > systemctl edit --force --full monitoring.service (§)
 
 	[Unit]
@@ -712,7 +714,7 @@ The project document clearly states that "At server startup, the script will dis
 
 1.- A first solution is to set `roots`'s *crontab* file in the "user spool". Command **crontab** set to edit (`-e`) will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
 > crontab -e
-- Specify user `root` if, for any reason, you are not logged as such (`sudo crontab -u root -e`).
+- Operate as user `root` if you are not logged as such, `sudo crontab -e`. (If, for any reason you would want to change a third person's *crontab*, `sudo crontab -u other_user -e`.) 
 
 and type at the bottom of the file that pops up
 
@@ -1050,15 +1052,15 @@ On the other hand, the `root` account is not available via **SSH**, as instructe
 
 ##### B.5.h.1 Cron rescheduling [ Not recommended! ]
 
-The next step will depend on which *crontab* is responsible for running the script. If that *crontab* is `root`'s, then
-> sudo crontab -u root -e
+The next step will depend on which *crontab* is responsible for running the script (see **§ A.3.h.1 Cron scheduling**). If that *crontab* is `root`'s, then
+> sudo crontab -e
 
 and edit the instruction at the bottom of the file so that it executes every minute of the clock:
 
 	* * * * *	/usr/local/sbin/monitoring.sh
 
 But if the system-wide *crontab* is in command, then 
-> vi /etc/crontab (†)
+> sudo vi /etc/crontab (†)
 
 and remove too the `/10` from the final instruction, after all the example tests:
 
@@ -1066,11 +1068,11 @@ and remove too the `/10` from the final instruction, after all the example tests
 
 No need to restart **cron**. The change should take hold the minute after.
 
-After being satisfied with the change, one is instructed to suspend **cron**:
+Once satisfied with the change, one is instructed to suspend the broadcast after start up. Now, the obvious solution would be to reopen the *crontab* file, again, and comment-out the instruction by prefixing a `#`. But the evaluation instructions are somewhat unclear on this point, and some might argue that they specifically forbid this, leaving us with the sole recourse of suspending the **cron** service itself:
+> sudo systemctl disable cron
+- Or do it the hard way, `sudo /etc/init.d/cron disable`
 
-
-...
-
+After restarting the machine, `sudo reboot`, it should be obvious that the script is not running. Furthermore, one must show that the script is located in the `/usr/local/sbin/` folder, unchanged, and that the *crontab* is intact too: `sudo crontab -l` or `cat /etc/crontab`, depending on which was used to execute.
 
 ---
 
