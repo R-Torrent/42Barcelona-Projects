@@ -562,7 +562,7 @@ type the following Bash commands (or follow the TIP found in **§ A.3.e sudo ins
 
 	# IPv4 and MAC addresses
 
-	defd=$(ip route | grep default | awk '{print $NF}')
+	defd=$(ip route | grep '^default via' | grep -oP '\bdev\s\K\w+')
 	ipv4=$(ip address show $defd | grep -Eo 'inet ([0-9]*\.){3}[0-9]*' | awk '{print $2}')
 	maca=$(ip link show $defd | grep link | awk '{print $2}')
 
@@ -631,6 +631,7 @@ Finally, change the permissions on the script so everybody can actually execute 
 - Manuals: `man 1 who`, `man 1 users`.
 
 `Network`: classic command **ifconfig** has also been deprecated, use **ip** instead. The first step is to identify the *default* device in the routing table, `ip route`. With this id, finding the required addresses is but a simple scan for certain keywords among the protocol address management, `ip address`, and the network device configuration, `ip link`.
+- The `grep` command to determine the device id, which first searches for keyword `dev`, resorts to a Perl *regexp* because the more typical "lookbehind" syntax, `(?<=)`, is not interpreted with the regular nor the extended pattern syntaxes.
 - The matching regular expression after the `ip address show` command is particular to the IPv4 protocol—32-bit valid range from `0.0.0.0` to `255.255.255.255`—. We can forgo the `-4` option in `ip -4 address show`, short for `-family inet`.
 - Command `hostname -I` (or `hostname --all-ip-addresses`) is a bit unreliable. It will print *all* IP addresses in no particular order.
 - Manuals: `man 8 ip`, `man 8 ip-address`, `man 8 ip-route`, `man 8 ip-link`, `man 1 hostname`.

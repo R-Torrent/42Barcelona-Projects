@@ -44,7 +44,7 @@ acon=$(ss -Htu -o state connected | wc -l)
 logu=$(who | wc -l)
 
 # IPv4 and MAC addresses
-defd=$(ip route | grep default | awk '{print $NF}')
+defd=$(ip route | grep '^default via' | grep -oP '\bdev\s\K\w+')
 ipv4=$(ip address show $defd | grep -Eo 'inet ([0-9]*\.){3}[0-9]*' | awk '{print $2}')
 maca=$(ip link show $defd | grep link | awk '{print $2}')
 
