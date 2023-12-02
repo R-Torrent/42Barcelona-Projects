@@ -417,7 +417,7 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
 - For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
 
-Another interesting item one can modify in `/etc/pam.d/common-password` is the algorithm used to encrypt the passwords. User account information is kept in `/etc/passwd`—accessible through `getent passwd`—, while the passwords are stored in `/etc/shadow`. The nifty way to open/edit this file is with command **vipw**.
+Another interesting item one can modify in `/etc/pam.d/common-password` is the algorithm used to encrypt the passwords. User account information is kept in `/etc/passwd`—accessible through `getent passwd`—, but the nifty way to open/edit this file is with command **vipw**. Encrypted passwords are stored in `/etc/shadow`. 
 - Find more on these files in the **man** pages, `man 5 passwd` and `man 5 shadow`.
 
 Type **reboot** to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
@@ -777,7 +777,7 @@ Verifying the integrity of the virtual machine—***do not*** power the machine 
 
 Move **signature.txt** to the empty folder where **git** cloned the *intra*'s project, and finish this ordeal.
 
-Congratulations!
+**CONGRATULATIONS!**
 
 ---
 
@@ -874,10 +874,13 @@ Same for the SSH service
 The OS can be determined with
 > uname -o
 
-which will print `XXXX`, and
+which will print `GNU/Linux`, with the only mention to the "Debian" distribution to be found in the kernel version:
+> uname -v
+
+The recommended approach is
 > head -n 2 /etc/os-release
 
-with a nicer looking `PRETTY_NAME="XXX"` and `NAME="XXXX"`.
+with a nicer looking `PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"` and `NAME="Debian GNU/Linux"`.
 
 #### B.5.c User
 
@@ -899,11 +902,13 @@ or best, just list the groups the user is a member of with
 > id -Gn
 
 Now for the new user, say `new_user` (§), just as we did in **§ A.3.f Adding new groups**, we are going to favor the native bin command (**useradd**, see `man 8 useradd`) over the "user friendly" Perl script (**adduser**, see `man 8 adduser`) that runs on said command:
-> sudo useradd new_user (§)
+> sudo useradd -m -s /bin/bash new_user (§)<br>
+> sudo passwd new_user (§)
 
+Option `-m` will create a home directory for this user, and option `-s /bin/bash` will override the default login shell so that it matches `root` and `rtorrent`'s (§).
 [**NOTE**: This is the moment to prove that new passwords adhere to the policy; try-out various forbidden patterns.]
 
-Default values for this new user can be examined with `useradd -D`, which actually displays information stored in `/etc/default/useradd`. As anticipated in **§ A.3.d Strong password policy**, the configuration variables in `/etc/login.defs` change the behavior of this tool. For example, **useradd** plus `USERGROUPS_ENAB yes` will create by default a group with the name of the user. This is readily established with
+Default characteristics for this new user can be examined with `sudo useradd -D`, which actually displays information stored in `/etc/default/useradd`. Most of the values in the file are deactivated! As anticipated in **§ A.3.d Strong password policy**, the configuration variables in `/etc/login.defs` also change the behaviour of this tool. For example, **useradd** plus `USERGROUPS_ENAB yes` will create by default a group with the name of the user. This is readily established with
 > getent passwd new_user (§)
 
 and
@@ -926,20 +931,23 @@ The advantage of this project's implementation is that its merits as a secure sc
 
 #### B.5.d Hostname and partitions
 
-The hostname of the VM should be obvious to all as it is included in the CLI prompt of the terminal: `[*user-login*]42`, in my case `rtorrent42` (§). Just to drive the point further, use command **hostname**.
+The hostname of the VM should be obvious to all as it is included in the CLI prompt of the terminal: `[user-login]42`, in my case `rtorrent42` (§). Just to drive the point further, use command
+> hostname
 
 The document asks us to rename it, and so
-> sudo vi /etc/hostname (†)<br>
-> sudo vi /etc/hosts (†)
+> sudo vi /etc/hostname (†)
+- Although not included in the instructions, changing the IP address mapping to the new hostname is not a bad idea: `sudo vi /etc/hosts` (†).
 
 where we substitute all mentions of `rtorrent42` for `new_user42` (§). Next, one should reload the network configuration. However, the *lazy* approach is much preferable:
 > sudo reboot
 
-**Login with the new user's account.**
+Behold the new hostname! Login with the the current account, as `new_user` (§) still can't execute the **sudo** command.
 
 To restore the name back, we shall employ the wow method, that is, **systemd**'s utility **hostnamectl**:
-> hostnamectl set-hostname rtorrent42 (§)
+> sudo hostnamectl hostname rtorrent42 (§)
 - For reference, `man 1 hostnamectl`.
+
+A simple `exit` will push the change through this time.
 
 We can exhibit the machine's partitions with command **lsblk** (list block devices):
 
@@ -954,10 +962,12 @@ We can exhibit the machine's partitions with command **lsblk** (list block devic
 With `sudo -V` we can read the version of the installed **sudo** (and the versions of the security policy and I/O plugins). We can unequivocally verify if the package is installed with `dpkg -s sudo`.
 
 Adding the new user into `sudo` group is relatively easy:
-> groupmod -aU new_user sudo (§)
+> sudo groupmod -aU new_user sudo (§)
 
 or
-> usermod -aG sudo new_user (§)
+> sudo usermod -aG sudo new_user (§)
+
+Finally, exit from `rtorrent` (§) for the last time and login with the `new_user` (§).
 
 **sudo** is a very special command that allows selected users to run designated commands, on designated machines, while impersonating other designated users. It is a very critical operation that necessitates the fine adjustment of a special file, `/etc/sudoers/` and the rest of the configuration files added into the `/etc/sudoers.d` folder. It is used mostly to appropriate `root`'s privileges, but any user or group can be feigned.
 
@@ -970,13 +980,13 @@ The **sudoers** file actually enables all members of the `sudo` group to "execut
 > sudo visudo
 
 The project document mandated a set of additional restrictions on **sudo** that are kept in the **sudoers.d** folder:
-> sudo cat /etc/sudoers.d/Born2beroot (§)
+> cat /etc/sudoers.d/Born2beroot (§)
 
-Notice one actually needs admin status, *i.e.* `root`, to access both config files!
+Notice one actually needs admin status, *i.e.* `root`, to edit both config files!
 
 The `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These are kept in a "human-readable" file, **sudo.logs**, and not so friendly streams accesible with the **sudoreplay** command:
-> cd /etc/var/log<br>
-> cat sudo.logs (§)<br>
+> cd /var/log/sudo<br>
+> sudo cat sudo.logs (§)<br>
 > sudoreplay -l ...
 
 #### B.5.f UFW
@@ -984,7 +994,7 @@ The `.pdf` also expects that **sudo** activity be monitored and logged into the 
 We have already checked that the service is running, in **§ B.5.b Simple setup**, but we can also prove that it has been correctly installed:
 > dpkg -s ufw
 
-To show **UFW**'s version number, `ufw version`.
+To show **UFW**'s version number, `sudo ufw version`.
 
 [Q] Explain simply what **UFW** is and the value of using it.
 
@@ -993,7 +1003,17 @@ To show **UFW**'s version number, `ufw version`.
 To list its active rules—with a bit more information than heretofore seen—,
 > sudo ufw status verbose
 
-Clearly, only port `4242` accepts traffic.
+`Status: active                                               `<br>
+`Logging: on (low)                                            `<br>
+`Default: deny (incoming), allow (outgoing), disabled (routed)`<br>
+`New profiles: skip                                           `<br>
+`                                                             `<br>
+`To                         Action      From                  `<br>
+`--                         ------      ----                  `<br>
+`4242                       ALLOW IN    Anywhere              `<br>
+`4242 (v6)                  ALLOW IN    Anywhere (v6)         `
+
+Clearly, only port `4242` accepts traffic, both for IPv4 and IPv6.
 
 We are requested by the document to open another port, `8080`:
 > sudo ufw allow 8080
@@ -1001,12 +1021,24 @@ We are requested by the document to open another port, `8080`:
 We can confirm that port `8080` is indeed open with another `ufw status`, this time "numbering" the rules:
 > sudo ufw status numbered
 
+`Status: active                                               `<br>
+`                                                             `<br>
+`     To                         Action      From             `<br>
+`     --                         ------      ----             `<br>
+`[ 1] 4242                       ALLOW IN    Anywhere         `<br>
+`[ 2] 8080                       ALLOW IN    Anywhere         `<br>
+`[ 3] 4242 (v6)                  ALLOW IN    Anywhere (v6)    `<br>
+`[ 4] 8080 (v6)                  ALLOW IN    Anywhere (v6)    `
+
 There are two ways to remove the additional new rules:
 
 1.- By rule number. This justifies the need of the previous `numbered` display,
-> sudo ufw delete 2,4
+> sudo ufw delete 2<br>
+> sudo ufw delete 3
 
-2.- By specification. This reverts a previous command,
+Both operations must be confirmed (`Proceed with operation (y|n)?`).
+
+2.- By rule specification. This reverts a previous command,
 > sudo ufw delete allow 8080
 
 End with a `sudo ufw status` to attest that everything is back to the starting conditions.
