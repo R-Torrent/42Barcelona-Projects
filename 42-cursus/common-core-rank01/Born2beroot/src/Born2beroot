@@ -5,3 +5,5 @@ Defaults	iolog_file="logs"
 Defaults	logfile="/var/log/sudo/sudo.logs"
 Defaults	requiretty
 Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Defaults!/usr/bin/sudoreplay !log_output
+Defaults!/sbin/reboot !log_output

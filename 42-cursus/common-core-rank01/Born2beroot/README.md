@@ -458,32 +458,34 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 > vi /etc/sudoers.d/Born2beroot (§)(†)
 
-[**TIP**: Copying these lines is burdensome and prone to errors. A better solution is to **SSH** yourself into the guest machine from the host—check how in **§ B.5.g SSH**—, **su** into `root`, and *copy-paste* the code from this guide or the `/src` folder into the newly created file.]
+[**TIP**: Copying these lines is burdensome and prone to errors. A better solution is to **ssh** yourself into the guest machine from the host—check how in **§ B.5.g SSH**—, **su** into `root`, and *copy-paste* the code from this guide or the `/src` folder into the newly created file.]
 
 	Defaults	badpass_message="Prueba otra vez, bobo" (§)
 	Defaults	log_input, log_output
 	Defaults	iolog_dir="/var/log/sudo/"
-	Defaults	iolog_file="logs" (§)
 	Defaults	logfile="/var/log/sudo/sudo.logs" (§)
 	Defaults	requiretty
 	Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-- Technically, we could list all the paramenters of this file into a single line, separated with commas.
-- For more details on the *Default_Entry* lines, search in the manual for the **Sudoers Options** section.
+	Defaults!/usr/bin/sudoreplay !log_output
+	Defaults!/sbin/reboot !log_output
+- Technically, we could list all the parameters of this file into a single line, separated with commas.
+- For more details on the *Default_Entry* lines, search in the manual for the **SUDOERS OPTIONS** section.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
 `log_input, log_output`: every input and output action has to be archived.
 - Output logs may be viewed with the **sudoreplay** utility, which can also be used to list or search the available logs. Check `man 8 sudoreplay`, and **§ B.5.e sudo** for a working example.
 
-`iolog_dir`: folder where the logs will be stored, as instructed by the document.<br>
-`iolog_file`: path relative to `iolog_dir` where input and output streams will be recorded.<br>
+`iolog_dir`: top-level directory where the logs will be stored, as instructed by the document.<br>
 `logfile`: human-readable log file.<br>
 `requiretty`: will only allow **sudo** commands coming out of a real tty terminal, not something like, say, a **cron** script (which we shall shortly see).<br>
 `secure_path`: **sudo** will use this value in place of the user's PATH environment variable.
 - Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
-`Defaults   passwd_tries=3` is unnecessary as, by default, **sudo** logs a failure and exits after three attempts.
+`Defaults!… !log_output`: we will ***not*** be logging output from the **sudoreplay** nor **reboot** commands. Without the first of these provisions, the act of running **sudoreplay** would result in a very traumatic recursion!
 
-Finally, create the folder for the log files with `mkdir /var/log/sudo`.<br>
+Finally, `Defaults   passwd_tries=3` is unnecessary as, by default, **sudo** logs a failure and exits after three attempts.
+
+Create the folder for the log files with `mkdir /var/log/sudo`.<br>
 [**NOTE**: A first use of **sudo** from within `root` would also create this folder.]
 
 #### A.3.f Adding new groups
