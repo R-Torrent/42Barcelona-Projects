@@ -347,7 +347,7 @@ Restart the service to force the changes:
 > service ssh restart
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
-![**service ssh status** output](src/img04.png "Observe that sshd listents to port 4242")
+![**service ssh status** output](src/img04.png "Observe that sshd listens to port 4242")
 
 **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. By contrast, **ssh_config** configures the SSH client one uses to SSH *another* machine. The document does not mandate us to set this client in the virtual machine, and so we shan't tinker any further!
 
@@ -1028,8 +1028,8 @@ We can confirm that port `8080` is indeed open with another `ufw status`, this t
 
 `Status: active                                               `<br>
 `                                                             `<br>
-`     To                         Action      From             `<br>
-`     --                         ------      ----             `<br>
+`      To                         Action      From              `<br>
+`      --                         ------      ----              `<br>
 `[ 1] 4242                       ALLOW IN    Anywhere         `<br>
 `[ 2] 8080                       ALLOW IN    Anywhere         `<br>
 `[ 3] 4242 (v6)                  ALLOW IN    Anywhere (v6)    `<br>
@@ -1059,7 +1059,11 @@ To display **SSH**'s version number, `ssh -V`.
 
 [A] Secure Shell (**SSH**) is a protocol for secure remote access and file transfer over an unsafe network. It uses public-key cryptography to authenticate clients and servers, and encrypt the connection. Its value is obvious: to prevent a malicious third party from eavesdropping.
 
-The **SSH** daemon is listening to port `4242`, something easily proven by reading the output from the `service ssh status` (refer to the screen capture in **§ A.3.b Secure Shell setup**).
+The **SSH** daemon is listening to port `4242`, something easily proven by reading the output from the `service ssh status` (refer to the screen capture in **§ A.3.b Secure Shell setup**). A more direct method is to output the configuration file
+> sudo sshd -T | head -1
+- Option `-T` really tests the validity of the configuration file, but it prints its contents too.
+- **sshd** forks a new daemon for each incoming connection. It is normally started at boot from `/etc/init.d/ssh`, and can override the options set forth in the `/etc/ssh/sshd_config` file (again, read **§ A.3.b Secure Shell setup**).
+- Check `man 8 sshd` for more.
 
 We can connect into our Debian machine from the *host* machine's terminal with a simple **ssh** command after supplying the *host port* we selected in **§ A.3.a Setting the ports**—`1717` (§) in this guide—
 > ssh new_user@localhost -p 1717 (§)
@@ -1067,8 +1071,7 @@ We can connect into our Debian machine from the *host* machine's terminal with a
 
 If, on the other hand, one chose ***not*** to reroute the `localhost` port, it is still possible to remotely access the VM using the ip address that has been broadcasted every 10 minutes since boot, `10.0.2.15` (§), with the correct port, `4242`.
 > ssh new_user@10.0.2.15 -p 4242 (§)
-
-- Do attempt to login as `root` via **ssh**. As instructed in the document, this effort ***should*** fail.
+- Do attempt to login as `root` via **ssh**. As instructed in the document, this effort ***should fail***.
 - More information of the **ssh** command at `man 1 ssh`.
 
 #### B.5.h Script monitoring
