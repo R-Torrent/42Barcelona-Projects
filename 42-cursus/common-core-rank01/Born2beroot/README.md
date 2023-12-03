@@ -319,6 +319,7 @@ Add a new rule (green button in the top right corner):
 > `Name     Protocol    Host Port   Guest Port`<br>
 > `Rule 1   TCP         1717        4242      ` (§)
 - *Host port* may be any port of our liking, `1717` (§) in this case, but it ***must*** be rerouted to *guest port* `4242` in our virtual machine.
+- This rerouting is not strictly necessary, as will be readily seen in **§ B.5.g SSH**, but it simplifies things.
 
 Turn the machine on and login as `root` user to continue with the project:
 > rtorrent42 login: `root` (§)<br>
@@ -346,6 +347,8 @@ Restart the service to force the changes:
 > service ssh restart
 - Check with `service ssh status` that the listened port has indeed changed to 4242.
 
+![**service ssh status** output](src/img04.png "Observe that sshd listents to port 4242")
+
 **sshd_config** configures the daemon that listens to any incoming connection request to the SSH port. By contrast, **ssh_config** configures the SSH client one uses to SSH *another* machine. The document does not mandate us to set this client in the virtual machine, and so we shan't tinker any further!
 
 #### A.3.c Uncomplicated Firewall setup
@@ -359,6 +362,8 @@ As instructed in the document, port `4242` is left open:
 > ufw allow 4242
 - Confirm this is indeed the case with `ufw status`.
 - Check the **man** page if needed, `man 8 ufw`.
+
+![**ufw status** output](src/img05.png "Port 4242 open to IPv4 & IPv6 traffic")
 
 #### A.3.d Strong password policy
 
@@ -417,7 +422,7 @@ Column 4, `retry=3`, contains *Module parameters*. The document does not specify
 - You can list the Linux services that use Linux-PAM with `ls /etc/pam.d`
 - For more details, open the **man** pages, `man 5 pam.d` and `man 8 pam_pwquality`.
 
-Another interesting item one can modify in `/etc/pam.d/common-password` is the algorithm used to encrypt the passwords. User account information is kept in `/etc/passwd`—accessible through `getent passwd`—, but the nifty way to open/edit this file is with command **vipw**. Encrypted passwords are stored in `/etc/shadow`. 
+Another interesting item one can modify in `/etc/pam.d/common-password` is the algorithm used to encrypt the passwords. User account information is kept in `/etc/passwd`—accessible through `getent passwd`—, but the nifty way to open/edit this file is with command **vipw**. Encrypted passwords are stored in `/etc/shadow`.
 - Find more on these files in the **man** pages, `man 5 passwd` and `man 5 shadow`.
 
 Type **reboot** to restart the machine if you wish to try the new password conditions. The command to change passwords is `passwd [LOGIN]`. If no `LOGIN` is typed, the current user is presumed.
@@ -714,7 +719,7 @@ The project document clearly states that "At server startup, the script will dis
 
 1.- A first solution is to set `roots`'s *crontab* file in the "user spool". Command **crontab** set to edit (`-e`) will launch the editor specified by the VISUAL or EDITOR environment variables. After exiting from the editor, the modified *crontab* will be installed automatically.
 > crontab -e
-- Operate as user `root` if you are not logged as such, `sudo crontab -e`. (If, for any reason you would want to change a third person's *crontab*, `sudo crontab -u other_user -e`.) 
+- Operate as user `root` if you are not logged as such, `sudo crontab -e`. (If, for any reason, you would want to change a third person's *crontab*, `sudo crontab -u other_user -e` (§).)
 
 and type at the bottom of the file that pops up
 
@@ -840,6 +845,8 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 **APPArmor** is a security extension for the Linux kernel that confines programs to a limited set of resources.
 
+Launch the clone VM, use the passphrase to decrypt the LVM partitions—`Born2beroot` (§)—, and follow with a non-administrator account to login into the machine, `rtorrent` (§). The password should respect the restrictions imposed by the document.
+
 We can find out if **APPArmor** is enabled with
 > aa-enabled
 
@@ -851,8 +858,6 @@ To list all loaded **APPArmor** profiles for applications and processes and deta
 **APPArmor** profiles live in `/etc/apparmor.d/`.
 
 #### B.5.b Simple setup
-
-Launch the clone VM, use the passphrase to decrypt the LVM partitions, and follow with a non-administrator account to login into the machine, `rtorrent` (§). The password should respect the restrictions imposed by the document.
 
 The lack of a graphic envirornment should be obvious, but it can be verified with
 > echo $DESKTOP_SESSION
@@ -880,7 +885,7 @@ which will print `GNU/Linux`, with the only mention to the "Debian" distribution
 The recommended approach is
 > head -n 2 /etc/os-release
 
-with a nicer looking `PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"` and `NAME="Debian GNU/Linux"`.
+with a nicer looking `PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"` (or the current Debian release) and `NAME="Debian GNU/Linux"`.
 
 #### B.5.c User
 
@@ -1045,7 +1050,7 @@ End with a `sudo ufw status` to attest that everything is back to the starting c
 
 #### B.5.g SSH
 
-As before, we know the service is up and running from **§ B.5.b Simple setup**, but we can also prove that it has been correctly installed:
+As before, we know the service is up and running from **§ B.5.b Simple setup**, but we can also prove that the package has been correctly installed:
 > dpkg -s openssh-server
 
 To display **SSH**'s version number, `ssh -V`.
@@ -1054,14 +1059,17 @@ To display **SSH**'s version number, `ssh -V`.
 
 [A] Secure Shell (**SSH**) is a protocol for secure remote access and file transfer over an unsafe network. It uses public-key cryptography to authenticate clients and servers, and encrypt the connection. Its value is obvious: to prevent a malicious third party from eavesdropping.
 
-The **SSH** daemon is listening to port `4242`, something easily proven with
-> ...
+The **SSH** daemon is listening to port `4242`, something easily proven by reading the output from the `service ssh status` (refer to the screen capture in **§ A.3.b Secure Shell setup**).
 
 We can connect into our Debian machine from the *host* machine's terminal with a simple **ssh** command after supplying the *host port* we selected in **§ A.3.a Setting the ports**—`1717` (§) in this guide—
 > ssh new_user@localhost -p 1717 (§)
 - **VirtualBox** is responsible for rerouting the connection to port `4242` in the *guest* machine.
 
-On the other hand, the `root` account is not available via **SSH**, as instructed in the document: Similar command `ssh root@localhost -p 1717` (§) ***should*** fail.
+If, on the other hand, one chose ***not*** to reroute the `localhost` port, it is still possible to remotely access the VM using the ip address that has been broadcasted every 10 minutes since boot, `10.0.2.15` (§), with the correct port, `4242`.
+> ssh new_user@10.0.2.15 -p 4242 (§)
+
+- Do attempt to login as `root` via **ssh**. As instructed in the document, this effort ***should*** fail.
+- More information of the **ssh** command at `man 1 ssh`.
 
 #### B.5.h Script monitoring
 
@@ -1091,7 +1099,7 @@ and edit the instruction at the bottom of the file so that it executes every min
 
 	* * * * *	/usr/local/sbin/monitoring.sh
 
-But if the system-wide *crontab* is in command, then 
+But if the system-wide *crontab* is in command, then
 > sudo vi /etc/crontab (†)
 
 and remove too the `/10` from the final instruction, after all the example tests:
