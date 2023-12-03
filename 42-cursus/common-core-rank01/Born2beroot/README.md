@@ -532,7 +532,7 @@ type the following Bash commands (or follow the TIP found in **§ A.3.e sudo ins
 		END {print mult}')
 
 	# Virtual processors
-	vcpu=$(nproc --all)
+	vcpu=$(nproc)
 
 	# RAM available/total MB (%)
 	rama=$(free -m | awk '/^Mem:/ {print $7}')

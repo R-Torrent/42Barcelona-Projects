@@ -10,7 +10,7 @@ pcpu=$(lscpu | awk -F : '
 	END {print mult}')
 
 # Virtual processors
-vcpu=$(nproc --all)
+vcpu=$(nproc)
 
 # RAM available/total MB (%)
 rama=$(free -m | awk '/^Mem:/ {print $7}')
