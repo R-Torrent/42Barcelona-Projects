@@ -468,7 +468,7 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 	Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 	Defaults!/usr/bin/sudoreplay !log_output
 	Defaults!/sbin/reboot !log_output
-- Technically, we could list all the parameters of this file into a single line, separated with commas.
+- Technically, we could list all the `Defaults` parameters of this file into a single line, separated with commas.
 - For more details on the *Default_Entry* lines, search in the manual for the **SUDOERS OPTIONS** section.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
@@ -481,7 +481,7 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 `secure_path`: **sudo** will use this value in place of the user's PATH environment variable.
 - Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
-`Defaults!… !log_output`: we will ***not*** be logging output from the **sudoreplay** nor **reboot** commands. Without the first of these provisions, the act of running **sudoreplay** would result in a very traumatic recursion!
+`Defaults!… !log_output`: we will ***not*** be logging output from the **sudoreplay** nor **reboot** commands. Without the first of these provisions, the act of running **sudoreplay** on itself would result in a very traumatic recursion!
 
 Finally, `Defaults   passwd_tries=3` is unnecessary as, by default, **sudo** logs a failure and exits after three attempts.
 
@@ -991,10 +991,25 @@ The project document mandated a set of additional restrictions on **sudo** that 
 
 Notice one actually needs admin status, *i.e.* `root`, to edit both config files!
 
-The `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These are kept in a "human-readable" file, **sudo.logs**, and not so friendly streams accesible with the **sudoreplay** command:
+The `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These records are kept in a "human-readable" file, **sudo.logs** (§),
 > cd /var/log/sudo<br>
-> sudo cat sudo.logs (§)<br>
-> sudoreplay -l ...
+> sudo cat sudo.logs (§)
+
+and not so friendly streams accesible with the **sudoreplay** command:
+> sudo sudoreplay -d /var/log/sudo -l
+
+From this list we can scan through all **sudo** operations, optionally restricted to those that match a predicate. We are interested on the `TSID` sequence that will identify the **sudo** session we are interested on. For an interesting example, run
+> sudo apt update
+
+(This command will download the latest package information.) Next, enable the "list mode" in **sudoreplay**, with an extravagant predicate (which will hopefully pique readers into checking `man 8 sudoreplay`):
+> sudo sudoreplay -d /var/log/sudo -l user new_user fromdate 'last hour'
+
+![**sudoreplay** output](src/img07.png "Check the TSID for the 'apt update' command")
+
+First of all, point out that the list of recorded **sudo** commands has indeed logged its two latest activities. Next, read the `TSID` from the `apt update` command, `XXXXXX` (§), and replay the activity just as it was printed in the terminal!
+> sudo sudeoreplay -d /var/log/sudo XXXXXX (§)
+- You can pause the action by pressing the space bar; any key to resume.
+- Convince the evaluator that you are watching a recording, ***not reenacting*** `apt update`, by printing the contents of that particular "movie" with `cat /var/log/sudo/xx/xx/xx/ttyout`.
 
 #### B.5.f UFW
 
@@ -1092,8 +1107,9 @@ If, on the other hand, one chose ***not*** to reroute the `localhost` port, it i
 
 **NOTE**: If **cron** was used to program the 10-minute broadcasts, jump to **§ B.5.h.1 Cron rescheduling**. If it was done through a **systemd** timer, keep reading.
 
-...
+... WORK IN PROGRESS!
 
+![**monitoring.timer status** output](src/img06.png "Notice the drop-in to the timer unit")
 
 ##### B.5.h.1 Cron rescheduling [ Not recommended! ]
 
