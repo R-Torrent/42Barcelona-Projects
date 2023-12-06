@@ -992,8 +992,8 @@ The project document mandated a set of additional restrictions on **sudo** that 
 Notice one actually needs admin status, *i.e.* `root`, to edit both config files!
 
 The `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These records are kept in a "human-readable" file, **sudo.logs** (§),
-> cd /var/log/sudo<br>
-> sudo cat sudo.logs (§)
+> sudo ls /var/log/sudo<br>
+> sudo cat /var/log/sudo/sudo.logs (§)
 
 and not so friendly streams accesible with the **sudoreplay** command:
 > sudo sudoreplay -d /var/log/sudo -l
@@ -1006,10 +1006,10 @@ From this list we can scan through all **sudo** operations, optionally restricte
 
 ![**sudoreplay** output](src/img07.png "Check the TSID for the 'apt update' command")
 
-First of all, point out that the list of recorded **sudo** commands has indeed logged its two latest activities. Next, read the `TSID` from the `apt update` command, `XXXXXX` (§), and replay the activity just as it was printed in the terminal!
+First of all, point out that the list of recorded **sudo** commands has indeed logged its two latest activities. Next, read the `TSID` from the `apt update` entry, `XXXXXX` (§), and replay the activity just as it was printed in the terminal!
 > sudo sudeoreplay -d /var/log/sudo XXXXXX (§)
 - You can pause the action by pressing the space bar; any key to resume.
-- Convince the evaluator that you are watching a recording, ***not reenacting*** `apt update`, by printing the contents of that particular "movie" with `cat /var/log/sudo/xx/xx/xx/ttyout`.
+- Convince the evaluator that you are watching a recording, ***not reenacting*** `apt update`, by printing the contents of that particular "movie" with `sudo ls /var/log/sudo/xx/xx/xx/` and `sudo cat /var/log/sudo/xx/xx/xx/ttyout`. A more persuasive case can be made with the command `sudo date`. Its replay will output the ***stored*** date and time.
 
 #### B.5.f UFW
 
@@ -1099,17 +1099,46 @@ If, on the other hand, one chose ***not*** to reroute the `localhost` port, it i
 
 [Q] Explain simply what **cron** is.
 
-[A] Refer to **§ A.3.h.1 Cron scheduling** for details.
+[A] **cron** is a tool in the Linux system that runs scheduled jobs. It reads special files, *crontabs*, with the pertinent syntax to execute commands at the appointed minutes of the clock. Refer to **§ A.3.h.1 Cron scheduling** for details.
 
 [Q] Explain simply how the student being evaluated set up their script so that it runs every 10 minutes from when the server starts.
 
+**NOTE**: If **cron** was used to program the 10-minute broadcasts, look into **§ A.3.h.1 Cron scheduling** (if necessary) and skip to **§ B.5.h.1 Cron rescheduling**. If it was done through a **systemd** timer, keep reading.
+
 [A] Refer to **§ A.3.h Timer scheduling** for details.
 
-**NOTE**: If **cron** was used to program the 10-minute broadcasts, jump to **§ B.5.h.1 Cron rescheduling**. If it was done through a **systemd** timer, keep reading.
+Locate our timer and service *units* among the myriad other *units* of the **systemd** jungle:
+> systemctl list-timers<br>
+> systemctl --all list-units monitoring.* (§)
 
-... WORK IN PROGRESS!
+and print their contents to explain its workings:
+> systemctl cat monitoring.timer (§)<br>
+> systemctl cat monitoring.service (§)
+- Notice that the `cat` command prints the full path of the files, should we ever need them.
+
+Furthermore, display their standings with
+> systemctl --quiet status monitoring.timer (§)<br>
+> systemctl --quiet status monitoring.service (§)
+- The `--quiet` (or `-q`) option is to silence the remark that some information was not displayed, that being that we don't have permission to display it all. Without **sudo**, that is!
+
+Observe the cross-referencing "Triggers:" and "TriggeredBy:" lines in the `status` displays.
+
+Our next task is to edit the timer so that is calls on the service every minute, instead of the ten minute delays. We will ***not*** modify our existing *units*, but take full advantage of the *drop-in* mechanism of **systemd** to patch the timer. (Sadly, Debian's **systemctl** does not allow personalized names for the *drop-ins*.) The really neat bit is that one needs to include ***only*** the altered portions of the instructions:
+> systemctl edit monitoring.timer (§)
+
+	[Timer]
+	OnBootSec=1min
+	OnUnitActiveSec=1min
+
+Assure the evaluator that only these changes are necessary with another `systemctl cat monitoring.timer` (§). The *drop-in* modifications are automatically incorporated into the full *unit* file. Note too that the original file is helpfully shown, commented, for easy reference during the editing. The broadcasts should start rolling every minute from here on!
+- The *drop-in* will be named **override.conf** and placed in one `monitoring.timer.d/` (§) folder, located next to its parent file.
+- The broadcasts will quickly become excruciatingly bothersome. You will have to `control + C` (`^C`) everytime and, every so often, the shell will actually recover to a readable state.
+
+Display the updated status of the timer, `systemctl --quiet status monitoring.timer` (§). Find the **override.conf** *drop-in* in the read-out.
 
 ![**monitoring.timer status** output](src/img06.png "Notice the drop-in to the timer unit")
+
+... WORK IN PROGRESS!
 
 ##### B.5.h.1 Cron rescheduling [ Not recommended! ]
 
