@@ -10,6 +10,7 @@ Virtualization software: **Oracle VM VirtualBox v7.0.8**
 - Any login, filename, password, or such marked with a (§) can and ***should*** be adapted to the user's personal preferences.
 - A text file with user, root, and partition passwords should be kept at hand.
 - Popular text editors available with the bare Debian build are **vi** and **nano**. **Emacs** requires an installation (`apt install emacs`) first. Commands in this tutorial reliant on the choice of a text editor are marked with (†).
+- On November 22, 2023, the **VirtualBox** *hypervisor* was uninstalled from the 42Barcelona server, following unspecified "technical issues" allegations. It was replaced with **VMware Fusion** for an undefined period of time, meaning this guide is obsolete *even before its author has presented his project for evaluation*! It goes without saying that I ***shall not*** redo this document. I have found that nothing of real significance (for this project) changes, although I admit to a very short experience with the new application, but I suggest to un-**✓** the `Allow fragmented disk` advanced option in the `Hard disk` settings to simplify step **§ A.6 The final signature**. Not that `shasum *.vmdk > signature.txt` for multiple files is in itself complicated…
 
 ---
 
@@ -458,7 +459,7 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 - Any filename not ending with tilde `~` or containing a dot `.` will do.
 > vi /etc/sudoers.d/Born2beroot (§)(†)
 
-[**TIP**: Copying these lines is burdensome and prone to errors. A better solution is to **ssh** yourself into the guest machine from the host—check how in **§ B.5.g SSH**—, **su** into `root`, and *copy-paste* the code from this guide or the `/src` folder into the newly created file.]
+[**TIP**: Copying these lines is burdensome and prone to errors. A better solution is to **ssh** yourself into the guest machine from the host—check how in **§ B.5.g SSH**—, **su** into `root`, and *copy-paste* the code from this guide or the `src/` folder in this Git repository into the newly created file.]
 
 	Defaults	badpass_message="Prueba otra vez, bobo" (§)
 	Defaults	log_input, log_output
@@ -469,7 +470,7 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 	Defaults!/usr/bin/sudoreplay !log_output
 	Defaults!/sbin/reboot !log_output
 - Technically, we could list all the `Defaults` parameters of this file into a single line, separated with commas.
-- For more details on the *Default_Entry* lines, search in the manual for the **SUDOERS OPTIONS** section.
+- For more details on the *Default_Entry* possibilities, search in the manual for the **SUDOERS OPTIONS** section.
 
 `badpass_message`: unfortunately, strict compliance with the project document bars the very colorful `Defaults   insults`!<br>
 `log_input, log_output`: every input and output action has to be archived.
@@ -684,7 +685,7 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 `timer.target`: A special *target unit* that sets up all *timer units* and activates after boot. See `man 5 systemd.target` for details on *target units*, `man 7 systemd.special` for information on this particular target, and `man 7 bootup` for a rather fetching chart displaying the order in which *units* are pulled during the system boot-up.
 - Timer-specific manuals: `man 5 systemd.timer` and `man 7 systemd.time`.
 
-Option `--force` to open a new *unit* file for editing if non existent—just our case—. Option `--full` to work on the original file, not a *drop-in*. *Drop-in* files are useful to alter an existing file without losing the original data. A *drop-in* will be used during the evaluation to override this 10-minute broadcast, see **§ B.5.h Script monitoring**.
+Option `--force` to open a new *unit* file for editing if non-existent—just our case—. Option `--full` to work on the original file, not a *drop-in*. *Drop-in* files are useful to alter an existing file without losing the original data. A *drop-in* will be used during the evaluation to override this 10-minute broadcast, see **§ B.5.h Script monitoring**.
 
 > systemctl edit --force --full monitoring.service (§)
 
@@ -745,6 +746,8 @@ Additionally, **cron** checks each minute to see if its spool directory's modifi
 ---
 
 ### A.4 Setting a WordPress website
+
+... WORK IN PROGRESS!
 
 ---
 
@@ -1119,11 +1122,11 @@ and print their contents to explain its workings:
 Furthermore, display their standings with
 > systemctl --quiet status monitoring.timer (§)<br>
 > systemctl --quiet status monitoring.service (§)
-- The `--quiet` (or `-q`) option is to silence the remark that some information was not displayed, that being that we don't have permission to display it all. Without **sudo**, that is!
+- The `--quiet` (or `-q`) option is to silence the remark that some information was not displayed for lack of permissions. A redo with **sudo** would establish that nothing new was gained after the hassle of typing the password.
 
 Observe the cross-referencing "Triggers:" and "TriggeredBy:" lines in the `status` displays.
 
-Our next task is to edit the timer so that is calls on the service every minute, instead of the ten minute delays. We will ***not*** modify our existing *units*, but take full advantage of the *drop-in* mechanism of **systemd** to patch the timer. (Sadly, Debian's **systemctl** does not allow personalized names for the *drop-ins*.) The really neat bit is that one needs to include ***only*** the altered portions of the instructions:
+Our next task is to edit the timer so that it calls on the service every minute, cutting on the ten minute delays. We will ***not*** modify our existing *units*, but take full advantage of the *drop-in* mechanism of **systemd** to patch the timer. (Sadly, Debian's **systemctl** does not allow personalized names for the *drop-ins*.) The really neat bit is that one needs to include ***only*** the altered portions of the instructions:
 > systemctl edit monitoring.timer (§)
 
 	[Timer]
@@ -1132,13 +1135,24 @@ Our next task is to edit the timer so that is calls on the service every minute,
 
 Assure the evaluator that only these changes are necessary with another `systemctl cat monitoring.timer` (§). The *drop-in* modifications are automatically incorporated into the full *unit* file. Note too that the original file is helpfully shown, commented, for easy reference during the editing. The broadcasts should start rolling every minute from here on!
 - The *drop-in* will be named **override.conf** and placed in one `monitoring.timer.d/` (§) folder, located next to its parent file.
-- The broadcasts will quickly become excruciatingly bothersome. You will have to `control + C` (`^C`) everytime and, every so often, the shell will actually recover to a readable state.
+- The broadcasts will become excruciatingly bothersome very fast. You will have to `control + C` (`^C`) everytime and, every so often, the shell will actually recover to a readable state.
 
 Display the updated status of the timer, `systemctl --quiet status monitoring.timer` (§). Find the **override.conf** *drop-in* in the read-out.
 
 ![**monitoring.timer status** output](src/img06.png "Notice the drop-in to the timer unit")
 
-... WORK IN PROGRESS!
+Now disable the timer, without actually deleting it, and wait a minute for its absence to go noticed before rebooting:
+> sudo systemctl disable monitoring.timer (§)<br>
+> sudo reboot
+
+After login—keep to any non-administrator account— a `systemctl --full is-enabled monitoring.*` (§) should show that the timer remains `disabled` but that its installation target remains true, *unit* `timers.target` that executed during the reboot.
+- The command will also output a zero exit code to signify one of the *units* checked through the command, **monitoring.service** (§) in our case, is still enabled.
+- The document also asks us to show that the script—or perhaps the *unit*, the wording is a bit unclear—remains unchanged. `ls -l /usr/local/sbin/monitoring.sh` (§) and `ls -l /etc/systemd/system/monitoring.timer` (§) will manifest that neither the permissions nor the modification dates on the files have been tampered.
+
+We shall not re-enable the timer. Instead, we will demonstrate perhaps one of the virtues of **systemd**'s *drop-in* feature. Because our original 10-minute timer remains in the system, one needs only to discard the **override.conf** addition to undo the modifications:
+> sudo systemctl revert monitoring.timer (§)
+- The `monitoring.timer.d/` directory will be gone.
+- The `revert` command will verbalize any changes, but a final `systemctl --quiet status monitoring.timer` (§) will display a `disabled` and yet original timer.
 
 ##### B.5.h.1 Cron rescheduling [ Not recommended! ]
 
