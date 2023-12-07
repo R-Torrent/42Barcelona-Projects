@@ -10,7 +10,7 @@ Virtualization software: **Oracle VM VirtualBox v7.0.8**
 - Any login, filename, password, or such marked with a (§) can and ***should*** be adapted to the user's personal preferences.
 - A text file with user, root, and partition passwords should be kept at hand.
 - Popular text editors available with the bare Debian build are **vi** and **nano**. **Emacs** requires an installation (`apt install emacs`) first. Commands in this tutorial reliant on the choice of a text editor are marked with (†).
-- On November 22, 2023, the **VirtualBox** *hypervisor* was uninstalled from the 42Barcelona server, following unspecified "technical issues" allegations. It was replaced with **VMware Fusion** for an undefined period of time, meaning this guide is obsolete *even before its author has presented his project for evaluation*! It goes without saying that I ***shall not*** redo this document. I have found that nothing of real significance (for this project) changes, although I admit to a very short experience with the new application, but I suggest to un-**✓** the `Allow fragmented disk` advanced option in the `Hard disk` settings to simplify step **§ A.6 The final signature**. Not that `shasum *.vmdk > signature.txt` for multiple files is in itself complicated…
+- On November 22, 2023, the **VirtualBox** *hypervisor* was uninstalled from the 42Barcelona server, following unspecified "technical issues" allegations. It was replaced with **VMware Fusion** for an undefined period of time, meaning this guide is obsolete *even before its author has presented his project for evaluation*! It goes without saying that I ***shall not*** redo this document. I have found that nothing of real significance (for this project) changes, although I admit to a very short experience with the new application, but I suggest to un-**✓** the `Split into multiple files` advanced option in the **`Hard Disk (SCSI)`** settings to simplify step **§ A.6 The final signature**. Not that `shasum *.vmdk > signature.txt` for multiple files is in itself particularly complicated…
 
 ---
 
@@ -673,7 +673,6 @@ It is recommended that the *unit* name that is activated and the *unit* name of 
 
 	[Install]
 	WantedBy=timers.target
-
 - [Unit] section option:<br>
 `Description`: A human readable name for the *unit*. This is used by **systemd** (and other UIs) as the label for the *unit*, so this string should identify rather than describe it.
 - [Timer] section options:<br>
@@ -694,7 +693,6 @@ Option `--force` to open a new *unit* file for editing if non-existent—just ou
 
 	[Service]
 	ExecStart=monitoring.sh
-
 - [Service} section option:<br>
 `ExecStart`: commands that are executed when this service is started.
 - Service-specific manual: `man 5 systemd.service`.
@@ -778,7 +776,7 @@ Navigate to the folder where the VM is lodged, `/System/Volumes/Data/sgoinfre/Pe
 
 The output's format will resemble
 
-	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Born2beroot_Debian12.1.0.vdi (§)
+	40f7a1b8a8bfecdc9e7c1454f0cde50005b183f1  Born2beroot_Debian12.1.0.vdi (§)
 - Inside the VM, the preferred Debian command would have been **sha1sum**. **shasum** is actually a Perl script, which falls back to SHA-1 as its default algorithm.
 - Check manuals `man 1 shasum` and `man 1 sha1sum` (the latter only from within Debian).
 
@@ -951,7 +949,7 @@ The document asks us to rename it, and so
 where we substitute all mentions of `rtorrent42` for `new_user42` (§). Next, one should reload the network configuration. However, the *lazy* approach is much preferable:
 > sudo reboot
 
-Behold the new hostname! Login with the the current account, as `new_user` (§) still can't execute the **sudo** command.
+Behold the new hostname! Login with the the usual account, `rtorrent` (§), as `new_user` (§) still can't execute the **sudo** command.
 
 To restore the name back, we shall employ the wow method, that is, **systemd**'s utility **hostnamectl**:
 > sudo hostnamectl hostname rtorrent42 (§)
@@ -1009,10 +1007,10 @@ From this list we can scan through all **sudo** operations, optionally restricte
 
 ![**sudoreplay** output](src/img07.png "Check the TSID for the 'apt update' command")
 
-First of all, point out that the list of recorded **sudo** commands has indeed logged its two latest activities. Next, read the `TSID` from the `apt update` entry, `XXXXXX` (§), and replay the activity just as it was printed in the terminal!
-> sudo sudeoreplay -d /var/log/sudo XXXXXX (§)
+First of all, point out that the list of recorded **sudo** commands has indeed logged its two latest activities. Next, read the `TSID` from the `apt update` entry, `00000I` (§), and replay the activity just as it was printed in the terminal!
+> sudo sudeoreplay -d /var/log/sudo 00000I (§)
 - You can pause the action by pressing the space bar; any key to resume.
-- Convince the evaluator that you are watching a recording, ***not reenacting*** `apt update`, by printing the contents of that particular "movie" with `sudo ls /var/log/sudo/xx/xx/xx/` and `sudo cat /var/log/sudo/xx/xx/xx/ttyout`. A more persuasive case can be made with the command `sudo date`. Its replay will output the ***stored*** date and time.
+- Convince the evaluator that you are watching a recording, ***not reenacting*** `apt update`, by printing the contents of that particular "movie" with `sudo ls /var/log/sudo/00/00/0I/` and `sudo cat /var/log/sudo/00/00/0I/ttyout`. A more persuasive case can be made with the command `sudo date`. Its replay will output the ***stored*** date and time. And an ***even more*** jaw-dropping demonstration can be made by typing into a text file, `sudo vi test.txt` (§)(†) and replaying that movie. In this case, the user's input is stored in `ttyin`.
 
 #### B.5.f UFW
 
@@ -1142,11 +1140,12 @@ Display the updated status of the timer, `systemctl --quiet status monitoring.ti
 ![**monitoring.timer status** output](src/img06.png "Notice the drop-in to the timer unit")
 
 Now disable the timer, without actually deleting it, and wait a minute for its absence to go noticed before rebooting:
-> sudo systemctl disable monitoring.timer (§)<br>
+> sudo systemctl --now disable monitoring.timer (§)
+- Option `--now` to stop immediately the *unit*, as well as suspending it on the next boot.
 > sudo reboot
 
-After login—keep to any non-administrator account— a `systemctl --full is-enabled monitoring.*` (§) should show that the timer remains `disabled` but that its installation target remains true, *unit* `timers.target` that executed during the reboot.
-- The command will also output a zero exit code to signify one of the *units* checked through the command, **monitoring.service** (§) in our case, is still enabled.
+After login—keep to any non-administrator account— a `systemctl is-enabled monitoring.timer` (§) should show that the timer remains `disabled`.
+- The same command on **monitoring.service** will return `static`, meaning "the **unit** file is not enabled, and has no provisions for enabling in the [Install] unit file section."
 - The document also asks us to show that the script—or perhaps the *unit*, the wording is a bit unclear—remains unchanged. `ls -l /usr/local/sbin/monitoring.sh` (§) and `ls -l /etc/systemd/system/monitoring.timer` (§) will manifest that neither the permissions nor the modification dates on the files have been tampered.
 
 We shall not re-enable the timer. Instead, we will demonstrate perhaps one of the virtues of **systemd**'s *drop-in* feature. Because our original 10-minute timer remains in the system, one needs only to discard the **override.conf** addition to undo the modifications:
