@@ -482,7 +482,7 @@ But we are instructed to tweak its configuration with additional **sudo** parame
 `secure_path`: **sudo** will use this value in place of the user's PATH environment variable.
 - Note that the example path in the document includes a `/snap/bin`. However, we don't have any **snap** applications packaged in our machine.
 
-`Defaults!… !log_output`: we will ***not*** be logging output from the **sudoreplay** nor **reboot** commands. Without the first of these provisions, the act of running **sudoreplay** on itself would result in a very traumatic recursion!
+`Defaults!… !log_output`: we will ***not*** be logging output from the **sudoreplay** nor **reboot** commands. Without the first of these provisions, the act of running **sudoreplay** on itself would result in a very peculiar recursion: the program recording itself running a recording!
 
 Finally, `Defaults   passwd_tries=3` is unnecessary as, by default, **sudo** logs a failure and exits after three attempts.
 
@@ -828,7 +828,7 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 [Q] Explain simply how a virtual machine works.
 
-[A] A virtual machine packages an operating system and application with a description of the compute resources needed to run it, such as the CPU, memory, storage, and networking. When this virtual machine is deployed to a host computer, software called a *hypervisor* reads the description and provides the requested hardware resources. "Type 1" *hypervisors* run directly on the hardware of the host machine, and are best suited to server, desktop and application virtualization. "Type 2" *hypervisors*, such as **Oracle**'s **VirtualBox**, run on top of the host's OS managing calls to the hardware resources. They are more of a developing and testing tool.
+[A] A virtual machine packages an operating system and application with a description of the compute resources needed to run it, such as the CPU, memory, storage, and networking. When this virtual machine is deployed to a host computer, software called a *hypervisor* reads the description and provides the requested hardware resources. "Type 1" *hypervisors* run directly on the hardware of the host machine, and are best suited to server, desktop and application virtualization. "Type 2" *hypervisors*, such as **Oracle**'s **VirtualBox**, run on top of the host's OS, which actually manages calls to the hardware resources. They are more of a developing and testing tool.
 
 [Q] Explain simply the choice of operating system.
 
@@ -992,14 +992,14 @@ The project document mandated a set of additional restrictions on **sudo** that 
 
 Notice one actually needs admin status, *i.e.* `root`, to edit both config files!
 
-The `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These records are kept in a "human-readable" file, **sudo.logs** (§),
+The project `.pdf` also expects that **sudo** activity be monitored and logged into the `/var/log/sudo/` folder. These records are kept in a "human-readable" file, **sudo.logs** (§),
 > sudo ls /var/log/sudo<br>
 > sudo cat /var/log/sudo/sudo.logs (§)
 
 and not so friendly streams accesible with the **sudoreplay** command:
 > sudo sudoreplay -d /var/log/sudo -l
 
-From this list we can scan through all **sudo** operations, optionally restricted to those that match a predicate. We are interested on the `TSID` sequence that will identify the **sudo** session we are interested on. For an interesting example, run
+From this list we can scan through all **sudo** operations, optionally restricted to those commands that match a predicate [see below]. We are interested on the `TSID` sequences of the concrete **sudo** sessions. For a pleasing example, run
 > sudo apt update
 
 (This command will download the latest package information.) Next, enable the "list mode" in **sudoreplay**, with an extravagant predicate (which will hopefully pique readers into checking `man 8 sudoreplay`):
@@ -1007,10 +1007,12 @@ From this list we can scan through all **sudo** operations, optionally restricte
 
 ![**sudoreplay** output](src/img07.png "Check the TSID for the 'apt update' command")
 
-First of all, point out that the list of recorded **sudo** commands has indeed logged its two latest activities. Next, read the `TSID` from the `apt update` entry, `00000I` (§), and replay the activity just as it was printed in the terminal!
+First of all, point out that the list of recorded **sudo** commands has indeed logged its two latest activities, as requested in the project document. Next, read the `TSID` from the `apt update` entry, in this case `00000I` (§), and replay the activity just as it was printed in the terminal!
 > sudo sudeoreplay -d /var/log/sudo 00000I (§)
 - You can pause the action by pressing the space bar; any key to resume.
-- Convince the evaluator that you are watching a recording, ***not reenacting*** `apt update`, by printing the contents of that particular "movie" with `sudo ls /var/log/sudo/00/00/0I/` and `sudo cat /var/log/sudo/00/00/0I/ttyout`. A more persuasive case can be made with the command `sudo date`. Its replay will output the ***stored*** date and time. And an ***even more*** jaw-dropping demonstration can be made by typing into a text file, `sudo vi test.txt` (§)(†) and replaying that movie. In this case, the user's input is stored in `ttyin`.
+- Convince the evaluator that you are watching a real-time recording, ***not reenacting*** `apt update`, by printing the contents of that particular "movie" with `sudo ls /var/log/sudo/00/00/0I/` (§) and `sudo cat /var/log/sudo/00/00/0I/ttyout` (§).
+- A more persuasive case can be made with the command `sudo date`. Its replay will output the same ***stored*** date and time. Use `sudo sudoreplay -d /var/log/sudo -l command date` to figure the `TSID`.
+- And an ***even more*** jaw-dropping demonstration can be made by typing into a text file, `sudo vi test.txt` (§)(†) and replaying that motion picture. Recall that the instructions request us to archive both the outputs ***and*** the inputs. The latter are stored in the session's `ttyin` folder. We can replay all the keystrokes, including our fumbling with **vi**'s interface, with `sudo sudoreplay -d /var/log/sudo -f ttyin 0000XX` (§). [Evidently, supply the pertinent `TSID`.]
 
 #### B.5.f UFW
 
@@ -1110,7 +1112,7 @@ If, on the other hand, one chose ***not*** to reroute the `localhost` port, it i
 
 Locate our timer and service *units* among the myriad other *units* of the **systemd** jungle:
 > systemctl list-timers<br>
-> systemctl --all list-units monitoring.* (§)
+> systemctl list-units --all monitoring.* (§)
 
 and print their contents to explain its workings:
 > systemctl cat monitoring.timer (§)<br>
@@ -1118,11 +1120,11 @@ and print their contents to explain its workings:
 - Notice that the `cat` command prints the full path of the files, should we ever need them.
 
 Furthermore, display their standings with
-> systemctl --quiet status monitoring.timer (§)<br>
-> systemctl --quiet status monitoring.service (§)
+> systemctl status --quiet monitoring.timer (§)<br>
+> systemctl status --quiet monitoring.service (§)
 - The `--quiet` (or `-q`) option is to silence the remark that some information was not displayed for lack of permissions. A redo with **sudo** would establish that nothing new was gained after the hassle of typing the password.
 
-Observe the cross-referencing "Triggers:" and "TriggeredBy:" lines in the `status` displays.
+Observe the cross-referencing `Triggers:` and `TriggeredBy:` lines in the `status` displays.
 
 Our next task is to edit the timer so that it calls on the service every minute, cutting on the ten minute delays. We will ***not*** modify our existing *units*, but take full advantage of the *drop-in* mechanism of **systemd** to patch the timer. (Sadly, Debian's **systemctl** does not allow personalized names for the *drop-ins*.) The really neat bit is that one needs to include ***only*** the altered portions of the instructions:
 > systemctl edit monitoring.timer (§)
@@ -1140,7 +1142,7 @@ Display the updated status of the timer, `systemctl --quiet status monitoring.ti
 ![**monitoring.timer status** output](src/img06.png "Notice the drop-in to the timer unit")
 
 Now disable the timer, without actually deleting it, and wait a minute for its absence to go noticed before rebooting:
-> sudo systemctl --now disable monitoring.timer (§)
+> sudo systemctl disable --now monitoring.timer (§)
 - Option `--now` to stop immediately the *unit*, as well as suspending it on the next boot.
 > sudo reboot
 
