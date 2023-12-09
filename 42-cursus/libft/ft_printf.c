@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/12 15:04:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/09 19:51:39 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	hextoa(t_specf *const pspecf, const char c)
 	unsigned long	uval;
 	const char		hex[] = "0123456789abcdef";
 
-	numd = FLD_SIZE;
+	numd = PRINTF_FLD_SIZE;
 	if (c == 'p')
 		uval = pspecf->ival;
 	else
@@ -34,7 +34,7 @@ static void	hextoa(t_specf *const pspecf, const char c)
 			pspecf->str[--numd] = hex[uval % 16];
 		uval /= 16;
 	}
-	pspecf->size = FLD_SIZE - numd;
+	pspecf->size = PRINTF_FLD_SIZE - numd;
 	if (c == 'p')
 		ft_memcpy(ft_memcpy(pspecf->str, "0x", 2) + 2, pspecf->str + numd,
 			pspecf->size);
@@ -48,7 +48,7 @@ static void	itoa(t_specf *const pspecf, const char c)
 	unsigned int	uval;
 	const bool		minus = (c == 'i' || c == 'd') && pspecf->ival < 0;
 
-	numd = FLD_SIZE;
+	numd = PRINTF_FLD_SIZE;
 	if (minus)
 		uval = -pspecf->ival;
 	else
@@ -62,7 +62,7 @@ static void	itoa(t_specf *const pspecf, const char c)
 	}
 	if (minus)
 		pspecf->str[--numd] = '-';
-	pspecf->size = FLD_SIZE - numd;
+	pspecf->size = PRINTF_FLD_SIZE - numd;
 	ft_memcpy(pspecf->str, pspecf->str + numd, pspecf->size);
 }
 
@@ -98,7 +98,7 @@ static char	*get_field(t_specf *const pspecf, const char c, va_list *pap)
 static int	sift(const char **pformat, va_list *pap)
 {
 	const char	*p;
-	char		str[FLD_SIZE];
+	char		str[PRINTF_FLD_SIZE];
 	t_specf		specf;
 	int			nc;
 	int			nc1;
