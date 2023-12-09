@@ -1,25 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/06 02:35:08 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/10 11:09:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+char	*ft_strrchr(const char *s, int c)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	const char	*s_last;
 
-#endif
+	s_last = NULL;
+	s = ft_strchr(s, c);
+	if (s && !*s)
+		return ((char *)s);
+	while (s)
+	{
+		s_last = s;
+		s = ft_strchr(++s, c);
+	}
+	return ((char *)s_last);
+}

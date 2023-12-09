@@ -1,25 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/07 12:43:27 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/07/04 17:50:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+char	*ft_substr(const char *s, size_t start, size_t len)
 {
-	long	ival;
-	char	*str;
 	size_t	size;
-}	t_specf;
+	char	*p;
 
-#endif
+	size = ft_strlen(s);
+	if (start > size)
+		return (ft_calloc(1, 1));
+	size -= start;
+	if (len < size)
+		size = len;
+	p = malloc(++size);
+	if (p)
+		ft_strlcpy(p, s + start, size);
+	return (p);
+}

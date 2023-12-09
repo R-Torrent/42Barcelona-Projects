@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/07 14:27:07 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/14 18:57:21 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	const size_t	size = ft_strlen(s1) + ft_strlen(s2) + 1;
+	char *const		p = malloc(size);
 
-#endif
+	if (p)
+	{
+		ft_strlcpy(p, s1, size);
+		ft_strlcat(p, s2, size);
+	}
+	return (p);
+}

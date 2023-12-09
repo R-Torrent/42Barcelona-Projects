@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/04/13 17:43:41 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/07 19:28:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
-
-#endif
+	while (n--)
+	{
+		if (!*s1 || *s1 != *s2)
+			return ((unsigned char)*s1 - (unsigned char)*s2);
+		s1++;
+		s2++;
+	}
+	return (0);
+}

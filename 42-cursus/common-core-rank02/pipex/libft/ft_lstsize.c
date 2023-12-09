@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/09 13:46:32 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/06/20 15:26:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
+static size_t	g_size;
 
-typedef struct s_specf
+static void	f_aux(void *content)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	(void)content;
+	g_size++;
+}
 
-#endif
+size_t	ft_lstsize(t_list *lst)
+{
+	g_size = 0;
+	ft_lstiter(lst, f_aux);
+	return (g_size);
+}

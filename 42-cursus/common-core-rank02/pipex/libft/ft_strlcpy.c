@@ -1,25 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/04/11 18:47:12 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/13 00:33:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	const char *const	src0 = src;
 
-#endif
+	while (size > 1 && *src)
+	{
+		*dst++ = *src++;
+		size--;
+	}
+	if (size)
+		*dst = '\0';
+	while (*src)
+		src++;
+	return (src - src0);
+}

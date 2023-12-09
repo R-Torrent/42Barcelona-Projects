@@ -1,25 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/05 19:49:14 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/13 23:45:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+void	*ft_memmove(void *dst, const void *src, size_t n)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	unsigned char		*udst;
+	const unsigned char	*usrc;
 
-#endif
+	udst = dst;
+	usrc = src;
+	if (usrc < udst && udst < usrc + n)
+	{
+		udst += n;
+		usrc += n;
+		while (n--)
+			*--udst = *--usrc;
+	}
+	else
+		while (n--)
+			*udst++ = *usrc++;
+	return (dst);
+}

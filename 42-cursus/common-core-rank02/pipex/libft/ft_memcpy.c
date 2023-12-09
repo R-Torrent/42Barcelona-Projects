@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/05 18:56:35 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/13 23:44:47 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	unsigned char		*udst;
+	const unsigned char	*usrc;
 
-#endif
+	udst = dst;
+	usrc = src;
+	while (n--)
+		*udst++ = *usrc++;
+	return (dst);
+}

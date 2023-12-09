@@ -1,25 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/05 19:21:22 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/13 23:44:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	const unsigned char	*us1;
+	const unsigned char	*us2;
 
-#endif
+	us1 = s1;
+	us2 = s2;
+	while (n--)
+	{
+		if (*us1 != *us2)
+			return (*us1 - *us2);
+		us1++;
+		us2++;
+	}
+	return (0);
+}

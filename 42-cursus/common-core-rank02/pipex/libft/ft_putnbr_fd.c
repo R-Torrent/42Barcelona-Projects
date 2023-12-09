@@ -1,25 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/09 08:03:08 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/10 11:53:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+static void	ft_putdgts_fd(int n, int fd)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	int	x;
 
-#endif
+	x = n / 10;
+	if (x)
+		ft_putdgts_fd(x, fd);
+	if (n < 0)
+		x = '0' - n % 10;
+	else
+		x = '0' + n % 10;
+	ft_putchar_fd(x, fd);
+}
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	if (n < 0)
+		ft_putchar_fd('-', fd);
+	ft_putdgts_fd(n, fd);
+}

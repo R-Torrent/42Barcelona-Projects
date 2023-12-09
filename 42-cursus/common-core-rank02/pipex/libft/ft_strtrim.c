@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/09 01:55:49 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/05/17 19:55:35 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
-
-typedef struct s_specf
+char	*ft_strtrim(const char *s, const char *set)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	const char	*t;
+	char		*p;
 
-#endif
+	while (*s && ft_strchr(set, *s))
+		s++;
+	if (!*s)
+		p = ft_calloc(1, 1);
+	else
+	{
+		t = s + ft_strlen(s) - 1;
+		while (s < t && ft_strchr(set, *t))
+			t--;
+		p = ft_substr(s, 0, t - s + 1);
+	}
+	return (p);
+}

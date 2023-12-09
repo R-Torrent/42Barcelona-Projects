@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Created: 2023/05/09 07:26:29 by rtorrent          #+#    #+#             */
+/*   Updated: 2023/08/14 19:13:37 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# define PRINTF_FLD_SIZE 32
+static int	g_fd;
 
-typedef struct s_specf
+static void	f_aux(size_t ui, char *pc)
 {
-	long	ival;
-	char	*str;
-	size_t	size;
-}	t_specf;
+	(void)ui;
+	ft_putchar_fd(*pc, g_fd);
+}
 
-#endif
+void	ft_putstr_fd(char *s, int fd)
+{
+	g_fd = fd;
+	ft_striteri(s, f_aux);
+}
