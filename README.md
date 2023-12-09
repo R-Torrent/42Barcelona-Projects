@@ -1,6 +1,6 @@
 # 42Barcelona-Projects
 
-Exercises and projects encountered during my stay in 42 BARCELONA
+Exercises and projects encountered during my stay in 42 BARCELONA. Those I overcame are listed below.
 
 ### **C-Piscine**: 26 days of 42 BARCELONA's eighth *Piscine* (27/03/2023 -- 21/04/2023)
 
@@ -13,6 +13,12 @@ Exercises and projects encountered during my stay in 42 BARCELONA
 
 ### **Cursus**: My path in 42 BARCELONA (02/05/2023 -- *ongoing*)
 
+#### common-core-rank00
+
 - Libft (19/05/2023)
+
+#### common-core-rank01
+
 - ft_printf (23/06/2023)
 - get_next_line (04/08/2023)
+- Born2beroot (08/12/2023)
