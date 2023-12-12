@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/09 17:49:48 by rtorrent          #+#    #+#              #
-#    Updated: 2023/12/09 18:24:13 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/12/12 19:25:42 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,12 +46,12 @@ $(NAME):: $(MKFILE)
 	@if [ -f "$@" ]; then $(MAKE) fclean; fi
 
 $(NAME)::
-	@$(MAKE) -C $(DIRLIB) all
+	@$(MAKE) -s -C $(DIRLIB) --no-print-directory all
 
 $(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
 
 clean:
-	@$(MAKE) -C $(DIRLIB) clean
+	@$(MAKE) -C $(DIRLIB) --no-print-directory clean
 	$(RM) $(OBJ)
 
 fclean: clean
