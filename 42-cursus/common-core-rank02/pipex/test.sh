@@ -2,8 +2,8 @@
 
 make all
 
-< test1.txt cat | sed -r /^\s*$/d | head -5 | cut -d " " -f 1 > result1a.txt
-./pipex test1.txt cat 'sed -r /^\s*$/d' 'head -5' 'cut -d " " -f 1' result1b.txt
+< test1.txt cat | sed -E "/^\s*$/d" | head -5 | cut -d " " -f 1 > result1a.txt
+./pipex test1.txt cat 'sed -E "/^\s*$/d"' 'head -5' 'cut -d " " -f 1' result1b.txt
 
 < test2.txt cat | grep "^He has refused" | wc > result2a.txt
 ./pipex test2.txt cat 'grep "^He has refused"' wc result2b.txt
