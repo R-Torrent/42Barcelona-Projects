@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/09 17:49:48 by rtorrent          #+#    #+#              #
-#    Updated: 2023/12/12 19:25:42 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/12/16 03:36:52 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ NAME   := pipex
 
 HEADER := pipex.h
 
-SRC    := pipex.c
+SRC    := ft_getenv.c\
+		pipex.c
 
 OBJ    := $(SRC:.c=.o)
 

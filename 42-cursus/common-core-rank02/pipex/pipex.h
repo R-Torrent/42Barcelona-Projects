@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/13 07:40:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/16 02:42:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,26 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
-# define DEFAULT_SHELL "/bin/sh"
+# define RDR_INPUT   0
+# define RDR_OUTPUT  1
+# define RDR_APPOUT  2
+# define RDR_HEREDOC 3
+
+typedef struct s_commands
+{
+	char	**words;
+	char	*command;
+	t_list	*redir;
+}	t_comm;
+
+typedef struct s_redirection
+{
+	char	*word;
+	int		type;
+}	t_redir;
+
+// future 'libft' addition (stdlib.h) needed for the project
+char	*ft_getenv(const char *name);
 
 /* ************************************************************************** */
 
