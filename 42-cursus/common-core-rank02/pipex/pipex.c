@@ -6,22 +6,56 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/16 03:43:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/17 01:54:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	terminate_error(char *filename, int fd0, int fd1)
+void	del_redir(void *redir)
 {
+	free(((t_redir *)redir)->word);
+	free(redir);
+}
+
+void	del_comm(void *commv)
+{
+	t_comm *const	comm = (t_comm *)commv;
+	char **const	words0 = comm->words;
+
+	while (comm->words)
+		free(comm->words++);
+	free(words0);
+	free(comm->command);
+	ft_lstclear(&comm->redir, del_redir);
+	free(comm);
+}
+
+void	terminate(const char *filename, char **paths, t_list *pipeline, int n, ...)
+{
+	char **const	paths0 = paths;
+	va_list			ap;
+	int				fd;
+
+	while (*paths)
+		free(*paths++);
+	free(paths0);
+	ft_lstclear(&pipeline, del_comm);
+	if (!filename)
+		exit(n);
 	perror(filename);
-	if (fd0 != -1)
-		close(fd0);
-	if (fd1 != -1)
-		close(fd1);
+	va_start(ap, n);
+	while (n--)
+	{
+		fd = va_arg(ap, int);
+		if (fd != -1)
+			close(fd);
+	}
+	va_end(ap);
 	exit(EXIT_FAILURE);
 }
 
+/*
 void	open_files(const char *const infile, const char *const outfile, const int append)
 {
 	int	fd0 = open(argv[1], O_RDONLY);
@@ -30,19 +64,72 @@ void	open_files(const char *const infile, const char *const outfile, const int a
 	if (fd0 == -1)
 		exit(EXIT_SUCCESS);
 	if (fd0 == -1 || fd1 == -1 || dup2(fd0, 0) == -1 || dup2(fd1, 1) == -1)
-		terminate_error(fd0, fd1, argv[0]);
+		terminate(fd0, fd1, argv[0]);
 	if (close(fd0) != -1 && close(fd1) != -1)
 		return ;
 	perror(argv[0]);
 	exit(EXIT_FAILURE);
 }
-
-char	*find_comm(char *word, char *path)
+*/
+void	redir_command(const t_list *redir)
 {
+
+}
+
+void	exec_pipeline(t_list *pipeline, char *const *envp, const char *pipex_name, char **paths)
+{
+	int		fd[2];
+	pid_t	child_pid;
+
+	while (pipeline)
+	{
+		if (pipeline->next)
+		{
+			if (pipe(fd) == -1)
+				terminate(pipex_name, paths, pipeline, 2, 0, 1);
+			child_pid = fork();
+			if (child_pid == -1)
+				terminate(pipex_name, paths, pipeline, 4, fd[0], fd[1], 0, 1);
+			if (!child_pid)
+			{
+				if (close(fd[0]) | dup2(fd[1], 1) == -1 | close(fd[1]))
+					terminate(pipex_name, paths, pipeline, 2, 0, 1);
+				pipeline = pipeline -> next;
+				continue ;
+			}
+			if (close(fd[1]) | dup2(fd[0], 0) == -1 | close(fd[0]))
+				terminate(pipex_name, paths, pipeline, 2, 0, 1);
+		}
+		redir_command(((t_comm *)pipeline->content)->redir);
+		execve(((t_comm *)pipeline->content)->command, ((t_comm *)pipeline->content)->words, envp);
+		terminate(pipex_name, paths, pipeline, 0, 1);
+	}
+}
+
+char	*find_comm(char *word, char **paths)
+{
+	char	*word1;
+	char	*full_path;
+
+	if (ft_strchr(word, '/'))
+		return (word);
+	word1 = ft_strjoin("/", word);
+	while (*paths)
+	{
+		full_path = ft_strjoin(*paths, word1);
+		if (!access(full_path, X_OK))
+		{
+			free(word1);
+			return (full_path);
+		}
+		errno = 0;
+		free(full_path);
+	}
+	free(word1);
 	return (NULL);
 }
 
-void	*parse(t_list **ppipeln, int argc, char *argv[], char *path)
+void	parse_pipeline(t_list **ppipeln, int argc, char *const argv[], char **paths)
 {
 	const bool	here_doc = ft_strlen(argv[1]) == 8 && !ft_strncmp(argv[1], "here doc", 8);
 	int			i;
@@ -54,7 +141,7 @@ void	*parse(t_list **ppipeln, int argc, char *argv[], char *path)
 	{
 		words = ft_split(argv[i++], ' ');
 		ft_lstadd_front(ppipeln, ft_lstnew(malloc(sizeof(t_comm))));
-		*(*ppipeln)->content = (t_comm){words, find_comm(*words, path), NULL};
+		*(t_comm *)(*ppipeln)->content = (t_comm){words, find_comm(*words, paths), NULL};
 	}
 	if (here_doc)
 	{
@@ -66,37 +153,26 @@ void	*parse(t_list **ppipeln, int argc, char *argv[], char *path)
 		*redir[0] = (t_redir){argv[1], RDR_INPUT};
 		*redir[1] = (t_redir){argv[i], RDR_OUTPUT};
 	}
-	ft_lstadd_back(&ft_lstlast(*ppipeln)->content->redir, ft_lstnew(redir[0]));
-	ft_lstadd_back(&(*ppipeln)->content->redir, ft_lstnew(redir[1]));
+	ft_lstadd_back(&((t_comm *)ft_lstlast(*ppipeln)->content)->redir, ft_lstnew(redir[0]));
+	ft_lstadd_back(&((t_comm *)(*ppipeln)->content)->redir, ft_lstnew(redir[1]));
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
-	char *const		command_name = ft_strrchr(argv[0], '/') + 1;
-	t_list *		pipeline;
-	int				fd[2];
+	char *const		pipex_name = ft_strrchr(argv[0], '/') + 1;
+	t_list			*pipeline;
+	char **const	paths = ft_split(ft_getenv("PATH"), ':');
 	pid_t			child_pid;
+	int				wstatus;
 
-	parse(&pipeline, argc, argv, ft_getenv("PATH"));
-	open_files(argv[1], argv[--argc]);
-	while (--argc)
-	{
-		if (argc > 2)
-		{
-			if (pipe(fd) == -1)
-				terminate_error(2, 0, 1);
-			child_pid = fork();
-			if (child_pid == -1)
-				terminate_error(command_name, 4, fd[0], fd[1], 0, 1);
-			else if (!child_pid)
-				if (close(fd[0]) | dup2(fd[1], 1) == -1 | close(fd[1]))
-					terminate_error(command_name, 2, 0, 1);
-				else
-					continue ;
-			if (close(fd[1]) | dup2(fd[0], 0) == -1 | close(fd[0]))
-				terminate_error(command_name, 2, 0, 1);
-		}
-		execve(args[0], args, envp);
-		terminate_error(command_name, 0, 1);
-	}
+	pipeline = NULL;
+	parse_pipeline(&pipeline, argc, argv, paths);
+	child_pid = fork();
+	if (!child_pid)
+		exec_pipeline(pipeline, envp, pipex_name, paths);
+	if (child_pid == -1 || wait(&wstatus) == -1)
+		terminate(pipex_name, paths, pipeline, 2, 0, 1);
+	if (WIFEXITED(wstatus))
+		terminate(NULL, paths, pipeline, WEXITSTATUS(wstatus));
+	terminate(NULL, paths, pipeline, EXIT_SUCCESS);
 }

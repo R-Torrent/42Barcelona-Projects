@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/16 02:42:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/17 02:08:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include <sys/stat.h>
-# include <sys/types.h>
 
 // external declarations from the libc (AKA 'authorized functions')
 int		access(const char *pathname, int mode);
