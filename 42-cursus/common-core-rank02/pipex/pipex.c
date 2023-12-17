@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/17 01:54:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/17 19:51:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,11 @@ void	open_files(const char *const infile, const char *const outfile, const int a
 */
 void	redir_command(const t_list *redir)
 {
-
+	while (redir)
+	{
+		// CONTINUE HERE, REDIRECTING STDIN_FILENO & STDOUT_FILENO
+		redir = redir -> next;
+	}
 }
 
 void	exec_pipeline(t_list *pipeline, char *const *envp, const char *pipex_name, char **paths)
@@ -86,23 +90,23 @@ void	exec_pipeline(t_list *pipeline, char *const *envp, const char *pipex_name, 
 		if (pipeline->next)
 		{
 			if (pipe(fd) == -1)
-				terminate(pipex_name, paths, pipeline, 2, 0, 1);
+				terminate(pipex_name, paths, pipeline, 2, STDIN_FILENO, STDOUT_FILENO);
 			child_pid = fork();
 			if (child_pid == -1)
-				terminate(pipex_name, paths, pipeline, 4, fd[0], fd[1], 0, 1);
+				terminate(pipex_name, paths, pipeline, 4, fd[0], fd[1], STDIN_FILENO, STDOUT_FILENO);
 			if (!child_pid)
 			{
-				if (close(fd[0]) | dup2(fd[1], 1) == -1 | close(fd[1]))
-					terminate(pipex_name, paths, pipeline, 2, 0, 1);
+				if (close(fd[0]) | (dup2(fd[1], STDOUT_FILENO) == -1) | close(fd[1]))
+					terminate(pipex_name, paths, pipeline, 2, STDIN_FILENO, STDOUT_FILENO);
 				pipeline = pipeline -> next;
 				continue ;
 			}
-			if (close(fd[1]) | dup2(fd[0], 0) == -1 | close(fd[0]))
-				terminate(pipex_name, paths, pipeline, 2, 0, 1);
+			if (close(fd[1]) | (dup2(fd[0], STDIN_FILENO) == -1) | close(fd[0]))
+				terminate(pipex_name, paths, pipeline, 2, STDIN_FILENO, STDOUT_FILENO);
 		}
 		redir_command(((t_comm *)pipeline->content)->redir);
 		execve(((t_comm *)pipeline->content)->command, ((t_comm *)pipeline->content)->words, envp);
-		terminate(pipex_name, paths, pipeline, 0, 1);
+		terminate(pipex_name, paths, pipeline, STDIN_FILENO, STDOUT_FILENO);
 	}
 }
 
@@ -126,15 +130,15 @@ char	*find_comm(char *word, char **paths)
 		free(full_path);
 	}
 	free(word1);
-	return (NULL);
+	return (word);
 }
 
 void	parse_pipeline(t_list **ppipeln, int argc, char *const argv[], char **paths)
 {
-	const bool	here_doc = ft_strlen(argv[1]) == 8 && !ft_strncmp(argv[1], "here doc", 8);
-	int			i;
-	char		**words;
-	t_redir		*const redir[2] = {malloc(sizeof(t_redir)), malloc(sizeof(t_redir))};
+	const bool		here_doc = ft_strlen(argv[1]) == 8 && !ft_strncmp(argv[1], "here doc", 8);
+	int				i;
+	char			**words;
+	t_redir *const	redir[2] = {malloc(sizeof(t_redir)), malloc(sizeof(t_redir))};
 
 	i = 2 + here_doc;
 	while (i < argc - 1)
@@ -171,7 +175,7 @@ int	main(int argc, char *argv[], char *envp[])
 	if (!child_pid)
 		exec_pipeline(pipeline, envp, pipex_name, paths);
 	if (child_pid == -1 || wait(&wstatus) == -1)
-		terminate(pipex_name, paths, pipeline, 2, 0, 1);
+		terminate(pipex_name, paths, pipeline, 2, STDIN_FILENO, STDOUT_FILENO);
 	if (WIFEXITED(wstatus))
 		terminate(NULL, paths, pipeline, WEXITSTATUS(wstatus));
 	terminate(NULL, paths, pipeline, EXIT_SUCCESS);

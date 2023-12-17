@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/17 02:08:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/17 19:42:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@
 
 /* ************************************************************************** */
 
-# include <fcntl.h>
+# include <errno.h>
+//# include <fcntl.h>
 # include <stdlib.h>
-# include <sys/stat.h>
+# include <unistd.h>
+//# include <sys/stat.h>
 
 // external declarations from the libc (AKA 'authorized functions')
 int		access(const char *pathname, int mode);
