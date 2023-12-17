@@ -809,7 +809,7 @@ Move **signature.txt** to the empty folder where **git** cloned the *intra*'s pr
 
 ### B.3 Attachments
 
-![Attachments](src/img11.png "You may find this document as 'en.subject.pdf' next to this guide")(https://github.com/R-Torrent/42Barcelona-Projects/blob/master/42-cursus/common-core-rank01/Born2beroot/en.subject.pdf)
+[![Attachments](src/img11.png "Click to open 'en.subject.pdf', in this repository")](https://github.com/R-Torrent/42Barcelona-Projects/blob/master/42-cursus/common-core-rank01/Born2beroot/en.subject.pdf)
 
 ---
 
