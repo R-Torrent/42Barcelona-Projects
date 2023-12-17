@@ -791,25 +791,45 @@ Move **signature.txt** to the empty folder where **git** cloned the *intra*'s pr
 
 ## B. Preparing for the project defense
 
+![Scale for project **Born2beroot**](src/img08.png "Copy the URL to the Git repository")
+
 **NOTE**: Answers to questions from the evaluator, marked with `[A]` in this guide, may be very opinionated or completely unrelated to the reader's experience. Use common sense and supply your own answers where personal observations are expected.
 
 ### B.1 Introduction
+
+![Introduction](src/img09.png)
 
 ---
 
 ### B.2 Guidelines
 
----
-
-### B.3 Preliminaries
-
-#### B.3.a Preliminary tests
+![Guidelines](src/img10.png)
 
 ---
 
-### B.4 General instructions
+### B.3 Attachments
 
-#### B.4.a General instructions
+![Attachments](src/img11.png "You may find this document as 'en.subject.pdf' next to this guide")(https://github.com/R-Torrent/42Barcelona-Projects/blob/master/42-cursus/common-core-rank01/Born2beroot/en.subject.pdf)
+
+---
+
+### B.4 Preliminaries
+
+![Preliminaries](src/img12.png)
+
+#### B.4.a Preliminary tests
+
+![Preliminary tests](src/img13.png)
+
+---
+
+### B.5 General instructions
+
+![General instructions](src/img14.png)
+
+#### B.5.a General instructions
+
+![General instructions](src/img15.png)
 
 Navigate to the student's folder where the `.vdi` image resides (check **§ A.1.a Name and Operating System**), somewhere in the `SGoinfre` folder, and type
 > shasum -c [*path-to-cloned-git-project/*]signature.txt
@@ -822,9 +842,13 @@ Comparing the SHA checksums with the **diff** command is also acceptable. Check 
 
 ---
 
-### B.5 Mandatory part
+### B.6 Mandatory part
 
-#### B.5.a Project overview
+![Mandatory part](src/img16.png)
+
+#### B.6.a Project overview
+
+![Project overview](src/img17.png)
 
 [Q] Explain simply how a virtual machine works.
 
@@ -860,7 +884,9 @@ To list all loaded **APPArmor** profiles for applications and processes and deta
 
 **APPArmor** profiles live in `/etc/apparmor.d/`.
 
-#### B.5.b Simple setup
+#### B.6.b Simple setup
+
+![Simple setup](src/img18.png)
 
 The lack of a graphic envirornment should be obvious, but it can be verified with
 > echo $DESKTOP_SESSION
@@ -890,7 +916,9 @@ The recommended approach is
 
 with a nicer looking `PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"` (or the current Debian release) and `NAME="Debian GNU/Linux"`.
 
-#### B.5.c User
+#### B.6.c User
+
+![User](src/img19.png)
 
 We can confirm the presence of our login with
 > cat /etc/passwd | sed -n /^rtorrent/p (§)
@@ -937,7 +965,9 @@ As per instructions, we can check that the user belongs to this group:
 
 The advantage of this project's implementation is that its merits as a secure scheme—the encrypted passwords and the PAM module—have been ascertained by countless users for decades. Personally however, as a disadvantage, I can't find the rule "Your password has to expire every 30 days." very practical. I can imagine *many* users forgoing any whiff of security by writing their monthly *secret* passwords on Post-its and sticking them to their screens.
 
-#### B.5.d Hostname and partitions
+#### B.6.d Hostname and partitions
+
+![Hostname and partitions](src/img20.png)
 
 The hostname of the VM should be obvious to all as it is included in the CLI prompt of the terminal: `[user-login]42`, in my case `rtorrent42` (§). Just to drive the point further, use command
 > hostname
@@ -965,7 +995,9 @@ We can exhibit the machine's partitions with command **lsblk** (list block devic
 
 [A] **LVM** stands for Logical Volume Manager, a tool that allows you to create, resize, delete, and extend partitions on Linux servers. It breaks physical volumes—hard disks, their partitions, external storage devices…—into physical chunks (*physical extents*, PEs) which are mapped one-to-one into *logical extents*, LEs. These are pooled together to form *logical groups*, whence LEs are concatenated, split, and merged at will into *logical volumes* acting as virtual disk partitions.
 
-#### B.5.e sudo
+#### B.6.e sudo
+
+![sudo](src/img21.png)
 
 With `sudo -V` we can read the version of the installed **sudo** (and the versions of the security policy and I/O plugins). We can unequivocally verify if the package is installed with `dpkg -s sudo`.
 
@@ -1014,7 +1046,9 @@ First of all, point out that the list of recorded **sudo** commands has indeed l
 - A more persuasive case can be made with the command `sudo date`. Its replay will output the same ***stored*** date and time. Use `sudo sudoreplay -d /var/log/sudo -l command date` to figure the `TSID`.
 - And an ***even more*** jaw-dropping demonstration can be made by typing into a text file, `sudo vi test.txt` (§)(†) and replaying that motion picture. Recall that the instructions request us to archive both the outputs ***and*** the inputs. The latter are stored in the session's `ttyin` folder. We can replay all the keystrokes, including our fumbling with **vi**'s interface, with `sudo sudoreplay -d /var/log/sudo -f ttyin 0000XX` (§). [Evidently, supply the pertinent `TSID`.]
 
-#### B.5.f UFW
+#### B.6.f UFW
+
+![UFW](src/img22.png)
 
 We have already checked that the service is running, in **§ B.5.b Simple setup**, but we can also prove that it has been correctly installed:
 > dpkg -s ufw
@@ -1068,7 +1102,9 @@ Both operations must be confirmed (`Proceed with operation (y|n)?`).
 
 End with a `sudo ufw status` to attest that everything is back to the starting conditions.
 
-#### B.5.g SSH
+#### B.6.g SSH
+
+![SSH](src/img23.png)
 
 As before, we know the service is up and running from **§ B.5.b Simple setup**, but we can also prove that the package has been correctly installed:
 > dpkg -s openssh-server
@@ -1094,7 +1130,9 @@ If, on the other hand, one chose ***not*** to reroute the `localhost` port, it i
 - Do attempt to login as `root` via **ssh**. As instructed in the document, this effort ***should fail***.
 - More information of the **ssh** command at `man 1 ssh`.
 
-#### B.5.h Script monitoring
+#### B.6.h Script monitoring
+
+![Script monitoring](src/img24.png)
 
 [Q] Explain simply how the script works by showing the code.
 
@@ -1155,7 +1193,7 @@ We shall not re-enable the timer. Instead, we will demonstrate perhaps one of th
 - The `monitoring.timer.d/` directory will be gone.
 - The `revert` command will verbalize any changes, but a final `systemctl --quiet status monitoring.timer` (§) will display a `disabled` and yet original timer.
 
-##### B.5.h.1 Cron rescheduling [ Not recommended! ]
+##### B.6.h.1 Cron rescheduling [ Not recommended! ]
 
 The next step will depend on which *crontab* is responsible for running the script (see **§ A.3.h.1 Cron scheduling**). If that *crontab* is `root`'s, then
 > sudo crontab -e
@@ -1181,6 +1219,10 @@ After restarting the machine, `sudo reboot`, it should be obvious that the scrip
 
 ---
 
-### B.6 Bonus
+### B.7 Bonus
 
-#### B.6.a Bonus
+![Bonus](src/img25.png)
+
+#### B.7.a Bonus
+
+![Bonus](src/img26.png)
