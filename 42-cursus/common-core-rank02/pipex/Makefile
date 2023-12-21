@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/09 17:49:48 by rtorrent          #+#    #+#              #
-#    Updated: 2023/12/16 03:36:52 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/12/21 03:07:38 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,10 @@ NAME   := pipex
 HEADER := pipex.h
 
 SRC    := ft_getenv.c\
-		pipex.c
+		link_pipeline.c\
+		parse_pipeline.c\
+		pipex.c\
+		terminate.c
 
 OBJ    := $(SRC:.c=.o)
 

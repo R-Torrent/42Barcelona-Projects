@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/17 19:42:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/21 13:01:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,9 @@
 
 /* ************************************************************************** */
 
-# include <errno.h>
-//# include <fcntl.h>
+# include <fcntl.h>
 # include <stdlib.h>
 # include <unistd.h>
-//# include <sys/stat.h>
 
 // external declarations from the libc (AKA 'authorized functions')
 int		access(const char *pathname, int mode);
@@ -50,10 +48,19 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define RDR_APPOUT  2
 # define RDR_HEREDOC 3
 
+# define COMMAND_NOT_FOUND 127
+# define COMMAND_NOT_EXECUTABLE 126
+
+typedef struct s_data
+{
+	char	*pipex_name;
+	t_list	*pipeline;
+	char	**paths;
+}	t_data;
+
 typedef struct s_commands
 {
 	char	**words;
-	char	*command;
 	t_list	*redir;
 }	t_comm;
 
@@ -62,6 +69,11 @@ typedef struct s_redirection
 	char	*word;
 	int		type;
 }	t_redir;
+
+void	child_exit(t_data *const pdata, int exit_status);
+void	link_pipeline(t_data *const pdata, char *const *envp);
+void	parse_pipeline(t_data *const pdata, const int argc, char *const argv[]);
+void	terminate(t_data *const pdata, const int exit_stats, int xtra_fds, ...);
 
 // future 'libft' addition (stdlib.h) needed for the project
 char	*ft_getenv(const char *name);

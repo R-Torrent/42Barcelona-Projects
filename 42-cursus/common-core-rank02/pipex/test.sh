@@ -8,8 +8,8 @@ make all
 < test2.txt cat | grep "^He has refused" | wc > result2a.txt
 ./pipex test2.txt cat 'grep "^He has refused"' wc result2b.txt
 
-< test3.txt ls -l .. | wc -l > result3a.txt
-./pipex test3.txt 'ls -l ..' 'wc -l' result3b.txt
+< /dev/stdin ls -l .. | wc -l > result3a.txt
+./pipex /dev/stdin 'ls -l ..' 'wc -l' result3b.txt
 
 for i in $(seq 1 3);
 do
