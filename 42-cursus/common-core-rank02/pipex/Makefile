@@ -6,39 +6,43 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/09 17:49:48 by rtorrent          #+#    #+#              #
-#    Updated: 2023/12/21 03:07:38 by rtorrent         ###   ########.fr        #
+#    Updated: 2023/12/22 05:40:24 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Tools and options:
 
-CFLAGS += -Werror -Wextra -Wall
+CFLAGS     := -Werror -Wextra -Wall
 
-RM     := rm -f
+DEBUGFLAGS := -g
+
+RM         := rm -f
 
 # **************************************************************************** #
 
 # Filenames:
 
-NAME   := pipex
+NAME    := pipex
 
-HEADER := pipex.h
+HEADER  := pipex.h
 
-SRC    := ft_getenv.c\
+SRC :=	ft_getenv.c\
 		link_pipeline.c\
 		parse_pipeline.c\
 		pipex.c\
 		terminate.c
 
-OBJ    := $(SRC:.c=.o)
+OBJ     := $(SRC:.c=.o)
 
-DIRLIB := libft/
+DIRLIB  := libft/
 
-NAMELB := libft.a
+NAMELB  := libft.a
 
-HDRLIB := libft.h
+HDRLIB  := libft.h
 
-MKFILE := $(lastword $(MAKEFILE_LIST))
+NAMEGDB := pipex-gdb
+
+MKFILE  := $(lastword $(MAKEFILE_LIST))
 
 # **************************************************************************** #
 
@@ -46,28 +50,40 @@ MKFILE := $(lastword $(MAKEFILE_LIST))
 
 all: $(NAME)
 
-$(NAME):: $(MKFILE)
+$(NAME) $(NAMEGDB):: $(MKFILE)
 	@if [ -f "$@" ]; then $(MAKE) fclean; fi
 
-$(NAME)::
+$(NAME) $(NAMEGDB)::
 	@$(MAKE) -s -C $(DIRLIB) --no-print-directory all
 
-$(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
+$(NAME) $(NAMEGDB):: $(OBJ) $(DIRLIB)$(NAMELB)
+	$(CC) $^ -o $@
 
-clean:
+clean: clean1
 	@$(MAKE) -C $(DIRLIB) --no-print-directory clean
+
+clean1:
 	$(RM) $(OBJ)
 
 fclean: clean
 	$(RM) $(DIRLIB)$(NAMELB)
 	$(RM) $(NAME)
+	$(RM) $(NAMEGDB)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+debug: clean1 $(NAMEGDB)
+
+.PHONY: all clean clean1 fclean re debug
 
 # **************************************************************************** #
 
 # Build prerequisites:
 
 $(OBJ): %.o: %.c $(HEADER) $(DIRLIB)$(HDRLIB)
+
+# **************************************************************************** #
+
+# Target-specific assignments:
+
+debug: CFLAGS += $(DEBUGFLAGS)
