@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 11:52:36 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/21 13:05:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2023/12/23 04:36:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	del_redir(void *redir)
 {
-	free(((t_redir *)redir)->word);
 	free(redir);
 }
 
@@ -23,8 +22,8 @@ void	del_comm(void *commv)
 	t_comm *const	comm = (t_comm *)commv;
 	char **const	words0 = comm->words;
 
-	while (comm->words)
-		free(comm->words++);
+	while (*comm->words)
+		free(*comm->words++);
 	free(words0);
 	ft_lstclear(&comm->redir, del_redir);
 	free(comm);
@@ -34,12 +33,10 @@ void	del_data(t_data *const pdata)
 {
 	char **const	paths0 = pdata->paths;
 
-	free(pdata->pipex_name);
 	ft_lstclear(&pdata->pipeline, del_comm);
 	while (*pdata->paths)
 		free(*pdata->paths++);
 	free(paths0);
-	free(pdata);
 }
 
 void	terminate(t_data *const pdata, const int exit_stats, int xtra_fds, ...)
