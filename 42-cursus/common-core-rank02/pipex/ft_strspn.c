@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_getenv.c                                        :+:      :+:    :+:   */
+/*   ft_strspn.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/16 01:38:15 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/01 15:18:37 by rtorrent         ###   ########.fr       */
+/*   Created: 2024/01/01 12:19:43 by rtorrent          #+#    #+#             */
+/*   Updated: 2024/01/01 15:58:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*ft_getenv(const char *name)
+size_t	ft_strspn(const char *s, const char *accept)
 {
-	extern char	**environ;
-	const int	n = ft_strlen(name);
-	int			i;
+	const char *const	s0 = s;
+	const char *const	a0 = accept;
 
-	i = 0;
-	while (environ[i])
+	while (*s)
 	{
-		if (!ft_strncmp(environ[i], name, n) && environ[i][n] == '=')
-			return (environ[i] + n + 1);
-		i++;
+		accept = a0;
+		while (true)
+		{
+			if (!*accept)
+				return (s - s0);
+			else if (*s == *accept++)
+				break ;
+		}
+		s++;
 	}
-	return (NULL);
+	return (s - s0);
 }

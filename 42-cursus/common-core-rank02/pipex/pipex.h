@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/21 13:01:29 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/01 19:29:38 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
+// quoting flags
+# define QUOT_SQ 01
+# define QUOT_DQ 02
+
+// redirection options
 # define RDR_INPUT   0
 # define RDR_OUTPUT  1
 # define RDR_APPOUT  2
@@ -75,8 +80,9 @@ void	link_pipeline(t_data *const pdata, char *const *envp);
 void	parse_pipeline(t_data *const pdata, const int argc, char *const argv[]);
 void	terminate(t_data *const pdata, const int exit_stats, int xtra_fds, ...);
 
-// future 'libft' addition (stdlib.h) needed for the project
+// future 'libft' additions (stdlib.h & string.h) needed for the project
 char	*ft_getenv(const char *name);
+size_t	ft_strspn(const char *s, const char *accept);
 
 /* ************************************************************************** */
 
