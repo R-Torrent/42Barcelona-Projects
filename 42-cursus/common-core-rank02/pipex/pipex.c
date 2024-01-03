@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/21 04:34:14 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/03 02:01:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(int argc, char *argv[], char *envp[])
 	data.pipex_name = ft_strrchr(argv[0], '/') + 1;
 	data.pipeline = NULL;
 	data.paths = ft_split(ft_getenv("PATH"), ':');
-	parse_pipeline(&data, argc, argv);
+	parse_pipeline(&data.pipeline, argc, argv);
 	child_pid = fork();
 	if (!child_pid)
 		link_pipeline(&data, envp);

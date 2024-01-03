@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/01 19:29:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/03 02:08:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct s_redirection
 
 void	child_exit(t_data *const pdata, int exit_status);
 void	link_pipeline(t_data *const pdata, char *const *envp);
-void	parse_pipeline(t_data *const pdata, const int argc, char *const argv[]);
+void	parse_pipeline(t_list **const ppln, const int argc, char *const argv[]);
 void	terminate(t_data *const pdata, const int exit_stats, int xtra_fds, ...);
 
 // future 'libft' additions (stdlib.h & string.h) needed for the project

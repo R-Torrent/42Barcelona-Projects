@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:18:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/01 19:16:02 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/03 02:08:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,18 +98,16 @@ char	**get_tokens(const char *str)
 	return (form_array(tokens));
 }
 
-void	parse_pipeline(t_data *const pdata, const int argc, char *const argv[])
+void	parse_pipeline(t_list **const ppln, const int argc, char *const argv[])
 {
 	const bool	here_doc = !ft_strncmp(argv[1], "here doc", 9);
 	int			i;
-	char		**words;
 
 	i = 2 + here_doc;
 	while (i < argc - 1)
 	{
-		words = get_tokens(argv[i++]);
-		ft_lstadd_front(&pdata->pipeline, ft_lstnew(malloc(sizeof(t_comm))));
-		*(t_comm *)pdata->pipeline->content = (t_comm){words, NULL};
+		ft_lstadd_front(ppln, ft_lstnew(malloc(sizeof(t_comm))));
+		*(t_comm *)(*ppln)->content = (t_comm){get_tokens(argv[i++]), NULL};
 	}
-	redir(pdata->pipeline, here_doc, i, argv);
+	redir(*ppln, here_doc, i, argv);
 }
