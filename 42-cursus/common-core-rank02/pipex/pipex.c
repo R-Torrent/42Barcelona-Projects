@@ -6,11 +6,44 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/03 02:01:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/04 16:22:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	del_comm(void *commv)
+{
+	t_comm *const	comm = (t_comm *)commv;
+	char **const	words0 = comm->words;
+
+	free(comm->binary);
+	while (*comm->words)
+		free(*comm->words++);
+	free(words0);
+	ft_lstclear(&comm->redir, free);
+	free(comm);
+}
+
+void	del_data(t_data *const pdata)
+{
+	char **const	paths0 = pdata->paths;
+
+	ft_lstclear(&pdata->pipeline, del_comm);
+	while (*pdata->paths)
+		free(*pdata->paths++);
+	free(paths0);
+}
+
+void	terminate(t_data *const pdata, const int exit_status)
+{
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	if (exit_status == EXIT_FAILURE)
+		perror(pdata->pipex_name);
+	del_data(pdata);
+	exit(exit_status);
+}
 
 int	main(int argc, char *argv[], char *envp[])
 {
@@ -25,9 +58,7 @@ int	main(int argc, char *argv[], char *envp[])
 	child_pid = fork();
 	if (!child_pid)
 		link_pipeline(&data, envp);
-	if (child_pid == -1 || wait(&wstatus) == -1)
-		terminate(&data, EXIT_FAILURE, 0);
-	if (WIFEXITED(wstatus))
-		terminate(&data, WEXITSTATUS(wstatus), 0);
-	terminate(&data, EXIT_SUCCESS, 0);
+	if (child_pid == -1 || wait(&wstatus) == -1 || !WIFEXITED(wstatus))
+		terminate(&data, EXIT_FAILURE);
+	terminate(&data, WEXITSTATUS(wstatus));
 }

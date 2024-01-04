@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/04 10:49:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/04 16:07:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ typedef struct s_redirection
 
 void	link_pipeline(t_data *const pdata, char *const *envp);
 void	parse_pipeline(t_list **const ppln, const int argc, char *const argv[]);
-void	terminate(t_data *const pdata, const int exit_stats, int xtra_fds, ...);
 
 // future 'libft' additions (stdlib.h & string.h) needed for the project
 char	*ft_getenv(const char *name);
