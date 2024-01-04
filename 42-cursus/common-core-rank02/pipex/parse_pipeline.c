@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:18:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/03 02:08:29 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/03 02:33:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ size_t	get_one_token(size_t *n, char *dst, const char *src)
 	return (src - src0);
 }
 
-char	**get_tokens(const char *str)
+char	**get_tkns(const char *str)
 {
 	t_list	*tokens;
 	size_t	n;
@@ -107,7 +107,7 @@ void	parse_pipeline(t_list **const ppln, const int argc, char *const argv[])
 	while (i < argc - 1)
 	{
 		ft_lstadd_front(ppln, ft_lstnew(malloc(sizeof(t_comm))));
-		*(t_comm *)(*ppln)->content = (t_comm){get_tokens(argv[i++]), NULL};
+		*(t_comm *)(*ppln)->content = (t_comm){NULL, get_tkns(argv[i++]), NULL};
 	}
 	redir(*ppln, here_doc, i, argv);
 }

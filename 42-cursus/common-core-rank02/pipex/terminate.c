@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 11:52:36 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/23 04:36:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/03 02:46:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	del_comm(void *commv)
 	t_comm *const	comm = (t_comm *)commv;
 	char **const	words0 = comm->words;
 
+	free(comm->binary);
 	while (*comm->words)
 		free(*comm->words++);
 	free(words0);

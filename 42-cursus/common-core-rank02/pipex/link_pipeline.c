@@ -6,65 +6,56 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:26:24 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/21 12:59:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/04 03:04:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*find_comm(t_data *const pdata, char *word)
+void	seek_binary(t_data *const pdata, char **pbinary, char *word)
 {
-	char		**paths;
-	char *const	word1 = ft_strjoin("/", word);
-	char		*full_path;
+	char	**paths;
 
-	if (!ft_strchr(word, '/'))
+	if (ft_strchr(word, '/'))
+		*pbinary = ft_strdup(word);
+	else
 	{
+		word = ft_strjoin("/", word);
 		paths = pdata->paths;
 		while (*paths)
 		{
-			full_path = ft_strjoin(*paths++, word1);
-			if (!access(full_path, F_OK))
-			{
-				free(word1);
-				if (!access(full_path, X_OK))
-					return (full_path);
-				child_exit(pdata, COMMAND_NOT_EXECUTABLE);
-			}
-			free(full_path);
+			free(*pbinary);
+			*pbinary = ft_strjoin(*paths, word);
+			if (!access(*pbinary, F_OK))
+				break ;
+			paths++;
 		}
-		free(word1);
-		child_exit(pdata, COMMAND_NOT_FOUND);
+		free(word);
 	}
-	if (access(word, F_OK))
+	if (access(*pbinary, F_OK))
 		child_exit(pdata, COMMAND_NOT_FOUND);
-	if (access(word, X_OK))
+	if (access(*pbinary, X_OK))
 		child_exit(pdata, COMMAND_NOT_EXECUTABLE);
-	return (word);
-}
+}		
 
 void	redir_command(t_data *const pdata, const t_list *redir)
 {
-	t_redir	*rdr;
-	int		flags;
-	int		mode;
-	int		target;
-	int		fd;
+	t_redir		*rdr;
+	int			flags;
+	const int	mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	int			target;
+	int			fd;
 
 	while (redir)
 	{
 		rdr = redir->content;
-		if (rdr->type == RDR_INPUT || rdr->type == RDR_HEREDOC)
-		{
-			flags = O_RDONLY;
-			target = STDIN_FILENO;
-		}
-		else
+		flags = O_RDONLY;
+		target = STDIN_FILENO;
+		if (rdr->type == RDR_OUTPUT || rdr->type == RDR_APPOUT)
 		{
 			flags = O_CREAT | O_WRONLY;
 			if (rdr->type == RDR_APPOUT)
 				flags |= O_APPEND;
-			mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 			target = STDOUT_FILENO;
 		}
 		fd = open(rdr->word, flags, mode);
@@ -79,7 +70,8 @@ void	exec_pipeline(t_data *const pdata, t_list *pln, char *const *envp)
 	t_comm *const	comm = pln->content;
 
 	redir_command(pdata, comm->redir);
-	execve(find_comm(pdata, *comm->words), comm->words, envp);
+	seek_binary(pdata, &comm->binary, *comm->words);
+	execve(comm->binary, comm->words, envp);
 	child_exit(pdata, EXIT_FAILURE);
 }
 

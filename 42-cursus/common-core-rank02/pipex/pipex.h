@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/03 02:08:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/03 02:29:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_data
 
 typedef struct s_commands
 {
+	char	*binary;
 	char	**words;
 	t_list	*redir;
 }	t_comm;
