@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:26:24 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/04 16:28:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/04 22:22:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,40 +87,35 @@ void	redir_command(t_data *const pdata, const t_list *redir)
 	}
 }
 
-void	exec_pipeline(t_data *const pdata, t_comm *const com, char *const *envp)
+void	exec_pln(t_data *const pdata, t_comm *const comm, char *const *envp)
 {
-	redir_command(pdata, com->redir);
-	seek_binary(pdata, &com->binary, *com->words);
-	execve(com->binary, com->words, envp);
+	redir_command(pdata, comm->redir);
+	seek_binary(pdata, &comm->binary, *comm->words);
+	execve(comm->binary, comm->words, envp);
 	child_exit(pdata, EXIT_FAILURE, 0);
 }
 
-void	link_pipeline(t_data *const pdata, char *const *envp)
+void	link_pln(t_data *const pdata, t_list *const pln, char *const *envp)
 {
-	t_list	*pln;
 	int		fd[2];
 	pid_t	child_pid;
 
-	pln = pdata->pipeline;
-	while (pln)
+	if (pln->next)
 	{
-		if (pln->next)
+		if (pipe(fd) == -1)
+			child_exit(pdata, EXIT_FAILURE, 0);
+		child_pid = fork();
+		if (child_pid == -1)
+			child_exit(pdata, EXIT_FAILURE, 2, fd[0], fd[1]);
+		if (!child_pid)
 		{
-			if (pipe(fd) == -1)
+			if (close(fd[0]) | (dup2(fd[1], STDOUT_FILENO) == -1)
+				| close(fd[1]))
 				child_exit(pdata, EXIT_FAILURE, 0);
-			child_pid = fork();
-			if (child_pid == -1)
-				child_exit(pdata, EXIT_FAILURE, 2, fd[0], fd[1]);
-			if (!child_pid)
-			{
-				if (close(fd[0]) | (dup2(fd[1], STDOUT_FILENO) == -1) | close(fd[1]))
-					child_exit(pdata, EXIT_FAILURE, 0);
-				pln = pln->next;
-				continue ;
-			}
-			if (close(fd[1]) | (dup2(fd[0], STDIN_FILENO) == -1) | close(fd[0]))
-				child_exit(pdata, EXIT_FAILURE, 0);
+			link_pln(pdata, pln->next, envp);
 		}
-		exec_pipeline(pdata, pln->content, envp);
+		if (close(fd[1]) | (dup2(fd[0], STDIN_FILENO) == -1) | close(fd[0]))
+			child_exit(pdata, EXIT_FAILURE, 0);
 	}
+	exec_pln(pdata, pln->content, envp);
 }

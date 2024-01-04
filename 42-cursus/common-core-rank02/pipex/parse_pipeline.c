@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:18:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/03 02:33:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/04 22:21:23 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ char	**get_tkns(const char *str)
 	return (form_array(tokens));
 }
 
-void	parse_pipeline(t_list **const ppln, const int argc, char *const argv[])
+void	parse_pln(t_list **const ppln, const int argc, char *const argv[])
 {
 	const bool	here_doc = !ft_strncmp(argv[1], "here doc", 9);
 	int			i;
