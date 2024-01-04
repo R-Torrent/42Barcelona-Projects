@@ -6,16 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 11:52:36 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/04 10:48:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/04 11:50:02 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	del_redir(void *redir)
-{
-	free(redir);
-}
 
 void	del_comm(void *commv)
 {
@@ -26,7 +21,7 @@ void	del_comm(void *commv)
 	while (*comm->words)
 		free(*comm->words++);
 	free(words0);
-	ft_lstclear(&comm->redir, del_redir);
+	ft_lstclear(&comm->redir, free);
 	free(comm);
 }
 
