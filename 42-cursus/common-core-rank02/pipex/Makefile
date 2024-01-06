@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/09 17:49:48 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/04 16:09:08 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/06 18:41:19 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,9 @@ NAME    := pipex
 
 HEADER  := pipex.h
 
-SRC :=	ft_getenv.c\
+SRC :=	ft_dprintf.c\
+		ft_getenv.c\
+		ft_lsttoarray.c\
 		ft_strspn.c\
 		link_pipeline.c\
 		parse_pipeline.c\

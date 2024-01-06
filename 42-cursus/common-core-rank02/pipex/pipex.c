@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/04 22:20:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/06 17:15:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	main(int argc, char *argv[], char *envp[])
 	data.pipex_name = ft_strrchr(argv[0], '/') + 1;
 	data.pipeline = NULL;
 	data.paths = ft_split(ft_getenv("PATH"), ':');
-	parse_pln(&data.pipeline, argc, argv);
+	parse_pln(&data.pipeline, data.paths, argc, argv);
 	child_pid = fork();
 	if (!child_pid)
-		link_pln(&data, data.pipeline, envp);
+		link_pln(data.pipeline, envp, data.pipex_name);
 	if (child_pid == -1 || wait(&wstatus) == -1 || !WIFEXITED(wstatus))
 		terminate(&data, EXIT_FAILURE);
 	terminate(&data, WEXITSTATUS(wstatus));

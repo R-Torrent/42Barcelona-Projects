@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/04 22:21:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/06 18:35:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 /* ************************************************************************** */
 
+# include <errno.h>
 # include <fcntl.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -76,11 +77,15 @@ typedef struct s_redirection
 	int		type;
 }	t_redir;
 
-void	link_pln(t_data *const pdata, t_list *const pln, char *const *envp);
-void	parse_pln(t_list **const ppln, const int argc, char *const argv[]);
+void	link_pln(t_list *const pln, char *const *envp, char *const pipex_name);
+void	parse_pln(t_list **const ppln, char *const *paths, const int argc,
+			char *const argv[]);
 
-// future 'libft' additions (stdlib.h & string.h) needed for the project
+// additional 'libft' functions required for this project
+// (stdio.h, stdlib.h, 'bonus list functions' and string.h, respectively)
+int		ft_dprintf(int fd, const char *format, ...);
 char	*ft_getenv(const char *name);
+void	**ft_lsttoarray(t_list *lst);
 size_t	ft_strspn(const char *s, const char *accept);
 
 /* ************************************************************************** */
