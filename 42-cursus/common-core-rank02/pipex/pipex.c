@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/06 17:15:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/09 00:40:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ void	del_data(t_data *const pdata)
 	while (*pdata->paths)
 		free(*pdata->paths++);
 	free(paths0);
+	if (pdata->std_fds[0] != -1)
+		close(pdata->std_fds[0]);
+	if (pdata->std_fds[1] != -1)
+		close(pdata->std_fds[1]);
 }
 
 void	terminate(t_data *const pdata, const int exit_status)
@@ -55,9 +59,13 @@ int	main(int argc, char *argv[], char *envp[])
 	data.pipeline = NULL;
 	data.paths = ft_split(ft_getenv("PATH"), ':');
 	parse_pln(&data.pipeline, data.paths, argc, argv);
+	data.std_fds[0] = dup(STDIN_FILENO);
+	data.std_fds[1] = dup(STDOUT_FILENO);
+	if (data.std_fds[0] == -1 || data.std_fds[1] == -1)
+		terminate(&data, EXIT_FAILURE);
 	child_pid = fork();
 	if (!child_pid)
-		link_pln(data.pipeline, envp, data.pipex_name);
+		link_pln(data.pipeline, envp, &data);
 	if (child_pid == -1 || wait(&wstatus) == -1 || !WIFEXITED(wstatus))
 		terminate(&data, EXIT_FAILURE);
 	terminate(&data, WEXITSTATUS(wstatus));

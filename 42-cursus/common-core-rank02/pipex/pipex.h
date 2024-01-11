@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/06 18:35:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/08 23:10:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define RDR_OUTPUT  1
 # define RDR_APPOUT  2
 # define RDR_HEREDOC 3
+# define TMP_HEREDOC "/tmp/hd"
+# define PROMPT_HEREDOC "> "
 
 # define COMMAND_NOT_FOUND 127
 # define COMMAND_NOT_EXECUTABLE 126
@@ -62,6 +64,7 @@ typedef struct s_data
 	char	*pipex_name;
 	t_list	*pipeline;
 	char	**paths;
+	int		std_fds[2];
 }	t_data;
 
 typedef struct s_commands
@@ -77,7 +80,7 @@ typedef struct s_redirection
 	int		type;
 }	t_redir;
 
-void	link_pln(t_list *const pln, char *const *envp, char *const pipex_name);
+void	link_pln(t_list *const pln, char *const *envp, t_data *const pdata);
 void	parse_pln(t_list **const ppln, char *const *paths, const int argc,
 			char *const argv[]);
 
