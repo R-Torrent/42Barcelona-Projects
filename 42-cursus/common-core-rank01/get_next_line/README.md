@@ -20,6 +20,18 @@ Notes:
 
 #### A.1 get_next_line.h
 
+Provides, among other stuff,
+- Inclusion of headers.
+- Macro definitions, notably the conditional definitions of the `BUFFER_SIZE` and `DEFAULT_LIST_SIZE` constants.
+- Declaration of all functions with external linkage.
+- Definition of the fundamental `s_block` structures that constitute the project's lists. Note: `t_blocks` is a pointer to said structure.<br>
+  a. `size_t len` <br>
+  b. `unsigned int len` <br>
+  c. `unsigned int index` <br>
+	d. `struct s_block *prev` <br>
+	e. `char *start` <br>
+	f. `char str[BUFFER_SIZE]`
+
 #### A.2 get_next_line.c
 
 #### A.3 get_next_line_utils.c
