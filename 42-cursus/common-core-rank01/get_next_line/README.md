@@ -11,3 +11,51 @@ Features of this solution:
 Notes:
 - The three *bonus* files included with the project are there for 42's ***Moulinette*** benefit and to reap the 125 score. The basic three *mandatory* `get_next_line.h`, `get_next_line.c`, and `get_next_line_utils.c` also fulfill every demand in the project.
 - The lists employed here are not the *bonus* list structure and related functions coded in the `common-core-rank00/Libft` project. Unfortunately, the extra dereferencing required from the `->content` layer of abstraction makes it impossible to meet ***Norminette***'s stringent rules in a single file.
+
+---
+
+## Contents
+
+### A. Mandatory part
+
+#### A.1 get_next_line.h
+
+#### A.2 get_next_line.c
+
+#### A.3 get_next_line_utils.c
+
+---
+
+### B. Bonus part
+
+#### B.1 get_next_line_bonus.h
+
+Note: Identical to **get_next_line.h**, except in name.
+
+#### B.2 get_next_line_bonus.c
+
+Note: Identical to **get_next_line.c**, except in name.
+
+#### B.3 get_next_line_utils_bonus.c
+
+Note: Identical to **get_next_line_utils.c**, except in name.
+
+---
+
+### C. Rudimentary testing provided
+
+#### C.1 tester.c
+
+A very simple program that provides confirmation that simultaneous line fetching from various files is possible. Additional tests, such as reading from the `stdin`, reading very short or very long lines, or `\n` *vs* non-`\n` ending files is up to the examiner.
+
+#### C.2 test1.txt
+
+Standard *Lorem ipsum* placeholder; text by Cicero.
+
+#### C.3 test2.txt
+
+Extract from the United States Declaration of Independence.
+
+#### C.4 test3.txt
+
+A string of all decimal digits, ordered.
