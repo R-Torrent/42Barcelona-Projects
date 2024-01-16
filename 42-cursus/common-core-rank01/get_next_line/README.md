@@ -11,6 +11,7 @@ Features of this solution:
 Notes:
 - The three *bonus* files included with the project are there for 42's ***Moulinette*** benefit and to reap the 125 score. The basic three *mandatory* `get_next_line.h`, `get_next_line.c`, and `get_next_line_utils.c` also fulfill every demand in the project.
 - The lists employed here are not the *bonus* list structure and related functions coded in the `common-core-rank00/Libft` project. Unfortunately, the extra dereferencing required from the `->content` layer of abstraction makes it impossible to meet ***Norminette***'s stringent rules in a single file.
+- This project employs the *mem* functions in `<string.h>` to process the arrays, with additional info on the length of each recorded in the list blocks. The sole `NUL` character (`'\0'`) to be found is the delimiter of the final, assembled line.
 
 ---
 
@@ -25,11 +26,11 @@ Provides, among other stuff,
 - Macro definitions, notably the conditional definitions of the `BUFFER_SIZE` and `DEFAULT_LIST_SIZE` constants.
 - Declaration of all functions with external linkage.
 - Definition of the fundamental `struct s_block` blocks that constitute the project's lists. **Note**: `t_blocks` is a *typedef* pointer to said structure.<br>
-	1. `size_t len` <br>
-	2. `unsigned int index` <br>
-	3. `struct s_block *prev` <br>
-	4. `char *start` <br>
-	5. `char str[BUFFER_SIZE]`
+	1. `size_t len` processable characters from the *start* point to the end of the block<br>
+	2. `unsigned int index` index (mod `DEFAULT_LIST_SIZE`) of the block; used to mark the need for a new batch allocation of memory<br>
+	3. `struct s_block *prev` previous block in the list<br>
+	4. `char *start` starting point of the line or continuation therefrom in the next blocks<br>
+	5. `char str[BUFFER_SIZE]` complete byte string read from the file
 
 #### A.2 get_next_line.c
 
@@ -39,9 +40,13 @@ Provides, among other stuff,
 
 ##### A.2.c `static ssize_t add_block(int fd, t_blocks *plist)`
 
+Fills in a new block of data from the file into the list, linking with its predecessor. Moves the pointer `plist` to the new block. Returns the number of characters read from the file, possibly less than `BUFFER_SIZE`.
+
 ##### A.2.d `static bool asm_line(t_blocks *plst_copy, t_blocks *plst_del, char **line)`
 
 ##### A.2.e `static void clear_blocks(t_blocks *plist, bool skip_first)`
+
+Frees the memory allocated by the blocks occupied with the line just read, starting at `*plist`. The first batch encountered—which is the newest of the lot—is possibly spared if it contains data from the following line to be read. There is a bit of trickiness to figure the actual address of the batch from the address of the current block and its `index` number.
 
 #### A.3 get_next_line_utils.c
 
@@ -87,4 +92,4 @@ Extract from the United States Declaration of Independence.
 
 #### C.4 test3.txt
 
-A string of all decimal digits, ordered.
+A string of all the decimal digits, ordered.
