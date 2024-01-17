@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/11 22:33:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/17 23:27:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define RDR_APPOUT  2
 # define RDR_HEREDOC 3
 # define TMP_HEREDOC "/tmp/hd"
-// NOTE: should really be using TMPDIR bash variable, storing the 'here doc' in a
-// temporary file with the O_TMPFILE flag. Impossible without file rewind
+// NOTE: should really be using TMPDIR Bash variable, storing the 'here doc' in
+// a temporary file with the O_TMPFILE flag. Impossible without file rewind
 # define PROMPT_HEREDOC "> "
-// NOTE: coincides with PS2 bash variable. Unfortunately, 'setenv' is forbidden
+// NOTE: coincides with PS2 Bash variable. Unfortunately, 'setenv' is forbidden
 
 # define COMMAND_NOT_FOUND 127
 # define COMMAND_NOT_EXECUTABLE 126
