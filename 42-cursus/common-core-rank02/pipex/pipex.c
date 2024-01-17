@@ -6,12 +6,12 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/12 21:36:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/17 23:08:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include "mcheck.h"
+
 void	del_comm(void *commv)
 {
 	t_comm *const	comm = (t_comm *)commv;
@@ -54,7 +54,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_data	data;
 	pid_t	child_pid;
 	int		wstatus;
-mtrace();
+
 	data.pipex_name = ft_strrchr(argv[0], '/') + 1;
 	data.pipeline = NULL;
 	data.paths = ft_split(ft_getenv("PATH"), ':');
