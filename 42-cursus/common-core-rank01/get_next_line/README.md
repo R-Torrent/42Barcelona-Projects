@@ -86,7 +86,7 @@ Copied verbatim from the `common-core-rank00/Libft` project.
 
 #### C.1 tester.c
 
-A very simple program that provides confirmation that simultaneous line fetching from various files is possible. Additional tests, such as reading from the `stdin`, reading very short or very long lines, or `\n` *vs* non-`\n` ending files is up to the examiner.
+A very simple program that provides confirmation that simultaneous line fetching from various files is possible. Additional tests, such as reading from the `stdin`, reading very short or very long lines, or behaviour from `'\n'` *vs* non-`'\n'` ending files is up to the examiner.
 
 #### C.2 test1.txt
 
