@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:26:24 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/18 15:47:51 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/18 15:57:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ void	redir_command(const t_list *redir, t_data *const pdata)
 		redir_heredoc(rdr->word, &fd, pdata);
 	else
 		fd = open(rdr->word, flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-	if (fd == -1 || ((dup2(fd, target) == -1) | close(fd)))
+	if (fd == -1 || dup2(fd, target) == -1 || close(fd))
 	{
 		ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-		child_exit(rdr->word, EXIT_FAILURE, 0);
+		child_exit(rdr->word, EXIT_FAILURE, 1, fd);
 	}
 	if (redir->next)
 		redir_command(redir->next, pdata);
