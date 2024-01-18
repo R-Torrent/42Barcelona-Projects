@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:26:24 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/11 03:03:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/18 01:26:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	redir_heredoc(const char *const dlimitr, int *fd_r, t_data *const pdata)
 {
 	const int	fd_w = open(TMP_HEREDOC, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
 	char		*line;
-	size_t		n;
 
 	*fd_r = open(TMP_HEREDOC, O_RDONLY);
 	unlink(TMP_HEREDOC);
@@ -48,15 +47,14 @@ void	redir_heredoc(const char *const dlimitr, int *fd_r, t_data *const pdata)
 		line = ft_getnextline_fd(pdata->std_fds[0]);
 		if (!line)
 			break ;
-		n = ft_strlen(line);
-		if (!ft_strncmp(line, dlimitr, n - 1))
+		if (!ft_strncmp(line, dlimitr, ft_strlen(line) - 1))
 		{
 			free(line);
 			if (close(fd_w) == -1)
 				break ;
 			return ;
 		}
-		write(fd_w, line, n);
+		ft_putstr_fd(line, fd_w);
 		free(line);
 	}
 	ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
