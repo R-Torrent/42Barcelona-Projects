@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/17 23:27:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/19 23:10:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <stdlib.h>
+# include <sys/wait.h>
 # include <unistd.h>
 
 // external declarations from the libc (AKA 'authorized functions')
