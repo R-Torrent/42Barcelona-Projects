@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/17 23:08:12 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/20 23:38:41 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ void	terminate(t_data *const pdata, const int exit_status)
 {
 	if (exit_status == EXIT_FAILURE)
 		perror(pdata->pipex_name);
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
 	del_data(pdata);
 	exit(exit_status);
 }
