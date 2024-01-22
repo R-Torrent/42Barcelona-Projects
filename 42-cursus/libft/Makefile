@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/01 18:13:24 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/22 22:16:42 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ SRC    := ft_atoi.c\
 	ft_lstmap.c\
 	ft_lstnew.c\
 	ft_lstsize.c\
+	ft_lsttoarray.c\
 	ft_memchr.c\
 	ft_memcmp.c\
 	ft_memcpy.c\
