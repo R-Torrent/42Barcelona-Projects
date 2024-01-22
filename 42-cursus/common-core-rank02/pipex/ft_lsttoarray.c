@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 21:16:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/06 02:54:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/22 22:07:51 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	**ft_lsttoarray(t_list *lst)
 	t_list	*next;
 
 	n = ft_lstsize(lst);
-	a = malloc(n * sizeof(void *) + 1);
+	a = malloc((n + 1) * sizeof(void *));
 	a[n] = NULL;
 	while (n--)
 	{
