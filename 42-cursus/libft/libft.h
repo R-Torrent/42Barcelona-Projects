@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/22 22:27:50 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/23 23:53:21 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@ int		ft_tolower(int c);
 int		ft_toupper(int c);
 
 // functions also found in stdio.h
-int		ft_printf(const char *s, ...);
+int		ft_printf(const char *format, ...);
+int		ft_dprintf(int fd, const char *format, ...);
+int		ft_sprintf(char *str, const char *format, ...);
 
 // functions also found in stdlib.h
 int		ft_atoi(const char *str);
@@ -115,7 +117,7 @@ t_list	*ft_lstlast(t_list *lst);
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 t_list	*ft_lstnew(void *content);
 size_t	ft_lstsize(t_list *lst);
-void    **ft_lsttoarray(t_list *lst);
+void	**ft_lsttoarray(t_list *lst);
 
 /* ************************************************************************** */
 

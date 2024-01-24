@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/22 22:16:42 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/24 00:00:31 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ HEADER := libft.h
 SRC    := ft_atoi.c\
 	ft_bzero.c\
 	ft_calloc.c\
+	ft_dprintf.c\
 	ft_getenv.c\
 	ft_getnextline_fd.c\
 	ft_isalnum.c\
@@ -60,6 +61,7 @@ SRC    := ft_atoi.c\
 	ft_putnbr_fd.c\
 	ft_putstr_fd.c\
 	ft_split.c\
+	ft_sprintf.c\
 	ft_strchr.c\
 	ft_strcspn.c\
 	ft_strdup.c\
@@ -76,7 +78,8 @@ SRC    := ft_atoi.c\
 	ft_strtrim.c\
 	ft_substr.c\
 	ft_tolower.c\
-	ft_toupper.c
+	ft_toupper.c\
+	xx_printf.c
 
 OBJ    := $(SRC:.c=.o)
 

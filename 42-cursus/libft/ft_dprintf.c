@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_dprintf.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/23 19:44:57 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/24 00:04:13 by rtorrent         ###   ########.fr       */
+/*   Created: 2024/01/23 20:14:41 by rtorrent          #+#    #+#             */
+/*   Updated: 2024/01/23 23:55:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,16 @@
 
 static int	putfn(void *dst, const char *buf, size_t nbytes)
 {
-	(void)dst;
-	return ((int)write(1, buf, nbytes));
+	return ((int)write(*(int *)dst, buf, nbytes));
 }
 
-int	ft_printf(const char *format, ...)
+int	ft_dprintf(int fd, const char *format, ...)
 {
-	va_list		ap;
-	int			nc;
+	va_list	ap;
+	int		nc;
 
 	va_start(ap, format);
-	nc = xx_printf(NULL, &putfn, format, ap);
+	nc = xx_printf(&fd, putfn, format, ap);
 	va_end(ap);
 	return (nc);
 }
