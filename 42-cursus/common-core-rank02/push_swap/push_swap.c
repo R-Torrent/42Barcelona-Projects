@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/17 17:02:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 01:03:17 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ int	fill_stack(size_t *dst, const int *src, size_t size)
 	return (SUCCESS);
 }
 
-void	init_stacks(t_stack **p_sta, t_stack **p_stb, int n, char *args[])
+void	init_stacks(t_stack **p_sta, t_stack **p_stb, size_t n, char *args[])
 {
-	int				i;
+	size_t			i;
 	int				error_flag;
 	int *const		arguments = malloc(n * sizeof(int));
 	const size_t	size_struct = sizeof(t_stack) + n * sizeof(size_t);
@@ -94,11 +94,9 @@ void	init_stacks(t_stack **p_sta, t_stack **p_stb, int n, char *args[])
 		arguments[i++] = atoi2(*++args, &error_flag);
 	if (!error_flag)
 	{
-		(*p_sta)->maxsize = n;
-		(*p_sta)->top = n;
+		(*p_sta)->n = n;
 		error_flag = fill_stack((*p_sta)->stack, arguments, n);
-		(*p_stb)->maxsize = n;
-		(*p_stb)->top = 0;
+		(*p_stb)->n = 0;
 	}
 	free(arguments);
 	if (error_flag)

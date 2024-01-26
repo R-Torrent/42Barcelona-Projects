@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/16 14:20:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 01:01:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ void	exit(int status);
 
 typedef struct s_stack
 {
-	size_t	maxsize;
-	size_t	top;
+	size_t	n;
 	size_t	stack[];
 }	t_stack;
 
