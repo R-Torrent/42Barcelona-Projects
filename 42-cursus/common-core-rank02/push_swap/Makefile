@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/26 01:10:37 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/26 22:54:42 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,13 @@ NAME   := push_swap
 
 HEADER := push_swap.h
 
-SRC    := push_swap.c
+SRC    := ft_bstclear.c\
+	ft_bstdelone.c\
+	ft_bstdeltree.c\
+	ft_bstinsert.c\
+	ft_bstnew.c\
+	ft_bstsearch.c\
+	push_swap.c
 
 OBJ    := $(SRC:.c=.o)
 
