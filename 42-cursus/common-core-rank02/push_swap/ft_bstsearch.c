@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 20:53:15 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/26 23:00:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 23:12:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static const void	*search(t_bst *bst, const t_node *node, const void *key)
 {
-	int comp;
+	int	comp;
 
 	if (!node)
 		return (NULL);
@@ -26,9 +26,9 @@ static const void	*search(t_bst *bst, const t_node *node, const void *key)
 	return (node->content);
 }
 
-const void  *ft_bstsearch(t_bst *bst, const void *key)
+const void	*ft_bstsearch(t_bst *bst, const void *key)
 {
 	if (!bst || !key)
-        return (NULL);
-    return (search(bst, bst->root, key));
+		return (NULL);
+	return (search(bst, bst->root, key));
 }
