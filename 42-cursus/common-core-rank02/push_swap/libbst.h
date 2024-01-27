@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 20:16:48 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/26 23:18:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/27 20:45:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_bst
 }	t_bst;
 
 void		ft_bstclear(t_bst *bst, void (*del)(void *));
-void		t_bstdelone(t_node *node, void (*del)(void *));
+void		ft_bstdelone(t_node *node, void (*del)(void *));
 void		ft_bstdeltree(t_node *node, void (*del)(void *));
 bool		ft_bstinsert(t_bst *bst, const void *content);
 t_bst		*ft_bstnew(t_keycalc *keycalc, t_compf *compf);

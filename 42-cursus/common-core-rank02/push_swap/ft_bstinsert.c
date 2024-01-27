@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:59:45 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/26 22:59:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/27 21:47:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,6 @@ static bool	insert(t_bst *bst, t_node **pnode, const void *content,
 bool	ft_bstinsert(t_bst *bst, const void *content)
 {
 	if (!bst || !content)
-		return (NULL);
+		return (false);
 	return (insert(bst, &bst->root, content, bst->keycalc(content)));
 }
