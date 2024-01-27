@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/26 20:25:50 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/27 20:30:35 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PUSH_SWAP_H
 
 # include "libft/libft.h"
+# include "libbst.h"
 
 /* ************************************************************************** */
 
@@ -56,6 +57,17 @@ enum e_ops
 	RRB,
 	RRR
 };
+
+typedef struct s_step
+{
+	t_stack			*a;
+	t_stack			*b;
+	struct s_step	*camefrom;
+	enum e_ops		camewith;
+	bool			visited;
+}	t_step;
+
+int		init_stacks(t_stack **p_sta, t_stack **p_stb, size_t n, char *args[]);
 
 /* ************************************************************************** */
 

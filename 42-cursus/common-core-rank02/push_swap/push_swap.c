@@ -6,113 +6,97 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/26 01:03:17 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/28 00:13:38 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	end_push_swap(t_stack *sta, t_stack *stb, t_list **p_ops, int status)
+void	delstep(t_step *step)
 {
-	free(sta);
-	free(stb);
-	if (p_ops)
-		ft_lstclear(p_ops, free);
+	free(step->a);
+	free(step->b);
+	free(step);
+}
+
+void	free_memory(const int status, t_bst *const tree, t_stack *const sta,
+	t_stack *const stb)
+{
+	if (tree)
+	{
+		ft_bstclear(tree, (void (*)(void *))delstep);
+		free(tree);
+	}
 	if (status)
-		ft_putstr_fd("Error\n", 2);
-	exit(status);
-}
-
-int	atoi2(const char *str, int *status)
-{
-	int		n;
-	int		i;
-	bool	sgn;
-
-	while (ft_isspace(*str))
-		str++;
-	sgn = *str == '-';
-	if (*str == '-' || *str == '+')
-		str++;
-	n = 0;
-	while (ft_isdigit(*str) && !*status)
 	{
-		i = *str++ - '0';
-		if ((sgn && n < (INT_MIN + i) / 10) || (!sgn && n > (INT_MAX - i) / 10))
-			*status = OOB_ERR;
-		if (sgn)
-			n = 10 * n - i;
-		else
-			n = 10 * n + i;
+		free(sta);
+		free(stb);
 	}
-	if (*str && !*status)
-		*status = NAN_ERR;
-	return (n);
 }
 
-int	fill_stack(size_t *dst, const int *src, size_t size)
+t_step	*fill_root(t_stack *const sta, t_stack *const stb)
 {
-	const int *const	src_0 = src;
-	const int *const	src_n = src + size;
-	const int			*src_current;
-	size_t				ordinal;
+	t_step *const	step0 = malloc(sizeof(t_step));
 
-	while (size--)
+	if (step0)
 	{
-		src_current = src_0 + size;
-		ordinal = 0;
-		src = src_0;
-		while (src < src_n)
-		{
-			if (src == src_current)
-				;
-			else if (*src < *src_current)
-				ordinal++;
-			else if (*src == *src_current)
-				return (DUP_ERR);
-			src++;
-		}
-		dst[size] = ordinal;
+		step0->a = sta;
+		step0->b = stb;
+		step0->camefrom = NULL;
+		step0->camewith = ID;
+		step0->visited = false;
 	}
-	return (SUCCESS);
+	return (step0);
 }
 
-void	init_stacks(t_stack **p_sta, t_stack **p_stb, size_t n, char *args[])
+int	compf(const t_step *step1, const t_step *step2)
 {
-	size_t			i;
-	int				error_flag;
-	int *const		arguments = malloc(n * sizeof(int));
-	const size_t	size_struct = sizeof(t_stack) + n * sizeof(size_t);
+	int		res;
+	size_t	i;
 
-	error_flag = SUCCESS;
-	*p_sta = malloc(size_struct);
-	*p_stb = malloc(size_struct);
-	if (!(*p_sta && *p_stb))
-		error_flag = MEM_ERR;
+	res = step1->a->n - step2->a->n;
+	if (res)
+		return (res);
 	i = 0;
-	while (!error_flag && i < n)
-		arguments[i++] = atoi2(*++args, &error_flag);
-	if (!error_flag)
+	while (i < step1->a->n)
 	{
-		(*p_sta)->n = n;
-		error_flag = fill_stack((*p_sta)->stack, arguments, n);
-		(*p_stb)->n = 0;
+		res = step1->a->stack[i] - step2->a->stack[i];
+		if (res)
+			return (res);
 	}
-	free(arguments);
-	if (error_flag)
-		end_push_swap(*p_sta, *p_stb, NULL, error_flag);
-}
+	i = 0;
+	while (i < step1->b->n)
+	{
+		res = step1->b->stack[i] - step2->b->stack[i];
+		if (res)
+			return (res);
+	}
+	return (0);
+}	
 
 int	main(int argc, char *argv[])
 {
-	t_list	*ops;
+	int		status;
+	t_bst	*tree;
 	t_stack	*sta;
 	t_stack	*stb;
+	t_step	*step0;
 
 	if (argc == 1)
 		exit(SUCCESS);
-	ops = NULL;
-	init_stacks(&sta, &stb, argc - 1, argv);
-	ft_printf("Testing ...\n");
-	end_push_swap(sta, stb, &ops, SUCCESS);
+	status = init_stacks(&sta, &stb, argc - 1, argv);
+	if (!status)
+	{
+		tree = ft_bstnew(NULL, (int (*)(const void *, const void *))compf);
+		step0 = fill_root(sta, stb);
+		if (!ft_bstinsert(tree, step0))
+		{
+			status = MEM_ERR;
+			free(step0);
+		}
+	}
+	free_memory(status, tree, sta, stb);
+	if (status)
+		ft_putendl_fd("Error", 2);
+	exit(status);
 }

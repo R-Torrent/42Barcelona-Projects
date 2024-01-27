@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/26 22:54:42 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/27 20:22:16 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ SRC    := ft_bstclear.c\
 	ft_bstinsert.c\
 	ft_bstnew.c\
 	ft_bstsearch.c\
+	init_stacks.c\
 	push_swap.c
 
 OBJ    := $(SRC:.c=.o)
