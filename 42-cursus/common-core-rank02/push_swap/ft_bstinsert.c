@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:59:45 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/27 21:47:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/28 00:09:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static bool	insert(t_bst *bst, t_node **pnode, const void *content,
 		*pnode = malloc(sizeof(t_node));
 		if (!*pnode)
 			return (false);
+		(*pnode)->content = (void *)content;
 		(*pnode)->left = NULL;
 		(*pnode)->right = NULL;
 		return (true);
