@@ -6,11 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:46:32 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/20 15:26:57 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 23:35:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "liblst.h"
 
 static size_t	g_size;
 

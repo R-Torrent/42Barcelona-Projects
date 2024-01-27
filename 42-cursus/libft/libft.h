@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/23 23:53:21 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 23:32:21 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,24 +100,6 @@ char	*ft_strjoin(const char *s1, const char *s2);
 char	*ft_strmapi(const char *s, char (*f)(size_t, char));
 char	*ft_strtrim(const char *s, const char *set);
 char	*ft_substr(const char *s, size_t start, size_t len);
-
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}		t_list;
-
-// functions using type t_list (AKA 'bonus list functions')
-void	ft_lstadd_back(t_list **plst, t_list *new);
-void	ft_lstadd_front(t_list **plst, t_list *new);
-void	ft_lstclear(t_list **plst, void (*del)(void *));
-void	ft_lstdelone(t_list *lst, void (*del)(void *));
-void	ft_lstiter(t_list *lst, void (*f)(void *));
-t_list	*ft_lstlast(t_list *lst);
-t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
-t_list	*ft_lstnew(void *content);
-size_t	ft_lstsize(t_list *lst);
-void	**ft_lsttoarray(t_list *lst);
 
 /* ************************************************************************** */
 

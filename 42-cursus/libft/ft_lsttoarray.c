@@ -6,11 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 21:16:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/22 22:15:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 23:35:40 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "liblst.h"
 
 void	**ft_lsttoarray(t_list *lst)
 {

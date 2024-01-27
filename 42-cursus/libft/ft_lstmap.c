@@ -6,11 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:24:23 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/20 15:25:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 23:34:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "liblst.h"
 
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {

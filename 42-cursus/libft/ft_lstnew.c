@@ -6,11 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 12:42:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/06/20 15:26:17 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/26 23:35:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "liblst.h"
 
 t_list	*ft_lstnew(void *content)
 {

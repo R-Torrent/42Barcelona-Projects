@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/24 00:00:31 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/27 00:41:29 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ CFLAGS += -Werror -Wextra -Wall
 
 AR     := ar rcsv
 RM     := rm -f
+TC     := touch
 
 # **************************************************************************** #
 
@@ -24,6 +25,8 @@ RM     := rm -f
 NAME   := libft.a
 
 HEADER := libft.h
+
+HDRLST := liblst.h
 
 SRC    := ft_atoi.c\
 	ft_bzero.c\
@@ -40,16 +43,6 @@ SRC    := ft_atoi.c\
 	ft_isspace.c\
 	ft_isupper.c\
 	ft_itoa.c\
-	ft_lstadd_back.c\
-	ft_lstadd_front.c\
-	ft_lstclear.c\
-	ft_lstdelone.c\
-	ft_lstiter.c\
-	ft_lstlast.c\
-	ft_lstmap.c\
-	ft_lstnew.c\
-	ft_lstsize.c\
-	ft_lsttoarray.c\
 	ft_memchr.c\
 	ft_memcmp.c\
 	ft_memcpy.c\
@@ -81,7 +74,22 @@ SRC    := ft_atoi.c\
 	ft_toupper.c\
 	xx_printf.c
 
+SRCLST := ft_lstadd_back.c\
+	ft_lstadd_front.c\
+	ft_lstclear.c\
+	ft_lstdelone.c\
+	ft_lstiter.c\
+	ft_lstlast.c\
+	ft_lstmap.c\
+	ft_lstnew.c\
+	ft_lstsize.c\
+	ft_lsttoarray.c
+
 OBJ    := $(SRC:.c=.o)
+
+OBJLST := $(SRCLST:.c=.o)
+
+LIST   := .list
 
 MKFILE := $(lastword $(MAKEFILE_LIST))
 
@@ -89,28 +97,36 @@ MKFILE := $(lastword $(MAKEFILE_LIST))
 
 # Primary targets:
 
-all: $(NAME)
+all: $(NAME) $(LIST)
 
-$(NAME):: $(MKFILE)
-	@if [ -f "$@" ]; then $(MAKE) fclean; fi
+$(NAME) $(LIST):: $(MKFILE)
+	@if [ -f "$@" ]; then $(MAKE) --no-print-directory fclean; fi
+
+list: $(LIST)
 
 $(NAME):: $(OBJ)
 	$(AR) $@ $?
 
+$(LIST):: $(OBJLST)
+	$(AR) $(NAME) $?
+	@$(TC) $(LIST)
+
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(OBJ) $(OBJLST)
 
 fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all list clean fclean re
 
 # **************************************************************************** #
 
 # Build prerequisites:
 
 $(OBJ): $(HEADER)
+
+$(OBJLST): $(HDRLST)
 
 ft_printf.o ft_getnextline_fd.o: %.o: %.h
