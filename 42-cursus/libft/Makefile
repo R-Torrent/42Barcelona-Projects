@@ -6,13 +6,15 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/28 02:11:17 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/28 22:26:10 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Tools and options:
 
-CFLAGS += -Werror -Wextra -Wall
+# Use 'make CFLAGS=-g [rule(s)]' to compile with the '-g' switch, that is,
+# "generate debugging information".
+override CFLAGS += -Werror -Wextra -Wall
 
 AR     := ar rcsv
 RM     := rm -f
