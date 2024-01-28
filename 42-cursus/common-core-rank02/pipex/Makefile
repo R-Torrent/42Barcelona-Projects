@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/09 17:49:48 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/06 18:41:19 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/28 01:42:57 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,6 +52,8 @@ MKFILE  := $(lastword $(MAKEFILE_LIST))
 
 all: $(NAME)
 
+bonus: all
+
 $(NAME) $(NAMEGDB):: $(MKFILE)
 	@if [ -f "$@" ]; then $(MAKE) fclean; fi
 
@@ -76,7 +78,7 @@ re: fclean all
 
 debug: clean1 $(NAMEGDB)
 
-.PHONY: all clean clean1 fclean re debug
+.PHONY: all bonus clean clean1 fclean re debug
 
 # **************************************************************************** #
 
