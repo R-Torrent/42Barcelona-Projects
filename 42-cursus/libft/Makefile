@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/27 00:41:29 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/28 02:11:17 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -113,6 +113,7 @@ $(LIST):: $(OBJLST)
 
 clean:
 	$(RM) $(OBJ) $(OBJLST)
+	@$(RM) $(LIST)
 
 fclean: clean
 	$(RM) $(NAME)
