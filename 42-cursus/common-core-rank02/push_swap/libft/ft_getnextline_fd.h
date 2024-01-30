@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:25:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:39:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/30 19:49:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 # endif
 
 // minimim list size and subsequent batch allocations
-# ifndef DEFAULT_LIST_SIZE
-#  define DEFAULT_LIST_SIZE 10
+# ifndef DEFAULT_BATCH_SZE
+#  define DEFAULT_BATCH_SZE 10
 # endif
 
 typedef struct s_block

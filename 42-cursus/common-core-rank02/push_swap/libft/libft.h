@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 20:16:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/30 19:49:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,21 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 // buffer size for read operations
 // (=BUFSIZ constant defined in stdio.h)
 // used in: ft_getnextline_fd
-# define BUFFER_SIZE 1024
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
 
 // by default, maximum number of files that Mac OS X can open
 // used in: ft_getnextline_fd
-# define MAX_FILES 12288
+# ifndef MAX_FILES
+#  define MAX_FILES 12288
+# endif
 
 // minimim list size and subsequent batch allocations
 // used in: ft_getnextline_fd
-# define DEFAULT_LIST_SIZE 10
+# ifndef DEFAULT_BATCH_SZE
+#  define DEFAULT_BATCH_SZE 10
+# endif
 
 /* ************************************************************************** */
 

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:22:56 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/08/12 15:01:26 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/30 19:50:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,12 @@ static bool	asm_line(t_blocks *plst_copy, t_blocks *plst_del, char **line)
 
 static ssize_t	add_block(int fd, t_blocks *plist)
 {
-	const bool	new_batch = !*plist || (*plist)->index == DEFAULT_LIST_SIZE - 1;
+	const bool	new_batch = !*plist || (*plist)->index == DEFAULT_BATCH_SZE - 1;
 	t_blocks	new_block;
 	ssize_t		n;
 
 	if (new_batch)
-		new_block = malloc(sizeof(struct s_block) * DEFAULT_LIST_SIZE);
+		new_block = malloc(sizeof(struct s_block) * DEFAULT_BATCH_SZE);
 	else
 		new_block = (*plist) + 1;
 	if (!new_block)
@@ -121,7 +121,7 @@ char	*ft_getnextline_fd(int fd)
 	static t_blocks	listed_lines[MAX_FILES];
 
 	line = NULL;
-	if (fd >= 0 && fd < MAX_FILES && BUFFER_SIZE > 0 && DEFAULT_LIST_SIZE > 0
+	if (fd >= 0 && fd < MAX_FILES && BUFFER_SIZE > 0 && DEFAULT_BATCH_SZE > 0
 		&& !read_blocks(fd, &listed_lines[fd], &line))
 		clear_blocks(&listed_lines[fd], false);
 	return (line);

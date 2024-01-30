@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/30 19:40:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/30 19:45:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 // minimim list size and subsequent batch allocations
 // used in: ft_getnextline_fd
-# ifndef DEFAULT_LIST_SIZE
-#  define DEFAULT_LIST_SIZE 10
+# ifndef DEFAULT_BATCH_SZE
+#  define DEFAULT_BATCH_SZE 10
 # endif
 
 /* ************************************************************************** */
