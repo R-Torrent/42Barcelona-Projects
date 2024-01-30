@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/28 22:26:10 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/30 23:31:17 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,10 +25,12 @@ TC     := touch
 # Filenames:
 
 NAME   := libft.a
+LIST   := .list
+BSTREE := .bintree
 
 HEADER := libft.h
-
 HDRLST := liblst.h
+HDRBST := libbst.h
 
 SRC    := ft_atoi.c\
 	ft_bzero.c\
@@ -87,11 +89,16 @@ SRCLST := ft_lstadd_back.c\
 	ft_lstsize.c\
 	ft_lsttoarray.c
 
+SRCBST := ft_bstclear.c\
+	ft_bstdelone.c\
+	ft_bstdeltree.c\
+	ft_bstinsert.c\
+	ft_bstnew.c\
+	ft_bstsearch.c
+
 OBJ    := $(SRC:.c=.o)
-
 OBJLST := $(SRCLST:.c=.o)
-
-LIST   := .list
+OBJBST := $(SRCBST:.c=.o)
 
 MKFILE := $(lastword $(MAKEFILE_LIST))
 
@@ -99,12 +106,14 @@ MKFILE := $(lastword $(MAKEFILE_LIST))
 
 # Primary targets:
 
-all: $(NAME) $(LIST)
+all: $(NAME) $(LIST) $(BSTREE)
 
-$(NAME) $(LIST):: $(MKFILE)
+$(NAME) $(LIST) $(BSTREE):: $(MKFILE)
 	@if [ -f "$@" ]; then $(MAKE) --no-print-directory fclean; fi
 
 list: $(LIST)
+
+bintree: $(BSTREE)
 
 $(NAME):: $(OBJ)
 	$(AR) $@ $?
@@ -113,16 +122,20 @@ $(LIST):: $(OBJLST)
 	$(AR) $(NAME) $?
 	@$(TC) $(LIST)
 
+$(BSTREE):: $(OBJBST)
+	$(AR) $(NAME) $?
+	@$(TC) $(BSTREE)
+
 clean:
-	$(RM) $(OBJ) $(OBJLST)
-	@$(RM) $(LIST)
+	$(RM) $(OBJ) $(OBJLST) $(OBJBST)
+	@$(RM) $(LIST) $(BSTREE)
 
 fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
 
-.PHONY: all list clean fclean re
+.PHONY: all list bintree clean fclean re
 
 # **************************************************************************** #
 
@@ -131,5 +144,7 @@ re: fclean all
 $(OBJ): $(HEADER)
 
 $(OBJLST): $(HDRLST)
+
+$(OBJBST): $(HDRBST)
 
 ft_printf.o ft_getnextline_fd.o: %.o: %.h
