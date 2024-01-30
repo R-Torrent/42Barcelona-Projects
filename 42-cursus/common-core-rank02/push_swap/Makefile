@@ -6,15 +6,18 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/27 20:22:16 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/01/30 20:00:13 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Tools and options:
 
-CFLAGS += -Werror -Wextra -Wall
+CFLAGS     := -Werror -Wextra -Wall
+DEBUGFLAGS := -g
 
-RM     := rm -f
+RM         := rm -f
+TC         := touch
+RM_NT_DEBUG = find . -type f -name "*.o" -newer $(DEBUG) -delete
 
 # **************************************************************************** #
 
@@ -41,6 +44,8 @@ NAMELB := libft.a
 
 HDRLIB := libft.h
 
+DEBUG   := .debug
+
 MKFILE := $(lastword $(MAKEFILE_LIST))
 
 # **************************************************************************** #
@@ -49,17 +54,31 @@ MKFILE := $(lastword $(MAKEFILE_LIST))
 
 all: $(NAME)
 
-$(NAME):: $(MKFILE)
-	@if [ -f "$@" ]; then $(MAKE) fclean; fi
+bonus:
+# Work in progress!
 
-$(NAME)::
-	@$(MAKE) -s -C $(DIRLIB) --no-print-directory all
+debug: $(DEBUG)
+
+$(NAME) $(DEBUG):: $(MKFILE)
+	@if [ -f "$@" ]; then $(MAKE) -s fclean; fi
+
+$(DEBUG)::
+	@if [ -f "$@" ]; then $(RM_NT_DEBUG); else $(MAKE) -s fclean; fi
+
+$(NAME) $(DEBUG)::
+	@$(MAKE) -s -C $(DIRLIB) CFLAGS="$(CFLAGS)" all
 
 $(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
+	$(CC) $^ -o $@
+
+$(DEBUG):: $(OBJ) $(DIRLIB)$(NAMELB)
+	$(CC) $^ -o $(NAME)
+	@$(TC) $(DEBUG)
 
 clean:
 	@$(MAKE) -C $(DIRLIB) --no-print-directory clean
 	$(RM) $(OBJ)
+	@$(RM) $(DEBUG)
 
 fclean: clean
 	$(RM) $(DIRLIB)$(NAMELB)
@@ -67,10 +86,16 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all bonus debug clean clean1 fclean re
 
 # **************************************************************************** #
 
 # Build prerequisites:
 
 $(OBJ): %.o: %.c $(HEADER) $(DIRLIB)$(HDRLIB)
+
+# **************************************************************************** #
+
+# Target-specific assignments:
+
+debug: CFLAGS += $(DEBUGFLAGS)
