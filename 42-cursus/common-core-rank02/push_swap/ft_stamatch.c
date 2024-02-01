@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 20:08:29 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 20:28:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 22:10:37 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ bool	ft_stamatch(const t_stack *sta1, const t_stack *sta2,
 	t_frame	*frame1;
 	t_frame	*frame2;
 
-	if (!sta1 || !sta2 || sta1->size != sta2->size)
+	if (ft_staisempty(sta1) || ft_stasize(sta1) != ft_stasize(sta2))
 		return (false);
 	frame1 = sta1->top;
 	frame2 = sta2->top;
