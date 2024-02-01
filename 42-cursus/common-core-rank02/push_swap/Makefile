@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/01/30 20:00:13 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/01 01:02:01 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,22 +26,26 @@ RM_NT_DEBUG = find . -type f -name "*.o" -newer $(DEBUG) -delete
 NAME   := push_swap
 
 HEADER := push_swap.h
+HDRSTA := libsta.h
 
-SRC    := ft_bstclear.c\
-	ft_bstdelone.c\
-	ft_bstdeltree.c\
-	ft_bstinsert.c\
-	ft_bstnew.c\
-	ft_bstsearch.c\
-	init_stacks.c\
+SRC    := init_stacks.c\
 	push_swap.c
 
+SRCSTA := ft_staclear.c\
+	ft_staisempty.c\
+	ft_stanew.c\
+	ft_stapop.c\
+	ft_stapush.c\
+	ft_staroll_left.c\
+	ft_staroll_right.c\
+	ft_stasize.c\
+	ft_staswap.c
+
 OBJ    := $(SRC:.c=.o)
+OBJSTA := $(SRCSTA:.c=.o)
 
 DIRLIB := libft/
-
 NAMELB := libft.a
-
 HDRLIB := libft.h
 
 DEBUG   := .debug
@@ -68,16 +72,15 @@ $(DEBUG)::
 $(NAME) $(DEBUG)::
 	@$(MAKE) -s -C $(DIRLIB) CFLAGS="$(CFLAGS)" all
 
-$(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
-	$(CC) $^ -o $@
+$(NAME):: $(OBJ) $(OBJSTA) $(DIRLIB)$(NAMELB)
 
-$(DEBUG):: $(OBJ) $(DIRLIB)$(NAMELB)
+$(DEBUG):: $(OBJ) $(OBJSTA) $(DIRLIB)$(NAMELB)
 	$(CC) $^ -o $(NAME)
 	@$(TC) $(DEBUG)
 
 clean:
 	@$(MAKE) -C $(DIRLIB) --no-print-directory clean
-	$(RM) $(OBJ)
+	$(RM) $(OBJ) $(OBJSTA)
 	@$(RM) $(DEBUG)
 
 fclean: clean
@@ -86,13 +89,15 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all bonus debug clean clean1 fclean re
+.PHONY: all bonus debug clean fclean re
 
 # **************************************************************************** #
 
 # Build prerequisites:
 
 $(OBJ): %.o: %.c $(HEADER) $(DIRLIB)$(HDRLIB)
+
+$(OBJSTA): %.o: %.c $(HDRSTA)
 
 # **************************************************************************** #
 
