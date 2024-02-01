@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 23:59:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 00:48:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 20:39:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libsta.h"
 
-bool	ft_staisempty(t_stack *const sta)
+bool	ft_staisempty(const t_stack *sta)
 {
 	return (!ft_stasize(sta));
 }

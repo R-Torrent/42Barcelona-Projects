@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/01 01:02:01 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/01 21:19:20 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRC    := init_stacks.c\
 
 SRCSTA := ft_staclear.c\
 	ft_staisempty.c\
+	ft_stamatch.c\
 	ft_stanew.c\
 	ft_stapop.c\
 	ft_stapush.c\

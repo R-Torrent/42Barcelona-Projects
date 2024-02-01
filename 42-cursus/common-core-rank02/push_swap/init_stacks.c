@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 19:03:57 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/27 21:02:20 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 19:00:38 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,54 +39,51 @@ int	atoi2(const char *str, int *status)
 	return (n);
 }
 
-int	fill_stack(size_t *dst, const int *src, size_t size)
+int	fill_stack(t_stack *sta, const int *src, unsigned int size)
 {
 	const int *const	src_0 = src;
 	const int *const	src_n = src + size;
-	const int			*src_current;
-	size_t				ordinal;
+	unsigned int		*ordinal;
 
 	while (size--)
 	{
-		src_current = src_0 + size;
-		ordinal = 0;
+		ordinal = ft_calloc(1, sizeof(unsigned int));
+		if (!ordinal)
+			return (MEM_ERR);
 		src = src_0;
 		while (src < src_n)
 		{
-			if (src == src_current)
-				;
-			else if (*src < *src_current)
-				ordinal++;
-			else if (*src == *src_current)
+			if (*src < src_0[size])
+				(*ordinal)++;
+			else if (src != (src_0 + size) && *src == src_0[size])
 				return (DUP_ERR);
 			src++;
 		}
-		dst[size] = ordinal;
+		if (!ft_stapush(sta, ordinal))
+		{
+			free(ordinal);
+			return (MEM_ERR);
+		}
 	}
 	return (SUCCESS);
 }
 
-int	init_stacks(t_stack **p_sta, t_stack **p_stb, size_t n, char *args[])
+int	init_stacks(t_stack **pa, t_stack **pb, unsigned int n, char *args[])
 {
 	int				status;
-	const size_t	size_struct = sizeof(t_stack) + n * sizeof(size_t);
 	int *const		arguments = malloc(n * sizeof(int));
-	size_t			i;
+	unsigned int	i;
 
 	status = SUCCESS;
-	*p_sta = malloc(size_struct);
-	*p_stb = malloc(size_struct);
-	if (!(*p_sta && *p_stb))
+	*pa = ft_stanew(n);
+	*pb = ft_stanew(n);
+	if (!(*pa && *pb))
 		status = MEM_ERR;
 	i = 0;
 	while (!status && i < n)
 		arguments[i++] = atoi2(*++args, &status);
 	if (!status)
-	{
-		(*p_sta)->n = n;
-		status = fill_stack((*p_sta)->stack, arguments, n);
-		(*p_stb)->n = 0;
-	}
+		status = fill_stack(*pa, arguments, n);
 	free(arguments);
 	return (status);
 }

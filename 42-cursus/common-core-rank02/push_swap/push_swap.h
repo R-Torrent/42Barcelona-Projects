@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/27 20:30:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 20:31:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define PUSH_SWAP_H
 
 # include "libft/libft.h"
-# include "libbst.h"
+# include "libsta.h"
 
 /* ************************************************************************** */
 
@@ -36,12 +36,6 @@ void	exit(int status);
 // duplicate error
 # define DUP_ERR 4
 
-typedef struct s_stack
-{
-	size_t	n;
-	size_t	stack[];
-}	t_stack;
-
 enum e_ops
 {
 	ID,
@@ -62,12 +56,10 @@ typedef struct s_step
 {
 	t_stack			*a;
 	t_stack			*b;
-	struct s_step	*camefrom;
 	enum e_ops		camewith;
-	bool			visited;
 }	t_step;
 
-int		init_stacks(t_stack **p_sta, t_stack **p_stb, size_t n, char *args[]);
+int		init_stacks(t_stack **pa, t_stack **pb, unsigned int n, char *args[]);
 
 /* ************************************************************************** */
 

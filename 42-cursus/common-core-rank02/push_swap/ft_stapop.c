@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 00:23:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 00:49:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 20:56:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libsta.h"
 
-void	*ft_stapop(t_stack *const sta)
+void	*ft_stapop(t_stack *sta)
 {
 	t_frame	*top_frame;
 	void	*top_content;

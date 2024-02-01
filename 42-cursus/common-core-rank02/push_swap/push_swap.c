@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/28 00:13:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 20:29:20 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,89 +14,65 @@
 
 void	delstep(t_step *step)
 {
+	ft_staclear(step->a, free);
+	ft_staclear(step->b, free);
 	free(step->a);
 	free(step->b);
 	free(step);
 }
 
-void	free_memory(const int status, t_bst *const tree, t_stack *const sta,
-	t_stack *const stb)
+void	free_memory(t_stack *const path, t_stack *const a, t_stack *const b)
 {
-	if (tree)
+	if (!path || ft_staisempty(path))
 	{
-		ft_bstclear(tree, (void (*)(void *))delstep);
-		free(tree);
+		ft_staclear(a, free);
+		ft_staclear(b, free);
+		free(a);
+		free(b);
 	}
-	if (status)
-	{
-		free(sta);
-		free(stb);
-	}
+	else
+		ft_staclear(path, (void (*)(void *))delstep);
+	free(path);
 }
 
-t_step	*fill_root(t_stack *const sta, t_stack *const stb)
+t_step	*fill_start(t_stack *const a, t_stack *const b)
 {
-	t_step *const	step0 = malloc(sizeof(t_step));
+	t_step *const	start = malloc(sizeof(t_step));
 
-	if (step0)
+	if (start)
 	{
-		step0->a = sta;
-		step0->b = stb;
-		step0->camefrom = NULL;
-		step0->camewith = ID;
-		step0->visited = false;
+		start->a = a;
+		start->b = b;
+		start->camewith = ID;
 	}
-	return (step0);
+	return (start);
 }
-
-int	compf(const t_step *step1, const t_step *step2)
-{
-	int		res;
-	size_t	i;
-
-	res = step1->a->n - step2->a->n;
-	if (res)
-		return (res);
-	i = 0;
-	while (i < step1->a->n)
-	{
-		res = step1->a->stack[i] - step2->a->stack[i];
-		if (res)
-			return (res);
-	}
-	i = 0;
-	while (i < step1->b->n)
-	{
-		res = step1->b->stack[i] - step2->b->stack[i];
-		if (res)
-			return (res);
-	}
-	return (0);
-}	
 
 int	main(int argc, char *argv[])
 {
 	int		status;
-	t_bst	*tree;
-	t_stack	*sta;
-	t_stack	*stb;
-	t_step	*step0;
+	t_stack	*a;
+	t_stack	*b;
+	t_stack	*path;
+	t_step	*start;
 
 	if (argc == 1)
 		exit(SUCCESS);
-	status = init_stacks(&sta, &stb, argc - 1, argv);
+	status = init_stacks(&a, &b, argc - 1, argv);
 	if (!status)
 	{
-		tree = ft_bstnew(NULL, (int (*)(const void *, const void *))compf);
-		step0 = fill_root(sta, stb);
-		if (!ft_bstinsert(tree, step0))
+		path = ft_stanew(0);
+		start = fill_start(a, b);
+		if (!ft_stapush(path, start))
 		{
 			status = MEM_ERR;
-			free(step0);
+			free(start);
 		}
 	}
-	free_memory(status, tree, sta, stb);
-	if (status)
+	if (!status)
+		; // ********* CONTINUE HERE
+	else
 		ft_putendl_fd("Error", 2);
+	free_memory(path, a, b);
 	exit(status);
 }
