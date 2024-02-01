@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 20:29:20 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 22:49:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	delstep(t_step *step)
 	free(step);
 }
 
-void	free_memory(t_stack *const path, t_stack *const a, t_stack *const b)
+void	free_memory(t_stack *path, t_stack *target, t_stack *a, t_stack *b)
 {
 	if (!path || ft_staisempty(path))
 	{
@@ -33,9 +33,11 @@ void	free_memory(t_stack *const path, t_stack *const a, t_stack *const b)
 	else
 		ft_staclear(path, (void (*)(void *))delstep);
 	free(path);
+	ft_staclear(target, free);
+	free(target);
 }
 
-t_step	*fill_start(t_stack *const a, t_stack *const b)
+t_step	*fill_start(t_stack *a, t_stack *b)
 {
 	t_step *const	start = malloc(sizeof(t_step));
 
@@ -48,31 +50,52 @@ t_step	*fill_start(t_stack *const a, t_stack *const b)
 	return (start);
 }
 
+int	set_paths(t_stack **path, t_stack **target, t_stack *a, t_stack *b)
+{
+	t_step			*start;
+	unsigned int	size;	
+	unsigned int	*ordinal;
+
+	size = ft_stasize(a);
+	*path = ft_stanew(0);
+	*target = ft_stanew(size);
+	start = fill_start(a, b);
+	if (!ft_stapush(*path, start))
+	{
+		free(start);
+		return (MEM_ERR);
+	}
+	while (true)
+	{
+		ordinal = malloc(sizeof(unsigned int));
+		if (!ft_stapush(*target, ordinal))
+		{
+			free(ordinal);
+			return (MEM_ERR);
+		}
+		*ordinal = --size;
+		if (!size)
+			return (SUCCESS);
+	}
+}
+
 int	main(int argc, char *argv[])
 {
 	int		status;
 	t_stack	*a;
 	t_stack	*b;
 	t_stack	*path;
-	t_step	*start;
+	t_stack	*target;
 
 	if (argc == 1)
 		exit(SUCCESS);
 	status = init_stacks(&a, &b, argc - 1, argv);
 	if (!status)
-	{
-		path = ft_stanew(0);
-		start = fill_start(a, b);
-		if (!ft_stapush(path, start))
-		{
-			status = MEM_ERR;
-			free(start);
-		}
-	}
+		status = set_paths(&path, &target, a, b);
 	if (!status)
 		; // ********* CONTINUE HERE
 	else
 		ft_putendl_fd("Error", 2);
-	free_memory(path, a, b);
+	free_memory(path, target, a, b);
 	exit(status);
 }
