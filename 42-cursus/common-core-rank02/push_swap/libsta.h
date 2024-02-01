@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 20:35:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 01:03:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/01 20:57:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,19 @@ typedef struct s_frame
 	struct s_frame	*below;
 }	t_frame;
 
-void			ft_staclear(t_stack *const sta, void (*del)(void *));
-void			*ft_stadup(t_stack *const sta, void (*dup)(void *));
-bool			ft_staisempty(t_stack *const sta);
+void			ft_staclear(t_stack *sta, void (*del)(void *));
+void			*ft_stadup(t_stack *sta, void *(*dup)(const void *));
+bool			ft_staisempty(const t_stack *sta);
+bool			ft_stamatch(const t_stack *sta1, const t_stack *sta2,
+					int (*compar)(const void *, const void *));
 t_stack			*ft_stanew(unsigned int capacity);
-void			*ft_stapeek(t_stack *const sta);
-void			*ft_stapop(t_stack *const sta);
-void			*ft_stapush(t_stack *const sta, const void *content);
-void			ft_staroll_left(t_stack *const sta);
-void			ft_staroll_right(t_stack *const sta);
-unsigned int	ft_stasize(t_stack *const sta);
-void			ft_staswap(t_stack *const sta);
+void			*ft_stapeek(const t_stack *const sta);
+void			*ft_stapop(t_stack *sta);
+void			*ft_stapush(t_stack *sta, void *content);
+void			ft_staroll_left(t_stack *sta);
+void			ft_staroll_right(t_stack *sta);
+unsigned int	ft_stasize(const t_stack *sta);
+void			ft_staswap(t_stack *sta);
 
 /* ************************************************************************** */
 
