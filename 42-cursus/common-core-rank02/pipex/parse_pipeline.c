@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:18:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/06 12:29:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/02 11:58:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char	**get_tkns(const char *str)
 void	parse_pln(t_list **const ppln, char *const *paths, const int argc,
 		char *const *argv)
 {
-	const bool	here_doc = !ft_strncmp(argv[1], "here doc", 9);
+	const bool	here_doc = !ft_strncmp(argv[1], "here_doc", 9);
 	int			i;
 
 	i = 2 + here_doc;
