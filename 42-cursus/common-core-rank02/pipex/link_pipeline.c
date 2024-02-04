@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:26:24 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/02 12:22:37 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/04 22:29:33 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,5 @@ void	link_pln(t_list *const pln, char *const *envp, t_data *const pdata)
 		if (!child_pid)
 			link_pln(pln->next, envp, pdata);
 	}
-	wait(NULL);
 	exec_pln(pln->content, envp, pdata);
 }

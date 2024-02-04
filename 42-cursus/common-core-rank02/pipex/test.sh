@@ -11,7 +11,10 @@ make all
 < /dev/stdin ls -l .. | wc -l > result3a.txt
 ./pipex /dev/stdin 'ls -l ..' 'wc -l' result3b.txt
 
-for i in $(seq 1 3);
+< /dev/random cat | head -1 | wc -l > result4a.txt
+./pipex /dev/random cat 'head -1' 'wc -l' result4b.txt
+
+for i in $(seq 1 4);
 do
 	if diff -s result${i}a.txt result${i}b.txt &> /dev/null; then
 		echo "Test $i passed! :D"
