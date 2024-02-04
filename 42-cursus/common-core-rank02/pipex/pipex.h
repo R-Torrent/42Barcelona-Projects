@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/04 20:52:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/04 22:35:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,6 @@ pid_t	waitpid(pid_t pid, int *stat_loc, int options);
 ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
-
-// name maximum size
-// (=NAME_MAX constant defined in linux/limits.h)
-# ifndef NAME_MAX
-#  define NAME_MAX 255
-# endif
 
 // path maximum size
 // (=PATH_MAX constant defined in linux/limits.h)
