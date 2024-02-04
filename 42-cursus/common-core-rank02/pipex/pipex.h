@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/19 23:10:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/04 20:52:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,20 @@ int		unlink(const char *path);
 pid_t	wait(int *stat_loc);
 pid_t	waitpid(pid_t pid, int *stat_loc, int options);
 ssize_t	write(int fildes, const void *buf, size_t nbyte);
+
+/* ************************************************************************** */
+
+// name maximum size
+// (=NAME_MAX constant defined in linux/limits.h)
+# ifndef NAME_MAX
+#  define NAME_MAX 255
+# endif
+
+// path maximum size
+// (=PATH_MAX constant defined in linux/limits.h)
+# ifndef PATH_MAX
+#  define PATH_MAX 4096
+# endif
 
 /* ************************************************************************** */
 
@@ -93,6 +107,7 @@ void	parse_pln(t_list **const ppln, char *const *paths, const int argc,
 int		ft_dprintf(int fd, const char *format, ...);
 char	*ft_getenv(const char *name);
 void	**ft_lsttoarray(t_list *lst);
+int		ft_sprintf(char *str, const char *format, ...);
 size_t	ft_strspn(const char *s, const char *accept);
 
 /* ************************************************************************** */

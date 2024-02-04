@@ -6,12 +6,14 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2023/12/09 19:53:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/01/23 23:56:10 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
+
+/* ************************************************************************** */
 
 # define PRINTF_FLD_SIZE 32
 
@@ -21,5 +23,14 @@ typedef struct s_specf
 	char	*str;
 	size_t	size;
 }	t_specf;
+
+/* ************************************************************************** */
+
+// principal routine for the 'printf' family of functions (stdio.h)
+
+int	xx_printf(void *dst, int (*pf)(void *, const char *, size_t),
+		const char *format, va_list ap);
+
+/* ************************************************************************** */
 
 #endif

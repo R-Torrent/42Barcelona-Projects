@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:18:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/02 11:58:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/04 21:44:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,21 @@ void	redir(t_list *const pln, bool hdoc, const int argc1, char *const argv[])
 void	seek_binary(t_list *const pln, char *const *paths)
 {
 	t_comm *const		comm = (t_comm *)pln->content;
-	char				*word;
+	char				binary[PATH_MAX];
 	char *const *const	paths0 = paths;
 
-	word = *comm->words;
-	if (!ft_strchr(word, '/'))
-	{
-		word = ft_strjoin("/", word);
+	if (!ft_strchr(*comm->words, '/'))
 		while (*paths)
 		{
-			comm->binary = ft_strjoin(*paths, word);
-			if (!access(comm->binary, F_OK))
+			ft_sprintf(binary, "%s/%s", *paths++, *comm->words);
+			if (!access(binary, F_OK))
+			{
+				comm->binary = ft_strdup(binary);
 				break ;
-			free(comm->binary);
-			comm->binary = NULL;
-			paths++;
+			}
 		}
-		free(word);
-	}
-	else if (!access(word, F_OK))
-		comm->binary = ft_strdup(word);
+	else if (!access(*comm->words, F_OK))
+		comm->binary = ft_strdup(*comm->words);
 	if (pln->next)
 		seek_binary(pln->next, paths0);
 }
