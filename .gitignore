@@ -7,6 +7,7 @@
 .bonus
 .debug
 .list
+.bintree
 
 # Prerequisites
 *.d
