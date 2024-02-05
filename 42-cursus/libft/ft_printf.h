@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/23 23:56:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/05 19:18:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_specf
 // principal routine for the 'printf' family of functions (stdio.h)
 
 int	xx_printf(void *dst, int (*pf)(void *, const char *, size_t),
-		const char *format, va_list ap);
+		const char *format, va_list *pap);
 
 /* ************************************************************************** */
 

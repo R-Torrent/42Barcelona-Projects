@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 10:52:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/24 01:03:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/05 19:18:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ static int	sift(void *dst, int (*pf)(void *, const char *, size_t),
 }
 
 int	xx_printf(void *dst, int (*pf)(void *, const char *, size_t),
-	const char *format, va_list ap)
+	const char *format, va_list *pap)
 {
 	int			nc;
 	int			nc1;
@@ -134,7 +134,7 @@ int	xx_printf(void *dst, int (*pf)(void *, const char *, size_t),
 	nc = 0;
 	while (*format)
 	{
-		nc1 = sift(dst, pf, &format, &ap);
+		nc1 = sift(dst, pf, &format, pap);
 		if (nc1 == -1)
 			return (-1);
 		nc += nc1;
