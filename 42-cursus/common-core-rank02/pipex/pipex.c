@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:41:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/01/22 02:06:20 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 02:31:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,12 @@ void	del_data(t_data *const pdata)
 		close(pdata->std_fds[1]);
 }
 
-void	terminate(t_data *const pdata, const int exit_status)
+void	terminate(t_data *const pdata, int exit_status)
 {
 	if (exit_status == EXIT_FAILURE)
 		perror(pdata->pipex_name);
+	if (exit_status == CHILD_FAILURE)
+		exit_status = EXIT_FAILURE;
 	if (!access(TMP_HEREDOC, F_OK))
 		unlink(TMP_HEREDOC);
 	del_data(pdata);

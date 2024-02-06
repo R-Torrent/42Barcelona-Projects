@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:26:24 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/04 22:29:33 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 02:30:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ void	child_exit(char *const command, const int exit_stats, int xtra_fds, ...)
 	va_list	ap;
 	int		fd;
 
-	perror(command);
+	if (command)
+		perror(command);
 	if (xtra_fds)
 	{
 		va_start(ap, xtra_fds);
@@ -56,7 +57,7 @@ void	redir_heredoc(char **const dlimitr, t_data *const pdata)
 		free(line);
 	}
 	ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-	child_exit(TMP_HEREDOC, EXIT_FAILURE,
+	child_exit(TMP_HEREDOC, CHILD_FAILURE,
 		3, fdhd, pdata->std_fds[0], pdata->std_fds[1]);
 }
 
@@ -82,7 +83,7 @@ void	redir_command(const t_list *redir, t_data *const pdata)
 	if (fd == -1 || dup2(fd, target) == -1 || close(fd))
 	{
 		ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-		child_exit(rdr->word, EXIT_FAILURE,
+		child_exit(rdr->word, CHILD_FAILURE,
 			3, fd, pdata->std_fds[0], pdata->std_fds[1]);
 	}
 	if (redir->next)
@@ -94,21 +95,21 @@ void	exec_pln(t_comm *const comm, char *const *envp, t_data *const pdata)
 	if (comm->redir)
 		redir_command(comm->redir, pdata);
 	if (close(pdata->std_fds[0]) | close(pdata->std_fds[1]))
-		child_exit(comm->words[0], EXIT_FAILURE, 0);
+		child_exit(comm->words[0], CHILD_FAILURE, 0);
 	if (!comm->binary)
 	{
-		ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-		errno = ENOENT;
-		child_exit(comm->words[0], COMMAND_NOT_FOUND, 0);
+		ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", pdata->pipex_name,
+			comm->words[0], "command not found");
+		child_exit(NULL, COMMAND_NOT_FOUND, 0);
 	}
 	if (access(comm->binary, X_OK))
 	{
 		ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-		child_exit(comm->words[0], COMMAND_NOT_EXECUTABLE, 0);
+		child_exit(comm->binary, COMMAND_NOT_EXECUTABLE, 0);
 	}
 	execve(comm->binary, comm->words, envp);
 	ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-	child_exit(comm->words[0], EXIT_FAILURE, 0);
+	child_exit(comm->words[0], CHILD_FAILURE, 0);
 }
 
 void	link_pln(t_list *const pln, char *const *envp, t_data *const pdata)
@@ -119,15 +120,15 @@ void	link_pln(t_list *const pln, char *const *envp, t_data *const pdata)
 	if (pln->next)
 	{
 		if (pipe(fd) == -1)
-			child_exit(pdata->pipex_name, EXIT_FAILURE,
+			child_exit(pdata->pipex_name, CHILD_FAILURE,
 				2, pdata->std_fds[0], pdata->std_fds[1]);
 		child_pid = fork();
 		if (child_pid == -1 || (child_pid && dup2(fd[0], STDIN_FILENO) == -1)
 			|| (!child_pid && dup2(fd[1], STDOUT_FILENO) == -1))
-			child_exit(pdata->pipex_name, EXIT_FAILURE,
+			child_exit(pdata->pipex_name, CHILD_FAILURE,
 				4, fd[0], fd[1], pdata->std_fds[0], pdata->std_fds[1]);
 		if (close(fd[0]) | close(fd[1]))
-			child_exit(pdata->pipex_name, EXIT_FAILURE,
+			child_exit(pdata->pipex_name, CHILD_FAILURE,
 				2, pdata->std_fds[0], pdata->std_fds[1]);
 		if (!child_pid)
 			link_pln(pln->next, envp, pdata);

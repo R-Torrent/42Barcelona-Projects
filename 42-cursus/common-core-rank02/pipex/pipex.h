@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/06 00:35:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 02:30:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define PROMPT_HEREDOC "> "
 // NOTE: coincides with PS2 Bash variable. Unfortunately, 'setenv' is forbidden
 
+# define CHILD_FAILURE 100
 # define COMMAND_NOT_FOUND 127
 # define COMMAND_NOT_EXECUTABLE 126
 
