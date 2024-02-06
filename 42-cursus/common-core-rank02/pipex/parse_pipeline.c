@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:18:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/04 21:44:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 00:57:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,17 @@ void	seek_binary(t_list *const pln, char *const *paths)
 	char *const *const	paths0 = paths;
 
 	if (!ft_strchr(*comm->words, '/'))
+	{
 		while (*paths)
 		{
-			ft_sprintf(binary, "%s/%s", *paths++, *comm->words);
+			ft_snprintf(binary, PATH_MAX, "%s/%s", *paths++, *comm->words);
 			if (!access(binary, F_OK))
 			{
 				comm->binary = ft_strdup(binary);
 				break ;
 			}
 		}
+	}
 	else if (!access(*comm->words, F_OK))
 		comm->binary = ft_strdup(*comm->words);
 	if (pln->next)
