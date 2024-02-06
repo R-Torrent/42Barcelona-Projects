@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 20:14:41 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/06 18:39:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/05 19:41:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_dprintf(int fd, const char *format, ...)
 	int		nc;
 
 	va_start(ap, format);
-	nc = xx_printf(&fd, putfn, format, ap);
+	nc = xx_printf(&fd, putfn, format, &ap);
 	va_end(ap);
 	return (nc);
 }

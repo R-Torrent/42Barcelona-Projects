@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 00:04:47 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/06 18:35:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 17:08:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_snprintf(char *str, size_t size, const char *format, ...)
 	t_specf *const	dst = &(t_specf){0, str, size};
 
 	va_start(ap, format);
-	nc = xx_printf(dst, &putfn, format, ap);
+	nc = xx_printf(dst, &putfn, format, &ap);
 	if (nc >= 0)
 		*dst->str = '\0';
 	va_end(ap);
