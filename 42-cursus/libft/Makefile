@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/06 01:06:08 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/06 17:08:13 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ LIST   := .list
 BSTREE := .bintree
 
 HEADER := libft.h
+HDRPRI := ft_printf.h
 HDRLST := liblst.h
 HDRBST := libbst.h
 
@@ -98,6 +99,10 @@ SRCBST := ft_bstclear.c\
 	ft_bstsearch.c
 
 OBJ    := $(SRC:.c=.o)
+OBJPRI := ft_dprintf.o\
+	ft_printf.o\
+	ft_snprintf.o\
+	ft_sprintf.o
 OBJLST := $(SRCLST:.c=.o)
 OBJBST := $(SRCBST:.c=.o)
 
@@ -144,8 +149,10 @@ re: fclean all
 
 $(OBJ): $(HEADER)
 
+$(OBJPRI): $(HDRPRI)
+
 $(OBJLST): $(HDRLST)
 
 $(OBJBST): $(HDRBST)
 
-ft_printf.o ft_getnextline_fd.o: %.o: %.h
+ft_getnextline_fd.o: %.o: %.h

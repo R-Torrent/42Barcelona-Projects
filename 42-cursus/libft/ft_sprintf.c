@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 23:17:12 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/05 19:41:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 16:20:50 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static int	putfn(void *dst, const char *buf, size_t nbytes)
 {
-	*(char **)dst = ft_memcpy(*(char **)dst, buf, nbytes) + nbytes;
+	*(void **)dst = (char *)ft_memcpy(*(void **)dst, buf, nbytes) + nbytes;
 	return ((int)nbytes);
 }
 
