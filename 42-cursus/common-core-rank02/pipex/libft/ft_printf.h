@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 11:00:28 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/05 19:18:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 00:37:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ typedef struct s_specf
 	char	*str;
 	size_t	size;
 }	t_specf;
+
+struct s_snprintf_dst
+{
+	char	**pstr;
+	size_t	*psize;
+};
 
 /* ************************************************************************** */
 

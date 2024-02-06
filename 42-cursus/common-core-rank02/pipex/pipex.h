@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 18:31:39 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/04 22:35:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/06 00:35:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	parse_pln(t_list **const ppln, char *const *paths, const int argc,
 int		ft_dprintf(int fd, const char *format, ...);
 char	*ft_getenv(const char *name);
 void	**ft_lsttoarray(t_list *lst);
-int		ft_sprintf(char *str, const char *format, ...);
+int		ft_snprintf(char *str, size_t size, const char *format, ...);
 size_t	ft_strspn(const char *s, const char *accept);
 
 /* ************************************************************************** */

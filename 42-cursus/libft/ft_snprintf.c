@@ -1,31 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_sprintf.c                                       :+:      :+:    :+:   */
+/*   ft_snprintf.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/23 23:17:12 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/05 19:22:16 by rtorrent         ###   ########.fr       */
+/*   Created: 2024/02/06 00:04:47 by rtorrent          #+#    #+#             */
+/*   Updated: 2024/02/06 01:08:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
-#include "libft/ft_printf.h"
+#include "libft.h"
+#include "ft_printf.h"
 
-static int	putfn(void *dst, const char *buf, size_t nbytes)
+static int	putfn(void *dstv, const char *buf, size_t nbytes)
 {
-	*(char **)dst = ft_memcpy(*(char **)dst, buf, nbytes) + nbytes;
+	struct s_snprintf_dst *const	dst = (struct s_snprintf_dst *)dstv;
+	size_t							written;
+
+	if (nbytes < *dst->psize)
+		written = nbytes;
+	else
+		written = *dst->psize - 1;
+	*dst->pstr = ft_memcpy(*dst->pstr, buf, written) + written;
+	*dst->psize -= written;
 	return ((int)nbytes);
 }
 
-int	ft_sprintf(char *str, const char *format, ...)
+int	ft_snprintf(char *str, size_t size, const char *format, ...)
 {
 	va_list	ap;
 	int		nc;
 
 	va_start(ap, format);
-	nc = xx_printf(&str, &putfn, format, &ap);
+	nc = xx_printf(&(struct s_snprintf_dst){&str, &size}, &putfn, format, &ap);
 	if (nc >= 0)
 		*str = '\0';
 	va_end(ap);
