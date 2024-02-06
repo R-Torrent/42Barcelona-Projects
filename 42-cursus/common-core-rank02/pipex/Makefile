@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/09 17:49:48 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/06 00:35:48 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/06 19:19:23 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,8 @@ NAME    := pipex
 
 HEADER  := pipex.h
 
+HDRPRI  := ft_printf.h
+
 SRC :=	ft_dprintf.c\
 		ft_getenv.c\
 		ft_lsttoarray.c\
@@ -37,7 +39,11 @@ SRC :=	ft_dprintf.c\
 		parse_pipeline.c\
 		pipex.c
 
+SRCPRI  := ft_dprintf.c ft_snprintf.c
+
 OBJ     := $(SRC:.c=.o)
+
+OBJPRI  := $(SRCPRI:.c=.o)
 
 DIRLIB  := libft/
 
@@ -92,6 +98,7 @@ re: fclean all
 # Build prerequisites:
 
 $(OBJ): %.o: %.c $(HEADER) $(DIRLIB)$(HDRLIB)
+$(OBJPRI): %.o: %.c $(DIRLIB)$(HDRPRI)
 
 # **************************************************************************** #
 
