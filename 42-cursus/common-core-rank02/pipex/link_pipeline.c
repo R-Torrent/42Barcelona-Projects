@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 12:26:24 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/06 21:21:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/07 01:39:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,46 +56,32 @@ void	redir_heredoc(char **const dlimitr, t_data *const pdata)
 		ft_putstr_fd(line, fdhd);
 		free(line);
 	}
-	ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-	child_exit(TMP_HEREDOC, CHILD_FAILURE,
+	ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", pdata->pipex_name,
+		TMP_HEREDOC, strerror(errno));
+	child_exit(NULL, CHILD_FAILURE,
 		3, fdhd, pdata->std_fds[0], pdata->std_fds[1]);
-}
-
-void	target_n_flags(int type, int *target, int *flags)
-{
-	if (type == RDR_INPUT || type == RDR_HEREDOC)
-	{
-		*target = STDIN_FILENO;
-		*flags = O_RDONLY;
-	}
-	else
-	{
-		*target = STDOUT_FILENO;
-		*flags = O_CREAT | O_WRONLY;
-		if (type == RDR_APPOUT)
-			*flags |= O_APPEND;
-	}
 }
 
 void	redir_command(const t_list *redir, t_data *const pdata)
 {
-	t_redir *const	rdr = redir->content;
-	int				target;
-	int				flags;
-	int				fd;
+	t_redir *const		rdr = redir->content;
+	int					fd;
+	static const int	redirs[][2] = {{STDIN_FILENO, O_RDONLY},
+	{STDOUT_FILENO, O_CREAT | O_WRONLY}, {STDOUT_FILENO,
+		O_CREAT | O_WRONLY | O_APPEND}, {STDIN_FILENO, O_RDONLY}};
 
-	target_n_flags(rdr->type, &target, &flags);
 	if (rdr->type == RDR_HEREDOC)
 		redir_heredoc(&rdr->word, pdata);
-	fd = open(rdr->word, flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	fd = open(rdr->word, redirs[rdr->type][FLAGS],
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd == -1)
 	{
 		ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", pdata->pipex_name,
-			rdr->word, strerror(ENOENT));
+			rdr->word, strerror(errno));
 		child_exit(NULL, CHILD_FAILURE,
 			2, pdata->std_fds[0], pdata->std_fds[1]);
 	}
-	if (dup2(fd, target) == -1)
+	if (dup2(fd, redirs[rdr->type][TARGET]) == -1)
 		child_exit(pdata->pipex_name, CHILD_FAILURE,
 			3, fd, pdata->std_fds[0], pdata->std_fds[1]);
 	if (close(fd))
@@ -120,12 +106,13 @@ void	exec_pln(t_comm *const comm, char *const *envp, t_data *const pdata)
 	if (access(comm->binary, X_OK))
 	{
 		ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", pdata->pipex_name,
-			comm->binary, strerror(EACCES));
+			comm->binary, strerror(errno));
 		child_exit(NULL, COMMAND_NOT_EXECUTABLE, 0);
 	}
 	execve(comm->binary, comm->words, envp);
-	ft_dprintf(STDERR_FILENO, "%s: ", pdata->pipex_name);
-	child_exit(comm->words[0], CHILD_FAILURE, 0);
+	ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", pdata->pipex_name,
+		comm->words[0], strerror(errno));
+	child_exit(NULL, CHILD_FAILURE, 0);
 }
 
 void	link_pln(t_list *const pln, char *const *envp, t_data *const pdata)
