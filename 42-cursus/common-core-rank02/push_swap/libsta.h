@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 20:35:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 20:57:19 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:01:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct s_frame
 }	t_frame;
 
 void			ft_staclear(t_stack *sta, void (*del)(void *));
-void			*ft_stadup(t_stack *sta, void *(*dup)(const void *));
+void			*ft_staduptop(t_stack *sta, void *(*dup)(const void *));
 bool			ft_staisempty(const t_stack *sta);
 bool			ft_stamatch(const t_stack *sta1, const t_stack *sta2,
 					int (*compar)(const void *, const void *));
