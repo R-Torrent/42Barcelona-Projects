@@ -22,3 +22,7 @@ Exercises and projects encountered during my stay in 42 BARCELONA. Those I overc
 - ft_printf (23/06/2023)
 - get_next_line (04/08/2023)
 - Born2beroot (08/12/2023)
+
+#### common-core-rank02
+
+- pipex (07/02/2024)
