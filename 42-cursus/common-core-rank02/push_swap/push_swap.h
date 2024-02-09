@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/09 01:57:12 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/09 13:55:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 # define PUSH_SWAP_H
 
 # include "libft/libft.h"
-# include "libsta.h"
 
 /* ************************************************************************** */
 
 # include <limits.h>
+# include <stdint.h>
 
 // external declarations from the libc (AKA 'authorized functions')
 void	exit(int status);
@@ -36,6 +36,12 @@ void	exit(int status);
 // duplicate error
 # define DUP_ERR 4
 
+// minimim path size and subsequent batch allocations
+// used in: ft_getnextline_fd of the libft
+# ifndef DEFAULT_BATCH_SZE
+#  define DEFAULT_BATCH_SZE 100
+# endif
+
 enum e_ops
 {
 	SA,
@@ -52,15 +58,18 @@ enum e_ops
 	ID
 };
 
-typedef struct s_step
+typedef struct s_node
 {
-	t_stack			*a;
-	t_stack			*b;
+	struct s_node	*camefrom;
+	unsigned int	moves;
 	enum e_ops		camewith;
-}	t_step;
+	size_t			na;
+	size_t			nb;
+	unsigned int	stacks[];
+}	t_node;
 
-void	ida_star(t_stack *path, const t_stack *target);
-int		init_stacks(t_stack **pa, t_stack **pb, unsigned int n, char *args[]);
+int		ida_star(t_node *path);
+int		push_node(t_node **ppath, size_t size_node, t_node *node);
 
 /* ************************************************************************** */
 

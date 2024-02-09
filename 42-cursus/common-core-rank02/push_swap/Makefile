@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/09 01:56:22 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/09 13:59:29 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,27 +26,12 @@ RM_NT_DEBUG = find . -type f -name "*.o" -newer $(DEBUG) -delete
 NAME   := push_swap
 
 HEADER := push_swap.h
-HDRSTA := libsta.h
 
 SRC    := ida_star.c\
-	init_stacks.c\
+	push_node.c\
 	push_swap.c
 
-SRCSTA := ft_staclear.c\
-	ft_stadup.c\
-	ft_staisempty.c\
-	ft_stamatch.c\
-	ft_stanew.c\
-	ft_stapeek.c\
-	ft_stapop.c\
-	ft_stapush.c\
-	ft_staroll_left.c\
-	ft_staroll_right.c\
-	ft_stasize.c\
-	ft_staswap.c
-
 OBJ    := $(SRC:.c=.o)
-OBJSTA := $(SRCSTA:.c=.o)
 
 DIRLIB := libft/
 NAMELB := libft.a
@@ -76,15 +61,15 @@ $(DEBUG)::
 $(NAME) $(DEBUG)::
 	@$(MAKE) -s -C $(DIRLIB) CFLAGS="$(CFLAGS)" all
 
-$(NAME):: $(OBJ) $(OBJSTA) $(DIRLIB)$(NAMELB)
+$(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
 
-$(DEBUG):: $(OBJ) $(OBJSTA) $(DIRLIB)$(NAMELB)
+$(DEBUG):: $(OBJ) $(DIRLIB)$(NAMELB)
 	$(CC) $^ -o $(NAME)
 	@$(TC) $(DEBUG)
 
 clean:
 	@$(MAKE) -C $(DIRLIB) --no-print-directory clean
-	$(RM) $(OBJ) $(OBJSTA)
+	$(RM) $(OBJ)
 	@$(RM) $(DEBUG)
 
 fclean: clean
@@ -100,8 +85,6 @@ re: fclean all
 # Build prerequisites:
 
 $(OBJ): %.o: %.c $(HEADER) $(DIRLIB)$(HDRLIB)
-
-$(OBJSTA): %.o: %.c $(HDRSTA)
 
 # **************************************************************************** #
 

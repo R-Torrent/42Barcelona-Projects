@@ -6,96 +6,116 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/08 23:35:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/09 13:56:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	delstep(t_step *step)
+void	print_path(t_node *path)
 {
-	ft_staclear(step->a, free);
-	ft_staclear(step->b, free);
-	free(step->a);
-	free(step->b);
-	free(step);
+	ft_putendl_fd("Fine!", 2);
 }
 
-void	free_memory(t_stack *path, t_stack *target, t_stack *a, t_stack *b)
+int	fill_root(t_node *root, const int *src, int size)
 {
-	if (!path || ft_staisempty(path))
-	{
-		ft_staclear(a, free);
-		ft_staclear(b, free);
-		free(a);
-		free(b);
-	}
-	else
-		ft_staclear(path, (void (*)(void *))delstep);
-	free(path);
-	ft_staclear(target, free);
-	free(target);
-}
+	const int *const	src_0 = src;
+	const int *const	src_n = src + size;
+	const int			*src_current;
 
-t_step	*fill_start(t_stack *a, t_stack *b)
-{
-	t_step *const	start = malloc(sizeof(t_step));
-
-	if (start)
+	root->camefrom = NULL;
+	root->camewith = ID;
+	while (size--)
 	{
-		start->a = a;
-		start->b = b;
-		start->camewith = ID;
-	}
-	return (start);
-}
-
-int	set_paths(t_stack **path, t_stack **target, t_stack *a, t_stack *b)
-{
-	t_step			*start;
-	unsigned int	size;	
-	unsigned int	*ordinal;
-
-	size = ft_stasize(a);
-	*path = ft_stanew(0);
-	*target = ft_stanew(size);
-	start = fill_start(a, b);
-	if (!ft_stapush(*path, start))
-	{
-		free(start);
-		return (MEM_ERR);
-	}
-	while (true)
-	{
-		ordinal = malloc(sizeof(unsigned int));
-		if (!ft_stapush(*target, ordinal))
+		src = src_0;
+		src_current = src_0 + size;
+		while (src < src_n)
 		{
-			free(ordinal);
-			return (MEM_ERR);
+			if (*src < *src_current)
+				root->stacks[root->na++]++;
+			else if (src != src_current && *src == *src_current)
+				return (DUP_ERR);
+			src++;
 		}
-		*ordinal = --size;
-		if (!size)
-			return (SUCCESS);
 	}
+	return (SUCCESS);
+}
+
+int	atoi2(const char *str, int *status)
+{
+	int		n;
+	int		i;
+	bool	sgn;
+
+	while (ft_isspace(*str))
+		str++;
+	sgn = *str == '-';
+	if (*str == '-' || *str == '+')
+		str++;
+	n = 0;
+	while (ft_isdigit(*str))
+	{
+		i = *str++ - '0';
+		if ((sgn && n < (INT_MIN + i) / 10) || (!sgn && n > (INT_MAX - i) / 10))
+			*status = OOB_ERR;
+		if (sgn)
+			n = 10 * n - i;
+		else
+			n = 10 * n + i;
+	}
+	if (*str)
+		*status = NAN_ERR;
+	return (n);
+}
+
+int	init_root(t_node **ppath, t_node **proot, int n, char *args[])
+{
+	int		status;
+	int		*args_n;
+	size_t	i;
+
+	status = SUCCESS;
+	if (n > SIZE_MAX >> 1)
+		status = MEM_ERR;
+	*ppath = NULL;
+	args_n = malloc(n * sizeof(int));
+	*proot = ft_calloc(1, sizeof(t_node) + n * sizeof(unsigned int));
+	if (!args_n || !*proot)
+		status = MEM_ERR;
+	i = 0;
+	while (!status && i < n)
+		args_n[i++] = atoi2(*++args, &status);
+	if (!status)
+		status = fill_root(*proot, args_n, n);
+	free(args_n);
+	return (status);
 }
 
 int	main(int argc, char *argv[])
 {
-	int		status;
-	t_stack	*a;
-	t_stack	*b;
-	t_stack	*path;
-	t_stack	*target;
+	int				status;
+	t_node			*root;
+	t_node			*path;
+	const size_t	size_n = sizeof(t_node) + (argc - 1) * sizeof(unsigned int);
 
 	if (argc == 1)
 		exit(SUCCESS);
-	status = init_stacks(&a, &b, argc - 1, argv);
+	status = init_root(&path, &root, argc - 1, argv);
 	if (!status)
-		status = set_paths(&path, &target, a, b);
+		status = push_node(&path, size_n, root);
 	if (!status)
-		status = ida_star(path, target);
-	if (status)
+		status = ida_star(path);
+	if (!status)
+		print_path(path);
+	else
 		ft_putendl_fd("Error", 2);
-	free_memory(path, target, a, b);
+	free(root);
+	while (path)
+	{
+		root = path->camefrom;
+		if (!(path->moves % DEFAULT_BATCH_SZE))
+			free(path);
+		path = root;
+	}
 	exit(status);
 }
