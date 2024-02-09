@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 20:35:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/08 22:10:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/09 01:58:00 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void			ft_staclear(t_stack *sta, void (*del)(void *));
 t_stack			*ft_stadup(const t_stack *sta, void *(*dup)(const void *));
 void			*ft_staduptop(t_stack *sta, void *(*dup)(const void *));
 bool			ft_staisempty(const t_stack *sta);
-void    		ft_staiter(t_stack *sta, void (*f)(void *));
+void			ft_staiter(t_stack *sta, void (*f)(void *));
 bool			ft_stamatch(const t_stack *sta1, const t_stack *sta2,
 					int (*compar)(const void *, const void *));
 t_stack			*ft_stanew(unsigned int capacity);
