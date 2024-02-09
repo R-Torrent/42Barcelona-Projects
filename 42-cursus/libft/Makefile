@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/06 17:08:13 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/09 11:29:52 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,11 +27,13 @@ TC     := touch
 NAME   := libft.a
 LIST   := .list
 BSTREE := .bintree
+STACK  := .stack
 
 HEADER := libft.h
 HDRPRI := ft_printf.h
 HDRLST := liblst.h
 HDRBST := libbst.h
+HDRSTA := libsta.h
 
 SRC    := ft_atoi.c\
 	ft_bzero.c\
@@ -98,6 +100,21 @@ SRCBST := ft_bstclear.c\
 	ft_bstnew.c\
 	ft_bstsearch.c
 
+SRCSTA := ft_staclear.c\
+	ft_stadup.c\
+	ft_staduptop.c\
+	ft_staisempty.c\
+	ft_staiter.c\
+	ft_stamatch.c\
+	ft_stanew.c\
+	ft_stapeek.c\
+	ft_stapop.c\
+	ft_stapush.c\
+	ft_staroll_left.c\
+	ft_staroll_right.c\
+	ft_stasize.c\
+	ft_staswap.c
+
 OBJ    := $(SRC:.c=.o)
 OBJPRI := ft_dprintf.o\
 	ft_printf.o\
@@ -105,6 +122,7 @@ OBJPRI := ft_dprintf.o\
 	ft_sprintf.o
 OBJLST := $(SRCLST:.c=.o)
 OBJBST := $(SRCBST:.c=.o)
+OBJSTA := $(SRCSTA:.c=.o)
 
 MKFILE := $(lastword $(MAKEFILE_LIST))
 
@@ -112,7 +130,7 @@ MKFILE := $(lastword $(MAKEFILE_LIST))
 
 # Primary targets:
 
-all: $(NAME) $(LIST) $(BSTREE)
+all: $(NAME) list bintree stack
 
 $(NAME) $(LIST) $(BSTREE):: $(MKFILE)
 	@if [ -f "$@" ]; then $(MAKE) --no-print-directory fclean; fi
@@ -120,6 +138,8 @@ $(NAME) $(LIST) $(BSTREE):: $(MKFILE)
 list: $(LIST)
 
 bintree: $(BSTREE)
+
+stack: $(STACK)
 
 $(NAME):: $(OBJ)
 	$(AR) $@ $?
@@ -132,16 +152,20 @@ $(BSTREE):: $(OBJBST)
 	$(AR) $(NAME) $?
 	@$(TC) $(BSTREE)
 
+$(STACK):: $(OBJSTA)
+	$(AR) $(NAME) $?
+	@$(TC) $(STACK)
+
 clean:
-	$(RM) $(OBJ) $(OBJLST) $(OBJBST)
-	@$(RM) $(LIST) $(BSTREE)
+	$(RM) $(OBJ) $(OBJLST) $(OBJBST) $(OBJSTA)
+	@$(RM) $(LIST) $(BSTREE) $(STACK)
 
 fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
 
-.PHONY: all list bintree clean fclean re
+.PHONY: all list bintree stack clean fclean re
 
 # **************************************************************************** #
 
@@ -154,5 +178,7 @@ $(OBJPRI): $(HDRPRI)
 $(OBJLST): $(HDRLST)
 
 $(OBJBST): $(HDRBST)
+
+$(OBJSTA): $(HDRSTA)
 
 ft_getnextline_fd.o: %.o: %.h
