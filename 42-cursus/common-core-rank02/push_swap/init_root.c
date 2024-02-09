@@ -1,16 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_stacks.c                                      :+:      :+:    :+:   */
+/*   init_root.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 19:03:57 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 19:00:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/09 11:03:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+int	fill_root(t_node *root, const int *src, int size)
+{
+	const int *const	src_0 = src;
+	const int *const	src_n = src + size;
+	const int 			*src_current;
+
+	root->camewith = ID;
+	while (size--)
+	{
+		src = src_0;
+		src_current = src0 + size;
+		while (src < src_n)
+		{
+			if (*src < src_current)
+				root->stacks[root->na++]++;
+			else if (src != src_current && *src == *src_current)
+				return (DUP_ERR);
+			src++;
+		}
+	}
+	return (SUCCESS);
+}
 
 int	atoi2(const char *str, int *status)
 {
@@ -39,51 +62,25 @@ int	atoi2(const char *str, int *status)
 	return (n);
 }
 
-int	fill_stack(t_stack *sta, const int *src, unsigned int size)
+int	init_root(t_node **proot, int n, char *args[])
 {
-	const int *const	src_0 = src;
-	const int *const	src_n = src + size;
-	unsigned int		*ordinal;
-
-	while (size--)
-	{
-		ordinal = ft_calloc(1, sizeof(unsigned int));
-		if (!ordinal)
-			return (MEM_ERR);
-		src = src_0;
-		while (src < src_n)
-		{
-			if (*src < src_0[size])
-				(*ordinal)++;
-			else if (src != (src_0 + size) && *src == src_0[size])
-				return (DUP_ERR);
-			src++;
-		}
-		if (!ft_stapush(sta, ordinal))
-		{
-			free(ordinal);
-			return (MEM_ERR);
-		}
-	}
-	return (SUCCESS);
-}
-
-int	init_stacks(t_stack **pa, t_stack **pb, unsigned int n, char *args[])
-{
-	int				status;
-	int *const		arguments = malloc(n * sizeof(int));
-	unsigned int	i;
+	int		status;
+	int 	*args_n;
+	size_t	i;
 
 	status = SUCCESS;
-	*pa = ft_stanew(n);
-	*pb = ft_stanew(n);
-	if (!(*pa && *pb))
+	if (n > SIZE_MAX >> 1)
+		status = MEM_ERR;
+	args_n = malloc(n * sizeof(int));
+	*proot = ft_calloc(1, sizeof(t_node) + n * sizeof(unsigned int));
+	if (!args_n || !*proot)
 		status = MEM_ERR;
 	i = 0;
 	while (!status && i < n)
-		arguments[i++] = atoi2(*++args, &status);
+		args_n[i++] = atoi2(*++args, &status);
 	if (!status)
-		status = fill_stack(*pa, arguments, n);
-	free(arguments);
+		status = fill_root(*proot, args_n, n);
+	if (
+	free(args_n);
 	return (status);
 }
