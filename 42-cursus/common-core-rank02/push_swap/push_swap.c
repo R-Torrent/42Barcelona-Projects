@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 22:49:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/08 23:35:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ int	main(int argc, char *argv[])
 	if (!status)
 		status = set_paths(&path, &target, a, b);
 	if (!status)
-		; // ********* CONTINUE HERE
-	else
+		status = ida_star(path, target);
+	if (status)
 		ft_putendl_fd("Error", 2);
 	free_memory(path, target, a, b);
 	exit(status);

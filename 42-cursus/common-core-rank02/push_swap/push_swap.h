@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/01 20:31:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/09 01:57:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	exit(int status);
 
 enum e_ops
 {
-	ID,
 	SA,
 	SB,
 	SS,
@@ -49,7 +48,8 @@ enum e_ops
 	RR,
 	RRA,
 	RRB,
-	RRR
+	RRR,
+	ID
 };
 
 typedef struct s_step
@@ -59,6 +59,7 @@ typedef struct s_step
 	enum e_ops		camewith;
 }	t_step;
 
+void	ida_star(t_stack *path, const t_stack *target);
 int		init_stacks(t_stack **pa, t_stack **pb, unsigned int n, char *args[]);
 
 /* ************************************************************************** */

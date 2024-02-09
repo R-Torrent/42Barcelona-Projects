@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/01 21:19:20 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/09 01:56:22 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,13 +28,16 @@ NAME   := push_swap
 HEADER := push_swap.h
 HDRSTA := libsta.h
 
-SRC    := init_stacks.c\
+SRC    := ida_star.c\
+	init_stacks.c\
 	push_swap.c
 
 SRCSTA := ft_staclear.c\
+	ft_stadup.c\
 	ft_staisempty.c\
 	ft_stamatch.c\
 	ft_stanew.c\
+	ft_stapeek.c\
 	ft_stapop.c\
 	ft_stapush.c\
 	ft_staroll_left.c\
