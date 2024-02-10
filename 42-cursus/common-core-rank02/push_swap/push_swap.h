@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/09 13:55:26 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/10 01:03:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,9 @@ typedef struct s_node
 	unsigned int	stacks[];
 }	t_node;
 
-int		ida_star(t_node *path);
-int		push_node(t_node **ppath, size_t size_node, t_node *node);
+int		ida_star(t_node *path, t_node *temp_node);
+t_node	*pop_node(t_node **ppath, t_node *node, size_t size_node);
+t_node	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status);
 
 /* ************************************************************************** */
 

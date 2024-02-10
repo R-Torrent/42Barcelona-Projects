@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/09 01:51:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/10 01:35:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ bool	search(t_stack path, const t_stack *target, unsigned int *bound)
 	find_successors(last_node);
 }
 
-void	ida_star(t_stack *path, const t_stack *target)
+int	ida_star(t_stack *path, t_node *temp)
 {
 	unsigned int	bound;
 
