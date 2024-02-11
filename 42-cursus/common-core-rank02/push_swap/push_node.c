@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 11:53:26 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/10 02:25:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/11 22:16:39 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ t_node	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
 	}
 	ft_memcpy(next, node, size_node);
 	next->camefrom = *ppath;
-	next->moves = (*ppath)->moves + 1;
+	if (*ppath)
+		next->moves = (*ppath)->moves + 1;
 	*ppath = next;
 	*status = SUCCESS;
 	return (*ppath);
