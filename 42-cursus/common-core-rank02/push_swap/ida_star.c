@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 01:32:53 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 17:04:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,25 @@ unsigned int	search(t_node **ppath, unsigned int bound, t_node *temp_nodes,
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Heuristic cost: unordered, consecutive integers on stack 'a' + ordered,  */
+/*   consecutive integers in stack 'b' (a PA command will reverse ordering)   */
+/*   + number of elements in stack 'b'                                        */
+/*                                                                            */
+/* ************************************************************************** */
+
 unsigned int	heuristic(t_node *node, size_t n)
 {
 	unsigned int	h;
 	size_t			i;
 
-	h = node->nb;
+	h = node->n[1];
 	i = 0;
-	while (++i < node->na)
+	while (++i < node->n[0])
 		if (node->stacks[i] > node->stacks[i - 1])
 			h++;
-	i = node->na;
+	i = node->n[0];
 	while (++i < n)
 		if (node->stacks[i] < node->stacks[i -1])
 			h++;
@@ -56,7 +64,7 @@ int	ida_star(t_node **ppath, size_t n, t_node *temp_nodes)
 	while (true)
 	{
 		threshold = search(ppath, bound, temp_nodes, &status);
-		if (!status || status == MEM_ERR || status == NOT_FND)
+		if (status != WORKING)
 			return (status);
 		bound = threshold;
 	}

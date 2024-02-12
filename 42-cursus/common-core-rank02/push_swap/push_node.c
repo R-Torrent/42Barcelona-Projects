@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 11:53:26 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/11 22:16:39 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 16:43:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_node	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
 		&& (*ppath)->moves % DEFAULT_BATCH_SZE != DEFAULT_BATCH_SZE - 1)
 		next = *ppath + size_node;
 	else
-		next = ft_calloc(DEFAULT_BATCH_SZE, size_node);
+		next = malloc(DEFAULT_BATCH_SZE * size_node);
 	if (!next)
 	{
 		*status = MEM_ERR;

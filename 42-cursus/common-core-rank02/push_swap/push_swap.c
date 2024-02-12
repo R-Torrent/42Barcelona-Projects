@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 01:11:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 17:05:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	print_path(t_node *path)
 {
 	static char	*ops[] = {"SA", "SB", "SS", "PA", "PB", "RA", "RB", "RR", "RRA",
-		"RRB", "RRR"};
+		"RRB", "RRR", "ID"};
 
 	if (path->camefrom)
 		print_path(path->camefrom);
@@ -38,12 +38,12 @@ int	fill_root(t_node *root, const int *src, unsigned int size)
 		while (src < src_n)
 		{
 			if (*src < *src_current)
-				root->stacks[root->na]++;
+				root->stacks[*root->n]++;
 			else if (src != src_current && *src == *src_current)
 				return (DUP_ERR);
 			src++;
 		}
-		root->na++;
+		(*root->n)++;
 	}
 	return (SUCCESS);
 }
@@ -102,7 +102,7 @@ int	main(int argc, char *argv[])
 	int				status;
 	t_node			*path;
 	const size_t	size_n = sizeof(t_node) + (argc - 1) * sizeof(unsigned int);
-	t_node *const	temp_nodes = ft_calloc(ID, size_n);
+	t_node *const	temp_nodes = ft_calloc(2, size_n);
 
 	if (argc == 1)
 		exit(SUCCESS);

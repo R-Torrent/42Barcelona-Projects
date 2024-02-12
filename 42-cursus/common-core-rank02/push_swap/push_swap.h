@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 01:27:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 17:04:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,8 @@ typedef struct s_node
 	struct s_node	*camefrom;
 	unsigned int	moves;
 	enum e_ops		camewith;
-	size_t			na;
-	size_t			nb;
-	size_t			stacks[];
+	size_t			n[2];
+	unsigned int	stacks[];
 }	t_node;
 
 int		ida_star(t_node **ppath, size_t n, t_node *temp_nodes);
