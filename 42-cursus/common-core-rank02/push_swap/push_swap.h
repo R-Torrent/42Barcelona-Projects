@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 17:04:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 18:34:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ enum e_ops
 	RRB,
 	RRR,
 	ID
+};
+
+enum e_stacks
+{
+	A,
+	B
 };
 
 typedef struct s_node

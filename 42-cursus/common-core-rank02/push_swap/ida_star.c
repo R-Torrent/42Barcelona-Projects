@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 17:04:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 18:33:59 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ unsigned int	heuristic(t_node *node, size_t n)
 	unsigned int	h;
 	size_t			i;
 
-	h = node->n[1];
+	h = node->n[B];
 	i = 0;
-	while (++i < node->n[0])
+	while (++i < node->n[A])
 		if (node->stacks[i] > node->stacks[i - 1])
 			h++;
-	i = node->n[0];
+	i = node->n[A];
 	while (++i < n)
 		if (node->stacks[i] < node->stacks[i -1])
 			h++;

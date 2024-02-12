@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 17:05:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 18:33:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ int	fill_root(t_node *root, const int *src, unsigned int size)
 		while (src < src_n)
 		{
 			if (*src < *src_current)
-				root->stacks[*root->n]++;
+				root->stacks[root->n[A]]++;
 			else if (src != src_current && *src == *src_current)
 				return (DUP_ERR);
 			src++;
 		}
-		(*root->n)++;
+		root->n[A]++;
 	}
 	return (SUCCESS);
 }
