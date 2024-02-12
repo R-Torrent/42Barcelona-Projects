@@ -6,86 +6,58 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/10 01:35:34 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 01:32:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-t_stack	**find_successors(const t_step *node)
-{
-	t_step **const	p = malloc(2* ID * sizeof(t_step *));
-	enum e_ops		op;
+/* ************************************************************************** */
+/*                                                                            */
+/*   Search algorithm: Iterative deepening A* (IDA*)                          */
+/*   More information: https://en.wikipedia.org/wiki/Iterative_deepening_A*   */
+/*                                                                            */
+/* ************************************************************************** */
 
-	if (p)
-	{
-		op = SA;
-		while (op < ID)
-		{
-			p[op<<1] = ft_stadup(node->a, dup)
-			p[op<<1 + 1] = ft_stadup(node->b, dup)
-			if (!p[op<<1] || !p{
-			op++;
-		}
-		if (ft_stasize(node->a))
-		{
-			ft_stapush(p[PB<<1 + 1], ft_stapop(p[PB<<1]));
-			if (ft_stasize(node->a) > 1)
-			{
-				ft_staswap(p[SA<<1]);
-				ft_staswap(p[SS<<1]);
-				ft_staroll_right(p[RA<<1]);
-				ft_staroll_right(p[RR<<1]);
-				ft_staroll_left(p[RRA<<1]);
-				ft_staroll_left(p[RRR<<1]);
-			}
-		}
-		if (ft_stasize(node->b))
-		{
-			ft_stapush(p[PA<<1], ft_stapop(p[PA<<1 + 1]));
-			if (ft_stasize(node->b) > 1)
-			{
-				ft_staswap(p[SB<<1 + 1]);
-				ft_staswap(p[SS<<1 + 1]);
-				ft_staroll_right(p[RB<<1 + 1]);
-				ft_staroll_right(p[RR<<1 + 1]);
-				ft_staroll_left(p[RRB<<1 + 1]);
-				ft_staroll_left(p[RRR<<1 + 1]);
-			}
-		}
-	}
-	return (p);
+unsigned int	search(t_node **ppath, unsigned int bound, t_node *temp_nodes,
+	int *status)
+{
+	(void)ppath;
+	(void)bound;
+	(void)temp_nodes;
+	*status = SUCCESS;
+	return (0);
 }
 
-bool	search(t_stack path, const t_stack *target, unsigned int *bound)
+unsigned int	heuristic(t_node *node, size_t n)
 {
-	t_step *const		last_node = ft_stapeek(path);
-	const unsigned int	cost = ft_stasize(path) - 1 + heuristic(last_node);
-	unsigned int		min;
+	unsigned int	h;
+	size_t			i;
 
-	if (cost > *bound)
-	{
-		*bound = cost;
-		return (false);
-	}
-	if (ft_stamatch(target, last_node->a))
-		return (true);
-	min = UINT_MAX;
-	find_successors(last_node);
+	h = node->nb;
+	i = 0;
+	while (++i < node->na)
+		if (node->stacks[i] > node->stacks[i - 1])
+			h++;
+	i = node->na;
+	while (++i < n)
+		if (node->stacks[i] < node->stacks[i -1])
+			h++;
+	return (h);
 }
 
-int	ida_star(t_stack *path, t_node *temp)
+int	ida_star(t_node **ppath, size_t n, t_node *temp_nodes)
 {
 	unsigned int	bound;
+	unsigned int	threshold;
+	int				status;
 
-	bound = heuristic(ft_stapeek(path));
+	bound = heuristic(*ppath, n);
 	while (true)
-		if (search(path, &bound))
-		{
-			ft_staiter(path, print_path);
-			return (SUCCESS);
-		}
-		else if (bound == -1)
-			return (MEM_ERR);
+	{
+		threshold = search(ppath, bound, temp_nodes, &status);
+		if (!status || status == MEM_ERR || status == NOT_FND)
+			return (status);
+		bound = threshold;
+	}
 }
-		

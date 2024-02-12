@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/10 02:03:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/12 01:11:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,23 +102,23 @@ int	main(int argc, char *argv[])
 	int				status;
 	t_node			*path;
 	const size_t	size_n = sizeof(t_node) + (argc - 1) * sizeof(unsigned int);
-	t_node *const	temp_node = ft_calloc(1, size_n);
+	t_node *const	temp_nodes = ft_calloc(ID, size_n);
 
 	if (argc == 1)
 		exit(SUCCESS);
-	status = init_root(&path, temp_node, (unsigned int)(argc - 1), argv);
+	status = init_root(&path, temp_nodes, (unsigned int)--argc, argv);
 	if (!status)
-		(void)push_node(&path, temp_node, size_n, &status);
+		(void)push_node(&path, temp_nodes, size_n, &status);
 	if (!status)
-		status = ida_star(path, temp_node);
+		status = ida_star(&path, (size_t)argc, temp_nodes);
 	if (!status)
 		print_path(path);
 	else
 	{
 		ft_putendl_fd("Error", 2);
 		while (path)
-			(void)pop_node(&path, temp_node, size_n);
+			(void)pop_node(&path, temp_nodes, size_n);
 	}
-	free(temp_node);
+	free(temp_nodes);
 	exit(status);
 }
