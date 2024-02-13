@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 11:53:26 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 16:43:03 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 18:47:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-t_node	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
+void	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
 {
 	t_node	*next;
 
@@ -32,5 +32,4 @@ t_node	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
 		next->moves = (*ppath)->moves + 1;
 	*ppath = next;
 	*status = SUCCESS;
-	return (*ppath);
 }
