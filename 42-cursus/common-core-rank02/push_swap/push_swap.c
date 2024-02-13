@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 20:06:40 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 23:44:47 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,12 @@ int	main(int argc, char *argv[])
 	if (!--argc)
 		exit(SUCCESS);
 	info.n_args = (size_t)argc;
-	info.size_node = sizeof(t_node) + argc * sizeof(size_t)};
-	info.temp_nodes = ft_calloc(2, info.size_node);
-	status = init_root(&path, info.temp_nodes, (unsigned int)argc, argv);
+	info.size_node = sizeof(t_node) + argc * sizeof(size_t);
+	info.temp_nodes0 = ft_calloc(2, info.size_node);
+	info.temp_nodes1 = (t_node *)((char *)info.temp_nodes0 + info.size_node);
+	status = init_root(&path, info.temp_nodes0, (unsigned int)argc, argv);
 	if (!status)
-		push_node(&path, info.temp_nodes, info.size_node, &status);
+		push_node(&path, info.temp_nodes0, info.size_node, &status);
 	if (!status)
 		status = ida_star(&path, &info);
 	if (!status)
@@ -119,6 +120,6 @@ int	main(int argc, char *argv[])
 		ft_putendl_fd("Error", 2);
 	while (path)
 		pop_node(&path);
-	free(info.temp_nodes);
+	free(info.temp_nodes0);
 	exit(status);
 }

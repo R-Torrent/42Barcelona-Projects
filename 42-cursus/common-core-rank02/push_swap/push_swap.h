@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 20:05:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 23:37:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,8 @@ typedef struct s_info
 {
 	size_t	n_args;
 	size_t	size_node;
-	t_node	*temp_nodes;
+	t_node	*temp_nodes0;
+	t_node	*temp_nodes1;
 }	t_info;
 
 int		ida_star(t_node **ppath, t_info *pinfo);

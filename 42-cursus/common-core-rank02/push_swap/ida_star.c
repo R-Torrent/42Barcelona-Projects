@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 21:44:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 23:53:10 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ unsigned int	heuristic(t_node *node, size_t n)
 		return (h_a);
 }
 
-bool	is_goal(t_node *path, t_info *pinfo, int *status)
+bool	is_goal(t_node *path, t_info *pinfo, int *pstatus)
 {
 	size_t	i;
 	size_t	*p;
@@ -56,7 +56,7 @@ bool	is_goal(t_node *path, t_info *pinfo, int *status)
 	while (p < p1)
 		if (*p++ != i--)
 			return (false);
-	*status = SUCCESS;
+	*pstatus = SUCCESS;
 	return (true);
 }
 
@@ -66,7 +66,7 @@ bool	in_path(t_node *path, t_node *node, t_info *pinfo)
 	bool	found_here;
 	size_t	i;
 
-	if (node && (!path->came_from || !in_path(path->came_from, node, pinfo)))
+	if (node && (!path->camefrom || !in_path(path->camefrom, node, pinfo)))
 	{
 		if (path->n[A] != node->n[A])
 			return (false);
@@ -82,7 +82,7 @@ bool	in_path(t_node *path, t_node *node, t_info *pinfo)
 }
 
 unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
-	int *status)
+	int *pstatus)
 {
 	unsigned int	estimation;
 	unsigned int	minimum;
@@ -90,8 +90,8 @@ unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
 	enum e_ops		successor;
 
 	estimation = (*ppath)->moves + heuristic(*ppath, pinfo->n_args);
-	if (estimation > bound || estimation > INFINITE || *status != WORKING
-		|| is_goal(*ppath, status))
+	if (estimation > bound || estimation > INFINITE || *pstatus != WORKING
+		|| is_goal(*ppath, pinfo, pstatus))
 		return (estimation);
 	minimum = UINT_MAX;
 	successor = SA;
@@ -99,9 +99,9 @@ unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
 	{
 		if (!in_path(*ppath, operate_stacks(*ppath, successor++, pinfo), pinfo))
 		{
-			push_node(ppath, pinfo->temp_nodes, pinfo->size_node, status);
-			threshold = search(ppath, bound, pinfo, status);
-			if (*status != WORKING)
+			push_node(ppath, pinfo->temp_nodes0, pinfo->size_node, pstatus);
+			threshold = search(ppath, bound, pinfo, pstatus);
+			if (*pstatus != WORKING)
 				return (estimation);
 			if (threshold < minimum)
 				minimum = threshold;
