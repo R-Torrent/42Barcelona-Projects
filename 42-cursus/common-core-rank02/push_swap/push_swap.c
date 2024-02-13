@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 18:33:14 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 17:43:33 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	print_path(t_node *path)
 		ft_putendl_fd(ops[path->camewith], 1);
 }
 
-int	fill_root(t_node *root, const int *src, unsigned int size)
+int	fill_root(t_node *root, const int *src, size_t size)
 {
 	const int *const	src_0 = src;
 	const int *const	src_n = src + size;
@@ -99,26 +99,26 @@ int	init_root(t_node **ppath, t_node *root, unsigned int n, char *args[])
 
 int	main(int argc, char *argv[])
 {
-	int				status;
-	t_node			*path;
-	const size_t	size_n = sizeof(t_node) + (argc - 1) * sizeof(unsigned int);
-	t_node *const	temp_nodes = ft_calloc(2, size_n);
+	t_info	info;
+	t_node	*path;
+	int		status;
 
-	if (argc == 1)
+	if (!--argc)
 		exit(SUCCESS);
-	status = init_root(&path, temp_nodes, (unsigned int)--argc, argv);
+	info.n = (size_t)argc;
+	info.size_node = sizeof(t_node) + argc * sizeof(unsigned int)};
+	info.temp_nodes = ft_calloc(2, info.size_node);
+	status = init_root(&path, info.temp_nodes, (unsigned int)argc, argv);
 	if (!status)
-		(void)push_node(&path, temp_nodes, size_n, &status);
+		push_node(&path, info.temp_nodes, info.size_node, &status);
 	if (!status)
-		status = ida_star(&path, (size_t)argc, temp_nodes);
+		status = ida_star(&path, &info);
 	if (!status)
 		print_path(path);
 	else
-	{
 		ft_putendl_fd("Error", 2);
-		while (path)
-			(void)pop_node(&path, temp_nodes, size_n);
-	}
-	free(temp_nodes);
+	while (path)
+		pop_node(&path, info.temp_nodes, info.size_node);
+	free(info.temp_nodes);
 	exit(status);
 }

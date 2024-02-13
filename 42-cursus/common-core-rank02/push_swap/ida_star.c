@@ -6,28 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 18:46:17 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 18:36:35 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Search algorithm: Iterative deepening A* (IDA*)                          */
-/*   More information: https://en.wikipedia.org/wiki/Iterative_deepening_A*   */
-/*                                                                            */
-/* ************************************************************************** */
-
-unsigned int	search(t_node **ppath, unsigned int bound, t_node *temp_nodes,
-	int *status)
-{
-	(void)ppath;
-	(void)bound;
-	(void)temp_nodes;
-	*status = SUCCESS;
-	return (0);
-}
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -51,7 +34,7 @@ unsigned int	heuristic(t_node *node, size_t n)
 	h_b = node->n[B];
 	i = node->n[A];
 	while (++i < n)
-		if (node->stacks[i] < node->stacks[i -1])
+		if (node->stacks[i] < node->stacks[i - 1])
 			h_b++;
 	if (h_a < h_b)
 		return (h_b);
@@ -59,18 +42,58 @@ unsigned int	heuristic(t_node *node, size_t n)
 		return (h_a);
 }
 
-int	ida_star(t_node **ppath, size_t n, t_node *temp_nodes)
+unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
+	int *status)
+{
+	unsigned int	estimation;
+	unsigned int	minimum;
+	unsigned int	threshold;
+	enum e_ops		successor;
+
+	estimation = (*ppath)->moves + heuristic(*ppath, pinfo->n_args);
+	if (estimation > bound || estimation > INFINITE || *status != WORKING
+		|| is_goal(*ppath, status))
+		return (estimation);
+	minimum = UINT_MAX;
+	successor = SA;
+	while (successor < ID)
+	{
+		if (!in_path(*ppath, operate_stacks(*ppath, successor++, pinfo)))
+		{
+			push_node(ppath, pinfo->temp_nodes, pinfo->size_node, status);
+			threshold = search(ppath, bound, pinfo, status);
+			if (*status != WORKING)
+				return (estimation);
+			if (threshold < minimum)
+				minimum = threshold;
+			pop_node(ppath);
+		}
+	}
+	return (minimum);
+}
+
+/* ************************************************************************** */
+/*                                                                            */
+/*   Search algorithm: Iterative deepening A* (IDA*)                          */
+/*   More information: https://en.wikipedia.org/wiki/Iterative_deepening_A*   */
+/*                                                                            */
+/* ************************************************************************** */
+
+int	ida_star(t_node **ppath, t_info *pinfo)
 {
 	unsigned int	bound;
 	unsigned int	threshold;
 	int				status;
 
-	bound = heuristic(*ppath, n);
+	bound = heuristic(*ppath, pinfo->n_args);
+	pinof->status = WORKING;
 	while (true)
 	{
-		threshold = search(ppath, bound, temp_nodes, &status);
-		if (status != WORKING)
-			return (status);
+		threshold = search(ppath, bound, pinfo, &status);
+		if (pinfo->status != WORKING)
+			return (pinfo->status);
+		if (threshold > INFINITE)
+			return (NOT_FND);
 		bound = threshold;
 	}
 }
