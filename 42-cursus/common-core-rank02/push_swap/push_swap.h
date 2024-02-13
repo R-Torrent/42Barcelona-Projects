@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/12 18:34:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 20:05:54 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ void	exit(int status);
 # undef DEFAULT_BATCH_SZE
 # define DEFAULT_BATCH_SZE 100
 
+// maximum allowable moves before forced break -> NOT_FND error
+// (should be <= UINT_MAX)
+# define INFINITE 5500
+
 enum e_ops
 {
 	SA,
@@ -64,7 +68,9 @@ enum e_ops
 enum e_stacks
 {
 	A,
-	B
+	B,
+	RIGHT = 0,
+	LEFT
 };
 
 typedef struct s_node
@@ -73,12 +79,20 @@ typedef struct s_node
 	unsigned int	moves;
 	enum e_ops		camewith;
 	size_t			n[2];
-	unsigned int	stacks[];
+	size_t			stacks[];
 }	t_node;
 
-int		ida_star(t_node **ppath, size_t n, t_node *temp_nodes);
-t_node	*pop_node(t_node **ppath, t_node *node, size_t size_node);
-t_node	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status);
+typedef struct s_info
+{
+	size_t	n_args;
+	size_t	size_node;
+	t_node	*temp_nodes;
+}	t_info;
+
+int		ida_star(t_node **ppath, t_info *pinfo);
+t_node	*operate_stacks(t_node *path, enum e_ops op, t_info *pinfo);
+void	pop_node(t_node **ppath);
+void	push_node(t_node **ppath, t_node *node, size_t size_node, int *status);
 
 /* ************************************************************************** */
 
