@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 18:36:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/13 21:44:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,45 @@ unsigned int	heuristic(t_node *node, size_t n)
 		return (h_a);
 }
 
+bool	is_goal(t_node *path, t_info *pinfo, int *status)
+{
+	size_t	i;
+	size_t	*p;
+	size_t	*p1;
+
+	p = path->stacks;
+	i = pinfo->n_args;
+	p1 = p + i;
+	if (path->n[A] != i--)
+		return (false);
+	while (p < p1)
+		if (*p++ != i--)
+			return (false);
+	*status = SUCCESS;
+	return (true);
+}
+
+bool	in_path(t_node *path, t_node *node, t_info *pinfo)
+{
+	bool	found_in_path;
+	bool	found_here;
+	size_t	i;
+
+	if (node && (!path->came_from || !in_path(path->came_from, node, pinfo)))
+	{
+		if (path->n[A] != node->n[A])
+			return (false);
+		i = 0;
+		while (i < pinfo->n_args)
+		{
+			if (path->stacks[i] != node->stacks[i])
+				return (false);
+			i++;
+		}	
+	}
+	return (true);
+}
+
 unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
 	int *status)
 {
@@ -58,7 +97,7 @@ unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
 	successor = SA;
 	while (successor < ID)
 	{
-		if (!in_path(*ppath, operate_stacks(*ppath, successor++, pinfo)))
+		if (!in_path(*ppath, operate_stacks(*ppath, successor++, pinfo), pinfo))
 		{
 			push_node(ppath, pinfo->temp_nodes, pinfo->size_node, status);
 			threshold = search(ppath, bound, pinfo, status);
@@ -86,12 +125,12 @@ int	ida_star(t_node **ppath, t_info *pinfo)
 	int				status;
 
 	bound = heuristic(*ppath, pinfo->n_args);
-	pinof->status = WORKING;
+	status = WORKING;
 	while (true)
 	{
 		threshold = search(ppath, bound, pinfo, &status);
-		if (pinfo->status != WORKING)
-			return (pinfo->status);
+		if (status != WORKING)
+			return (status);
 		if (threshold > INFINITE)
 			return (NOT_FND);
 		bound = threshold;
