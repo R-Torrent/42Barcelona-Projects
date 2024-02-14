@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 11:53:26 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 19:11:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 21:14:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *status)
 
 	if (*ppath
 		&& (*ppath)->moves % DEFAULT_BATCH_SZE != DEFAULT_BATCH_SZE - 1)
-		next = *ppath + size;
+		next = (t_node *)((char *)*ppath + size);
 	else
 		next = malloc(DEFAULT_BATCH_SZE * size);
 	if (!next)
@@ -34,5 +34,5 @@ void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *status)
 		next->moves = (*ppath)->moves + 1;
 	next->camewith = op;
 	*ppath = next;
-	*status = SUCCESS;
+	*status = WORKING;
 }

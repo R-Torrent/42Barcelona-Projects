@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 19:07:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 21:28:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	exit(int status);
 
 // maximum allowable moves before forced break -> NOT_FND error
 // (should be <= UINT_MAX)
-# define INFINITE 5500
+# define LIMIT 5500
 
 enum e_ops
 {

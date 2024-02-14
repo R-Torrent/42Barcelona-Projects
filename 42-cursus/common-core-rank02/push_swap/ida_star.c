@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 19:08:26 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 21:28:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ bool	is_goal(t_node *path, t_info *pinfo, int *pstatus)
 	size_t	*p;
 	size_t	*p1;
 
+	if (*pstatus != WORKING)
+		return (true);
 	p = path->stacks;
 	i = pinfo->n_args;
 	p1 = p + i;
@@ -82,29 +84,29 @@ bool	in_path(t_node *path, t_node *node, t_info *pinfo)
 unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
 	int *pstatus)
 {
-	unsigned int	estimation;
+	unsigned int	estimate;
 	unsigned int	minimum;
 	unsigned int	threshold;
 	enum e_ops		successor;
 
-	estimation = (*ppath)->moves + heuristic(*ppath, pinfo->n_args);
-	if (estimation > bound || estimation > INFINITE || *pstatus != WORKING
-		|| is_goal(*ppath, pinfo, pstatus))
-		return (estimation);
+	estimate = (*ppath)->moves + heuristic(*ppath, pinfo->n_args);
+	if (estimate > bound || estimate > LIMIT || is_goal(*ppath, pinfo, pstatus))
+		return (estimate);
 	minimum = UINT_MAX;
 	successor = SA;
 	while (successor < ID)
 	{
 		if (!in_path(*ppath, operate_stacks(*ppath, successor, pinfo), pinfo))
 		{
-			push_node(ppath, pinfo, successor++, pstatus);
+			push_node(ppath, pinfo, successor, pstatus);
 			threshold = search(ppath, bound, pinfo, pstatus);
 			if (*pstatus != WORKING)
-				return (estimation);
+				return (estimate);
 			if (threshold < minimum)
 				minimum = threshold;
 			pop_node(ppath);
 		}
+		successor++;
 	}
 	return (minimum);
 }
@@ -129,7 +131,7 @@ int	ida_star(t_node **ppath, t_info *pinfo)
 		threshold = search(ppath, bound, pinfo, &status);
 		if (status != WORKING)
 			return (status);
-		if (threshold > INFINITE)
+		if (threshold > LIMIT)
 			return (NOT_FND);
 		bound = threshold;
 	}
