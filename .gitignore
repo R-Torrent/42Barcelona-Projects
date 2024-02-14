@@ -8,6 +8,7 @@
 .debug
 .list
 .bintree
+.stack
 
 # Prerequisites
 *.d
