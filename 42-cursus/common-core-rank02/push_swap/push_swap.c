@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 23:44:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 19:07:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	fill_root(t_node *root, const int *src, size_t size)
 	const int			*src_current;
 
 	root->camefrom = NULL;
-	root->camewith = ID;
 	while (size--)
 	{
 		src = src_0;
@@ -111,7 +110,7 @@ int	main(int argc, char *argv[])
 	info.temp_nodes1 = (t_node *)((char *)info.temp_nodes0 + info.size_node);
 	status = init_root(&path, info.temp_nodes0, (unsigned int)argc, argv);
 	if (!status)
-		push_node(&path, info.temp_nodes0, info.size_node, &status);
+		push_node(&path, &info, ID, &status);
 	if (!status)
 		status = ida_star(&path, &info);
 	if (!status)

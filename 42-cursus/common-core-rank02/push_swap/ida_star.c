@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 02:25:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 19:08:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,9 @@ unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
 	successor = SA;
 	while (successor < ID)
 	{
-		if (!in_path(*ppath, operate_stacks(*ppath, successor++, pinfo), pinfo))
+		if (!in_path(*ppath, operate_stacks(*ppath, successor, pinfo), pinfo))
 		{
-			push_node(ppath, pinfo->temp_nodes0, pinfo->size_node, pstatus);
+			push_node(ppath, pinfo, successor++, pstatus);
 			threshold = search(ppath, bound, pinfo, pstatus);
 			if (*pstatus != WORKING)
 				return (estimation);
