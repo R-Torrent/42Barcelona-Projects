@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 23:53:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 02:25:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,6 @@ bool	is_goal(t_node *path, t_info *pinfo, int *pstatus)
 
 bool	in_path(t_node *path, t_node *node, t_info *pinfo)
 {
-	bool	found_in_path;
-	bool	found_here;
 	size_t	i;
 
 	if (node && (!path->camefrom || !in_path(path->camefrom, node, pinfo)))

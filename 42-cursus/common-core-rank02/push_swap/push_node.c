@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 11:53:26 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 18:47:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 02:27:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
+void	push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
 {
 	t_node	*next;
 
@@ -24,7 +24,7 @@ void	*push_node(t_node **ppath, t_node *node, size_t size_node, int *status)
 	if (!next)
 	{
 		*status = MEM_ERR;
-		return (NULL);
+		return ;
 	}
 	ft_memcpy(next, node, size_node);
 	next->camefrom = *ppath;
