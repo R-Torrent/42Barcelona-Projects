@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/13 23:37:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/14 16:25:51 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,7 @@ enum e_ops
 enum e_stacks
 {
 	A,
-	B,
-	RIGHT = 0,
-	LEFT
+	B
 };
 
 typedef struct s_node
