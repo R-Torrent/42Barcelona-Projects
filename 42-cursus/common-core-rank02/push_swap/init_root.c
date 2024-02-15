@@ -6,11 +6,19 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 23:09:05 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/15 23:10:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/15 23:54:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+char	*op_string(enum e_ops op)
+{
+	static char	*ops[] = {"SA", "SB", "SS", "PA", "PB", "RA", "RB", "RR", "RRA",
+		"RRB", "RRR", "ID"};
+
+	return (ops[op]);
+}
 
 int	fill_root(t_node *root, const int *src, size_t size)
 {

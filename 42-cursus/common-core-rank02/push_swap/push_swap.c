@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/15 23:16:09 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/15 23:53:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 
 void	print_path(t_node *path)
 {
-	static char	*ops[] = {"SA", "SB", "SS", "PA", "PB", "RA", "RB", "RR", "RRA",
-		"RRB", "RRR", "ID"};
-
 	if (path->camefrom)
 		print_path(path->camefrom);
 	if (path->camewith != ID)
-		ft_putendl_fd(ops[path->camewith], 1);
+		ft_putendl_fd(op_string(path->camewith), 1);
 }
 
 void	pop_node(t_node **ppath)
