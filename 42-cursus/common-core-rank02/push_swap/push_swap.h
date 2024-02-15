@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 21:28:06 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/15 16:48:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ void	exit(int status);
 # define DEFAULT_BATCH_SZE 100
 
 // maximum allowable moves before forced break -> NOT_FND error
-// (should be <= UINT_MAX)
-# define LIMIT 5500
+// (should be < UINT_MAX)
+# define LIMIT 15000
 
 enum e_ops
 {
