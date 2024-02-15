@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 20:31:23 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/15 22:57:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	atoi2(const char *str, int *status)
 	return (n);
 }
 
-int	init_root(t_node **ppath, t_node *root, unsigned int n, char *args[])
+int	init_root(t_info *pinfo, unsigned int n, char *args[])
 {
 	int		status;
 	int		*args_n;
@@ -83,15 +83,20 @@ int	init_root(t_node **ppath, t_node *root, unsigned int n, char *args[])
 	status = SUCCESS;
 	if (n > SIZE_MAX >> 1)
 		status = MEM_ERR;
-	*ppath = NULL;
+	pinfo->n_args = (size_t)n;
+	pinfo->size_node = sizeof(t_node) + n * sizeof(size_t);
+	pinfo->temp_nodes0 = ft_calloc(2, pinfo->size_node);
 	args_n = malloc(n * sizeof(int));
-	if (!args_n)
+	if (!pinfo->temp_nodes0 || !args_n)
 		status = MEM_ERR;
+	else
+		pinfo->temp_nodes1 = (t_node *)((char *)pinfo->temp_nodes0
+				+ pinfo->size_node);
 	i = 0;
 	while (!status && i < n)
 		args_n[i++] = atoi2(*++args, &status);
 	if (!status)
-		status = fill_root(root, args_n, n);
+		status = fill_root(pinfo->temp_nodes0, args_n, n);
 	free(args_n);
 	return (status);
 }
@@ -104,11 +109,8 @@ int	main(int argc, char *argv[])
 
 	if (!--argc)
 		exit(SUCCESS);
-	info.n_args = (size_t)argc;
-	info.size_node = sizeof(t_node) + argc * sizeof(size_t);
-	info.temp_nodes0 = ft_calloc(2, info.size_node);
-	info.temp_nodes1 = (t_node *)((char *)info.temp_nodes0 + info.size_node);
-	status = init_root(&path, info.temp_nodes0, (unsigned int)argc, argv);
+	path = NULL;
+	status = init_root(&info, (unsigned int)argc, argv);
 	if (!status)
 		push_node(&path, &info, ID, &status);
 	if (status == WORKING)
