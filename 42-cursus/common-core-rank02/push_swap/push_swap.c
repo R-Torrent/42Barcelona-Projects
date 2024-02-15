@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/15 22:57:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/15 23:16:09 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,82 +23,41 @@ void	print_path(t_node *path)
 		ft_putendl_fd(ops[path->camewith], 1);
 }
 
-int	fill_root(t_node *root, const int *src, size_t size)
+void	pop_node(t_node **ppath)
 {
-	const int *const	src_0 = src;
-	const int *const	src_n = src + size;
-	const int			*src_current;
+	t_node *const	top = *ppath;
 
-	root->camefrom = NULL;
-	while (size--)
+	if (*ppath)
 	{
-		src = src_0;
-		src_current = src_0 + size;
-		while (src < src_n)
-		{
-			if (*src < *src_current)
-				root->stacks[root->n[A]]++;
-			else if (src != src_current && *src == *src_current)
-				return (DUP_ERR);
-			src++;
-		}
-		root->n[A]++;
+		*ppath = (*ppath)->camefrom;
+		if (!(top->moves % DEFAULT_BATCH_SZE))
+			free(top);
 	}
-	return (SUCCESS);
 }
 
-int	atoi2(const char *str, int *status)
+void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *status)
 {
-	int		n;
-	int		i;
-	bool	sgn;
+	const size_t	size = pinfo->size_node;
+	t_node *const	node = pinfo->temp_nodes0;
+	t_node			*next;
 
-	while (ft_isspace(*str))
-		str++;
-	sgn = *str == '-';
-	if (*str == '-' || *str == '+')
-		str++;
-	n = 0;
-	while (ft_isdigit(*str))
-	{
-		i = *str++ - '0';
-		if ((sgn && n < (INT_MIN + i) / 10) || (!sgn && n > (INT_MAX - i) / 10))
-			*status = OOB_ERR;
-		if (sgn)
-			n = 10 * n - i;
-		else
-			n = 10 * n + i;
-	}
-	if (*str)
-		*status = NAN_ERR;
-	return (n);
-}
-
-int	init_root(t_info *pinfo, unsigned int n, char *args[])
-{
-	int		status;
-	int		*args_n;
-	size_t	i;
-
-	status = SUCCESS;
-	if (n > SIZE_MAX >> 1)
-		status = MEM_ERR;
-	pinfo->n_args = (size_t)n;
-	pinfo->size_node = sizeof(t_node) + n * sizeof(size_t);
-	pinfo->temp_nodes0 = ft_calloc(2, pinfo->size_node);
-	args_n = malloc(n * sizeof(int));
-	if (!pinfo->temp_nodes0 || !args_n)
-		status = MEM_ERR;
+	if (*ppath
+		&& (*ppath)->moves % DEFAULT_BATCH_SZE != DEFAULT_BATCH_SZE - 1)
+		next = (t_node *)((char *)*ppath + size);
 	else
-		pinfo->temp_nodes1 = (t_node *)((char *)pinfo->temp_nodes0
-				+ pinfo->size_node);
-	i = 0;
-	while (!status && i < n)
-		args_n[i++] = atoi2(*++args, &status);
-	if (!status)
-		status = fill_root(pinfo->temp_nodes0, args_n, n);
-	free(args_n);
-	return (status);
+		next = malloc(DEFAULT_BATCH_SZE * size);
+	if (!next)
+	{
+		*status = MEM_ERR;
+		return ;
+	}
+	ft_memcpy(next, node, size);
+	next->camefrom = *ppath;
+	if (*ppath)
+		next->moves = (*ppath)->moves + 1;
+	next->camewith = op;
+	*ppath = next;
+	*status = WORKING;
 }
 
 int	main(int argc, char *argv[])
