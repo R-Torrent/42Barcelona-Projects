@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/15 23:53:16 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/16 00:48:02 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *status)
 		next->moves = (*ppath)->moves + 1;
 	next->camewith = op;
 	*ppath = next;
-	*status = WORKING;
 }
 
 int	main(int argc, char *argv[])
@@ -67,7 +66,7 @@ int	main(int argc, char *argv[])
 		exit(SUCCESS);
 	path = NULL;
 	status = init_root(&info, (unsigned int)argc, argv);
-	if (!status)
+	if (status == WORKING)
 		push_node(&path, &info, ID, &status);
 	if (status == WORKING)
 		status = ida_star(&path, &info);
