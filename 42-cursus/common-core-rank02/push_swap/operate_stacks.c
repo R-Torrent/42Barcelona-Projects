@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 21:25:18 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 02:28:17 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/16 23:22:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,31 +107,31 @@ t_node	*swap(t_node *dst, const t_node *src, enum e_stacks st, t_info *pinfo)
 	return (dst);
 }
 
-t_node	*operate_stacks(t_node *path, enum e_ops op, t_info *pinfo)
+t_node	*operate_stacks(t_node *node, enum e_ops op, t_info *pinfo)
 {
 	if (op == SA)
-		return (swap(pinfo->temp_nodes0, path, A, pinfo));
+		return (swap(pinfo->temp_nodes0, node, A, pinfo));
 	else if (op == SB)
-		return (swap(pinfo->temp_nodes0, path, B, pinfo));
+		return (swap(pinfo->temp_nodes0, node, B, pinfo));
 	else if (op == SS)
 		return (swap(pinfo->temp_nodes0,
-				swap(pinfo->temp_nodes1, path, A, pinfo), B, pinfo));
+				swap(pinfo->temp_nodes1, node, A, pinfo), B, pinfo));
 	else if (op == PA)
-		return (push(pinfo->temp_nodes1, path, A, pinfo));
+		return (push(pinfo->temp_nodes1, node, A, pinfo));
 	else if (op == PB)
-		return (push(pinfo->temp_nodes1, path, B, pinfo));
+		return (push(pinfo->temp_nodes1, node, B, pinfo));
 	else if (op == RA)
-		return (rotate_right(pinfo->temp_nodes0, path, A, pinfo));
+		return (rotate_right(pinfo->temp_nodes0, node, A, pinfo));
 	else if (op == RB)
-		return (rotate_right(pinfo->temp_nodes0, path, B, pinfo));
+		return (rotate_right(pinfo->temp_nodes0, node, B, pinfo));
 	else if (op == RR)
 		return (rotate_right(pinfo->temp_nodes0,
-				rotate_right(pinfo->temp_nodes1, path, A, pinfo), B, pinfo));
+				rotate_right(pinfo->temp_nodes1, node, A, pinfo), B, pinfo));
 	else if (op == RRA)
-		return (rotate_left(pinfo->temp_nodes0, path, A, pinfo));
+		return (rotate_left(pinfo->temp_nodes0, node, A, pinfo));
 	else if (op == RRB)
-		return (rotate_left(pinfo->temp_nodes0, path, B, pinfo));
+		return (rotate_left(pinfo->temp_nodes0, node, B, pinfo));
 	else
 		return (rotate_left(pinfo->temp_nodes0,
-				rotate_left(pinfo->temp_nodes1, path, A, pinfo), B, pinfo));
+				rotate_left(pinfo->temp_nodes1, node, A, pinfo), B, pinfo));
 }

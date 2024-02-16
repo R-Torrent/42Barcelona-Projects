@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/15 23:57:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/16 23:24:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ typedef struct s_info
 int		ida_star(t_node **ppath, t_info *pinfo);
 int		init_root(t_info *pinfo, unsigned int n, char *args[]);
 char	*op_string(enum e_ops op);
-t_node	*operate_stacks(t_node *path, enum e_ops op, t_info *pinfo);
+t_node	*operate_stacks(t_node *node, enum e_ops op, t_info *pinfo);
 void	pop_node(t_node **ppath);
 void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *status);
 
