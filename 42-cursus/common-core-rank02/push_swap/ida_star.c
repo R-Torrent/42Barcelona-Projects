@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/14 21:28:53 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/16 23:19:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,26 +40,6 @@ unsigned int	heuristic(t_node *node, size_t n)
 		return (h_b);
 	else
 		return (h_a);
-}
-
-bool	is_goal(t_node *path, t_info *pinfo, int *pstatus)
-{
-	size_t	i;
-	size_t	*p;
-	size_t	*p1;
-
-	if (*pstatus != WORKING)
-		return (true);
-	p = path->stacks;
-	i = pinfo->n_args;
-	p1 = p + i;
-	if (path->n[A] != i--)
-		return (false);
-	while (p < p1)
-		if (*p++ != i--)
-			return (false);
-	*pstatus = SUCCESS;
-	return (true);
 }
 
 bool	in_path(t_node *path, t_node *node, t_info *pinfo)

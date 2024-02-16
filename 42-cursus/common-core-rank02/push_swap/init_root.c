@@ -6,11 +6,31 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 23:09:05 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/16 00:34:57 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/16 23:25:50 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+bool	is_goal(t_node *node, t_info *pinfo, int *pstatus)
+{
+	size_t	i;
+	size_t	*p;
+	size_t	*p1;
+
+	if (*pstatus != WORKING)
+		return (true);
+	p = node->stacks;
+	i = pinfo->n_args;
+	p1 = p + i;
+	if (node->n[A] != i--)
+		return (false);
+	while (p < p1)
+		if (*p++ != i--)
+			return (false);
+	*pstatus = SUCCESS;
+	return (true);
+}
 
 char	*op_string(enum e_ops op)
 {
