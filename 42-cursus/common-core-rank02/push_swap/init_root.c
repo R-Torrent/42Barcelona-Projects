@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 23:09:05 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/16 23:25:50 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/17 20:23:35 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	fill_root(t_node *root, const int *src, size_t size)
 	return (WORKING);
 }
 
-int	atoi2(const char *str, int *status)
+int	atoi2(const char *str, int *pstatus)
 {
 	int		n;
 	int		i;
@@ -80,14 +80,14 @@ int	atoi2(const char *str, int *status)
 	{
 		i = *str++ - '0';
 		if ((sgn && n < (INT_MIN + i) / 10) || (!sgn && n > (INT_MAX - i) / 10))
-			*status = OOB_ERR;
+			*pstatus = OOB_ERR;
 		if (sgn)
 			n = 10 * n - i;
 		else
 			n = 10 * n + i;
 	}
 	if (*str)
-		*status = NAN_ERR;
+		*pstatus = NAN_ERR;
 	return (n);
 }
 

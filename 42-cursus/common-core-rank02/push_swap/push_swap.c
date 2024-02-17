@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/16 00:48:02 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/17 20:24:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	pop_node(t_node **ppath)
 	}
 }
 
-void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *status)
+void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *pstatus)
 {
 	const size_t	size = pinfo->size_node;
 	t_node *const	node = pinfo->temp_nodes0;
@@ -45,7 +45,7 @@ void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *status)
 		next = malloc(DEFAULT_BATCH_SZE * size);
 	if (!next)
 	{
-		*status = MEM_ERR;
+		*pstatus = MEM_ERR;
 		return ;
 	}
 	ft_memcpy(next, node, size);
