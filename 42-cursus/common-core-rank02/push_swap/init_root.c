@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 23:09:05 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/17 20:23:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 00:31:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ bool	is_goal(t_node *node, t_info *pinfo, int *pstatus)
 
 char	*op_string(enum e_ops op)
 {
-	static char	*ops[] = {"SA", "SB", "SS", "PA", "PB", "RA", "RB", "RR", "RRA",
-		"RRB", "RRR", "ID"};
+	static char	*ops[] = {"sa", "sb", "ss", "pa", "pb", "ra", "rb", "rr", "rra",
+		"rrb", "rrr", "id"};
 
 	return (ops[op]);
 }
