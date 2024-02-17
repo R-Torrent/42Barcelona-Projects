@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 00:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/17 21:30:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/17 23:37:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool	get_ins(char **pinstruction, int *pstatus)
 {
 	char	*c;
 
-	*pinstruction = ft_getnextline_fd(1);
+	*pinstruction = ft_getnextline_fd(0);
 	if (*pinstruction)
 	{
 		c = ft_strchr(*pinstruction, '\n');
