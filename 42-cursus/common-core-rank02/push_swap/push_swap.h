@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/16 23:25:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/17 02:26:40 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ void	exit(int status);
 # define WORKING -1
 // successful completion
 # define SUCCESS 0
-// memory allocation error
-# define MEM_ERR 1
-// not a number error
-# define NAN_ERR 2
-// out of bounds error
-# define OOB_ERR 3
-// duplicate error
-# define DUP_ERR 4
 // solution not found
-# define NOT_FND 5
+# define NOT_FND 1
+// memory allocation error
+# define MEM_ERR 2
+// not a number error
+# define NAN_ERR 3
+// out of bounds error
+# define OOB_ERR 4
+// duplicate error
+# define DUP_ERR 5
 
 // minimim path size and subsequent batch allocations
 // used in: ft_getnextline_fd of the libft
