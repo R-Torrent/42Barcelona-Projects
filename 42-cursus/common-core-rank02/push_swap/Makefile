@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/17 21:27:10 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/18 00:23:09 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,8 +71,11 @@ $(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
 $(BONUS):: $(OBJBON) $(DIRLIB)$(NAMELB)
 	$(CC) $^ -o $(BONUS)
 
-$(DEBUG):: $(OBJ) $(OBJBON) $(DIRLIB)$(NAMELB)
+$(DEBUG):: $(OBJ) $(DIRLIB)$(NAMELB)
 	$(CC) $^ -o $(NAME)
+	@$(TC) $(DEBUG)
+
+$(DEBUG):: $(OBJBON) $(DIRLIB)$(NAMELB)
 	$(CC) $^ -o $(BONUS)
 	@$(TC) $(DEBUG)
 
