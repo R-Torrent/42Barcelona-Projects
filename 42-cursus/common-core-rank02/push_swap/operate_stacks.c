@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 21:25:18 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 22:39:03 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 22:51:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ t_node	*swap(t_node *dst, const t_node *src, enum e_stacks st, t_info *pinfo)
 	return (dst);
 }
 
-t_info	*operate_stacks(t_node *node, enum e_ops op, t_info *pinfo)
+t_info	*operate_stacks(const t_node *node, enum e_ops op, t_info *pinfo)
 {
 	if (op == SA)
 		swap(pinfo->temp0, node, A, pinfo);
