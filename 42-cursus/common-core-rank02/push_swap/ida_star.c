@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 18:34:16 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 19:45:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,21 +130,22 @@ unsigned int	search(t_node **ppath, unsigned int bound, t_info *pinfo,
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ida_star(t_node **ppath, t_info *pinfo)
+void	ida_star(t_node **ppath, t_info *pinfo, int *pstatus)
 {
 	unsigned int	bound;
 	unsigned int	threshold;
-	int				status;
 
 	bound = heuristic(*ppath, pinfo->n_args);
-	status = WORKING;
 	while (true)
 	{
-		threshold = search(ppath, bound, pinfo, &status);
-		if (status != WORKING)
-			return (status);
+		threshold = search(ppath, bound, pinfo, pstatus);
+		if (*pstatus != WORKING)
+			break ;
 		if (threshold > LIMIT)
-			return (NOT_FND);
+		{
+			*pstatus = NOT_FND;
+			break ;
+		}
 		bound = threshold;
 	}
 }
