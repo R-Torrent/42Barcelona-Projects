@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 23:09:05 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 00:31:03 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 21:14:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,18 +102,17 @@ int	init_root(t_info *pinfo, unsigned int n, char *args[])
 		status = MEM_ERR;
 	pinfo->n_args = (size_t)n;
 	pinfo->size_node = sizeof(t_node) + n * sizeof(size_t);
-	pinfo->temp_nodes0 = ft_calloc(2, pinfo->size_node);
+	pinfo->temp0 = ft_calloc(2, pinfo->size_node);
 	args_n = malloc(n * sizeof(int));
-	if (!pinfo->temp_nodes0 || !args_n)
+	if (!pinfo->temp0 || !args_n)
 		status = MEM_ERR;
 	else
-		pinfo->temp_nodes1 = (t_node *)((char *)pinfo->temp_nodes0
-				+ pinfo->size_node);
+		pinfo->temp1 = (t_node *)((char *)pinfo->temp0 + pinfo->size_node);
 	i = 0;
 	while (status == WORKING && i < n)
 		args_n[i++] = atoi2(*++args, &status);
 	if (status == WORKING)
-		status = fill_root(pinfo->temp_nodes0, args_n, n);
+		status = fill_root(pinfo->temp0, args_n, n);
 	free(args_n);
 	return (status);
 }

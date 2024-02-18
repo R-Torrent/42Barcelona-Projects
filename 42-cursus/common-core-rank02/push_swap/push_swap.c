@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 19:44:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 21:13:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,19 @@ void	pop_node(t_node **ppath)
 
 void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *pstatus)
 {
-	const size_t	size = pinfo->size_node;
-	t_node *const	node = pinfo->temp_nodes0;
-	t_node			*next;
+	t_node	*next;
 
 	if (*ppath
 		&& (*ppath)->moves % DEFAULT_BATCH_SZE != DEFAULT_BATCH_SZE - 1)
-		next = (t_node *)((char *)*ppath + size);
+		next = (t_node *)((char *)*ppath + pinfo->size_node);
 	else
-		next = malloc(DEFAULT_BATCH_SZE * size);
+		next = malloc(DEFAULT_BATCH_SZE * pinfo->size_node);
 	if (!next)
 	{
 		*pstatus = MEM_ERR;
 		return ;
 	}
-	ft_memcpy(next, node, size);
+	ft_memcpy(next, pinfo->temp0, pinfo->size_node);
 	next->camefrom = *ppath;
 	if (*ppath)
 		next->moves = (*ppath)->moves + 1;
@@ -76,6 +74,6 @@ int	main(int argc, char *argv[])
 		ft_putendl_fd("Error", 2);
 	while (path)
 		pop_node(&path);
-	free(info.temp_nodes0);
+	free(info.temp0);
 	exit(status);
 }
