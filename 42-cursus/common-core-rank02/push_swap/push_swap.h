@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 21:07:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 22:35:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	ida_star(t_node **ppath, t_info *pinfo, int *pstatus);
 int		init_root(t_info *pinfo, unsigned int n, char *args[]);
 bool	is_goal(t_node *node, t_info *pinfo, int *pstatus);
 char	*op_string(enum e_ops op);
-t_node	*operate_stacks(t_node *node, enum e_ops op, t_info *pinfo);
+t_info	*operate_stacks(t_node *node, enum e_ops op, t_info *pinfo);
 void	pop_node(t_node **ppath);
 void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *pstatus);
 

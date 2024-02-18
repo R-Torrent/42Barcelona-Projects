@@ -6,26 +6,26 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 19:45:57 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 22:38:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-bool	in_path(t_node *path, t_node *node, t_info *pinfo)
+bool	in_path(t_node *path, t_info *pinfo)
 {
 	size_t	i;
 
 	if (!path)
 		return (false);
-	if (node && (!path->camefrom || !in_path(path->camefrom, node, pinfo)))
+	if (!path->camefrom || !in_path(path->camefrom, pinfo))
 	{
-		if (path->n[A] != node->n[A])
+		if (path->n[A] != pinfo->temp0->n[A])
 			return (false);
 		i = 0;
 		while (i < pinfo->n_args)
 		{
-			if (path->stacks[i] != node->stacks[i])
+			if (path->stacks[i] != pinfo->temp0->stacks[i])
 				return (false);
 			i++;
 		}	
@@ -55,7 +55,7 @@ bool	try_successor(t_node *path, enum e_ops succ, t_info *pinfo)
 		|| (succ == RR && (ins == RRR || ins == RRA || ins == RRB))
 		|| (succ == RRR && (ins == RR || ins == RA || ins == RB)))
 		return (false);
-	return (!in_path(path->camefrom, operate_stacks(path, succ, pinfo), pinfo));
+	return (!in_path(path->camefrom, operate_stacks(path, succ, pinfo)));
 }
 
 /* ************************************************************************** */
