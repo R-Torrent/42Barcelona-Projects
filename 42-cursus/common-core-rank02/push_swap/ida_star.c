@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 15:57:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 18:34:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ bool	in_path(t_node *path, t_node *node, t_info *pinfo)
 {
 	size_t	i;
 
+	if (!path)
+		return (false);
 	if (node && (!path->camefrom || !in_path(path->camefrom, node, pinfo)))
 	{
 		if (path->n[A] != node->n[A])
@@ -33,6 +35,8 @@ bool	in_path(t_node *path, t_node *node, t_info *pinfo)
 
 bool	try_successor(t_node *path, enum e_ops succ, t_info *pinfo)
 {
+	const enum e_ops	ins = path->camewith;
+
 	if ((succ == SA && path->n[A] < 2) || (succ == SB && path->n[B] < 2)
 		|| (succ == SS && (path->n[A] < 2 || path->n[B] < 2))
 		|| (succ == PA && !path->n[B]) || (succ == PB && !path->n[A])
@@ -41,7 +45,17 @@ bool	try_successor(t_node *path, enum e_ops succ, t_info *pinfo)
 		|| ((succ == RR || succ == RRR) && (path->n[A] < 2 || path->n[B] < 2
 				|| pinfo->n_args == 4)))
 		return (false);
-	return (!in_path(path, operate_stacks(path, succ, pinfo), pinfo));
+	if (((succ == SA || succ == SB || succ == SS)
+			&& (ins == SA || ins == SB || ins == SS))
+		|| (succ == PA && ins == PB) || (succ == PB && ins == PA)
+		|| (succ == RA && (ins == RRA || ins == RRR || ins == RB))
+		|| (succ == RB && (ins == RRB || ins == RRR || ins == RA))
+		|| (succ == RRA && (ins == RA || ins == RR || ins == RRB))
+		|| (succ == RRB && (ins == RB || ins == RR || ins == RRA))
+		|| (succ == RR && (ins == RRR || ins == RRA || ins == RRB))
+		|| (succ == RRR && (ins == RR || ins == RA || ins == RB)))
+		return (false);
+	return (!in_path(path->camefrom, operate_stacks(path, succ, pinfo), pinfo));
 }
 
 /* ************************************************************************** */
