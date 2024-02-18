@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 23:29:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/19 00:41:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	exit(int status);
 # define DEFAULT_BATCH_SZE 100
 
 // maximum allowable moves before forced break -> NOT_FND error
-// (should be < UINT_MAX)
+// (only applicable to the IDA* algorithm) (should be < UINT_MAX)
 # define LIMIT 15000
 
 // maximum size of the problem for an exact solution (IDA*);
