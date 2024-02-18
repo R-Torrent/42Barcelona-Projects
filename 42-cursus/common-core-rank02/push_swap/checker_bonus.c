@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 00:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/17 23:37:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 22:14:41 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	main(int argc, char *argv[])
 	if (!progress && status == WORKING)
 		status = MEM_ERR;
 	while (status == WORKING)
-		run_ins(ft_memcpy(progress, info.temp_nodes0, info.size_node),
+		run_ins(ft_memcpy(progress, info.temp0, info.size_node),
 			&info, &status);
 	if (status == SUCCESS)
 		ft_putendl_fd("OK", 1);
@@ -75,6 +75,6 @@ int	main(int argc, char *argv[])
 	else
 		ft_putendl_fd("Error", 2);
 	free(progress);
-	free(info.temp_nodes0);
+	free(info.temp0);
 	exit(status);
 }
