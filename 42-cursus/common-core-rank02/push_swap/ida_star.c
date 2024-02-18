@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/17 00:46:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 15:57:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ bool	try_successor(t_node *path, enum e_ops succ, t_info *pinfo)
 		|| (succ == PA && !path->n[B]) || (succ == PB && !path->n[A])
 		|| ((succ == RA || succ == RRA) && path->n[A] < 3)
 		|| ((succ == RB || succ == RRB) && path->n[B] < 3)
-		|| (succ == RRR && (path->n[A] < 3 || path->n[B] < 3)))
+		|| ((succ == RR || succ == RRR) && (path->n[A] < 2 || path->n[B] < 2
+				|| pinfo->n_args == 4)))
 		return (false);
 	return (!in_path(path, operate_stacks(path, succ, pinfo), pinfo));
 }
