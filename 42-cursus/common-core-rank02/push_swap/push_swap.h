@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 22:54:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/18 23:29:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ typedef struct s_info
 	t_node	*temp1;
 }	t_info;
 
+void	aprox(t_node **ppath, t_info *pinfo, int *pstatus);
 void	ida_star(t_node **ppath, t_info *pinfo, int *pstatus);
 int		init_root(t_info *pinfo, unsigned int n, char *args[]);
 bool	is_goal(t_node *node, t_info *pinfo, int *pstatus);

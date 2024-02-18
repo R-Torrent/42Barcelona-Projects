@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/11 21:35:28 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/18 00:23:09 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/18 20:28:07 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,8 @@ NAME   := push_swap
 BONUS  := checker
 
 HEADER := push_swap.h
-SRC    := ida_star.c\
+SRC    := aprox.c\
+	ida_star.c\
 	init_root.c\
 	operate_stacks.c\
 	push_swap.c
