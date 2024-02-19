@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 20:12:02 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 00:35:23 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/20 00:43:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,10 @@ void	send_to_b(t_node **ppath, t_info *pinfo, int *pstatus)
 			min = cand;
 	}
 	while (min.rots_1--)
-		push_node(ppath, operate_stacks(*ppath, min.op_1, pinfo), min.op_1, pstatus);
+		push_node(ppath, op_stacks(*ppath, min.op_1, pinfo), min.op_1, pstatus);
 	while (min.rots_2--)
-		push_node(ppath, operate_stacks(*ppath, min.op_2, pinfo), min.op_2, pstatus);
-	push_node(ppath, operate_stacks(*ppath, PB, pinfo), PB, pstatus);
+		push_node(ppath, op_stacks(*ppath, min.op_2, pinfo), min.op_2, pstatus);
+	push_node(ppath, op_stacks(*ppath, PB, pinfo), PB, pstatus);
 }
 
 /* ************************************************************************** */
@@ -106,11 +106,11 @@ void	aprox(t_node **ppath, t_info *pinfo, int *pstatus)
 	while ((*ppath)->stacks[0] && *pstatus == WORKING)
 	{
 		if ((*ppath)->stacks[0] >= pinfo->n_args / 2)
-			push_node(ppath, operate_stacks(*ppath, RB, pinfo), RB, pstatus);
+			push_node(ppath, op_stacks(*ppath, RB, pinfo), RB, pstatus);
 		else
-			push_node(ppath, operate_stacks(*ppath, RRB, pinfo), RRB, pstatus);
+			push_node(ppath, op_stacks(*ppath, RRB, pinfo), RRB, pstatus);
 	}
 	while ((*ppath)->n[B] && *pstatus == WORKING)
-		push_node(ppath, operate_stacks(*ppath, PA, pinfo), PA, pstatus);
+		push_node(ppath, op_stacks(*ppath, PA, pinfo), PA, pstatus);
 	is_goal(*ppath, pinfo, pstatus);
 }
