@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 22:54:19 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/19 00:41:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/20 00:13:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	exit(int status);
 // falling back on an aproximate method thereafter :(
 # define MAX_EXACT 9
 
+// codes for all the instructions + initial identity (ID)
 enum e_ops
 {
 	SA,
@@ -69,12 +70,23 @@ enum e_ops
 	ID
 };
 
+// stack 'a' (A) and stack 'b' (B)
 enum e_stacks
 {
 	A,
 	B
 };
 
+// turning directions of the stacks in aprox. algorithm - (DIR)ect and (REV)erse
+enum e_rot
+{
+	DIR_DIR,
+	DIR_REV,
+	REV_DIR,
+	REV_REV
+};
+
+// nodes stored in the 'path' stack of the solution
 typedef struct s_node
 {
 	struct s_node	*camefrom;
@@ -84,6 +96,7 @@ typedef struct s_node
 	size_t			stacks[];
 }	t_node;
 
+// useful information and working place bounced around the program
 typedef struct s_info
 {
 	size_t	n_args;
@@ -91,6 +104,17 @@ typedef struct s_info
 	t_node	*temp0;
 	t_node	*temp1;
 }	t_info;
+
+// [aprox solution] candidates for pushing into the 'b' stack
+typedef struct s_cand
+{
+	size_t		idxa;
+	size_t		rots_t;
+	size_t		rots_1;
+	size_t		rots_2;
+	enum e_ops	op_1;
+	enum e_ops	op_2;
+}	t_cand;
 
 void	aprox(t_node **ppath, t_info *pinfo, int *pstatus);
 void	ida_star(t_node **ppath, t_info *pinfo, int *pstatus);
