@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 23:09:05 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 21:14:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/20 20:26:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,10 @@ int	init_root(t_info *pinfo, unsigned int n, char *args[])
 	while (status == WORKING && i < n)
 		args_n[i++] = atoi2(*++args, &status);
 	if (status == WORKING)
+	{
 		status = fill_root(pinfo->temp0, args_n, n);
+		pinfo->temp0->camewith = ID;
+	}
 	free(args_n);
 	return (status);
 }

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 23:27:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/20 20:19:49 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	pop_node(t_node **ppath)
 	}
 }
 
-void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *pstatus)
+void	push_node(t_node **ppath, t_info *pinfo, int *pstatus)
 {
 	t_node	*next;
 
@@ -50,7 +50,6 @@ void	push_node(t_node **ppath, t_info *pinfo, enum e_ops op, int *pstatus)
 	next->camefrom = *ppath;
 	if (*ppath)
 		next->moves = (*ppath)->moves + 1;
-	next->camewith = op;
 	*ppath = next;
 }
 
@@ -65,7 +64,7 @@ int	main(int argc, char *argv[])
 	path = NULL;
 	status = init_root(&info, (unsigned int)argc, argv);
 	if (status == WORKING)
-		push_node(&path, &info, ID, &status);
+		push_node(&path, &info, &status);
 	if (status == WORKING)
 	{
 		if (argc <= MAX_EXACT)

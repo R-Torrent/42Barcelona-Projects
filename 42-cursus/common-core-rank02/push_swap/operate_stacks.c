@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 21:25:18 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 00:44:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/20 21:42:00 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-t_node	*rotate_right(t_node *dst, const t_node *src, enum e_stacks st,
+t_node	*rotater(t_node *dst, const t_node *src, enum e_stacks st,
 	t_info *pinfo)
 {
 	size_t	i;
@@ -40,7 +40,7 @@ t_node	*rotate_right(t_node *dst, const t_node *src, enum e_stacks st,
 	return (dst);
 }
 
-t_node	*rotate_left(t_node *dst, const t_node *src, enum e_stacks st,
+t_node	*rotatel(t_node *dst, const t_node *src, enum e_stacks st,
 	t_info *pinfo)
 {
 	size_t	i;
@@ -75,7 +75,7 @@ t_node	*push(t_node *dst, const t_node *src, enum e_stacks st, t_info *pinfo)
 		return (ft_memcpy(pinfo->temp0, dst, pinfo->size_node));
 	if (st == A)
 	{
-		rotate_right(pinfo->temp0, dst, B, pinfo);
+		rotater(pinfo->temp0, dst, B, pinfo);
 		pinfo->temp0->n[A]++;
 		pinfo->temp0->n[B]--;
 	}
@@ -83,7 +83,7 @@ t_node	*push(t_node *dst, const t_node *src, enum e_stacks st, t_info *pinfo)
 	{
 		dst->n[A]--;
 		dst->n[B]++;
-		rotate_left(pinfo->temp0, dst, B, pinfo);
+		rotatel(pinfo->temp0, dst, B, pinfo);
 	}
 	return (pinfo->temp0);
 }
@@ -120,18 +120,17 @@ t_info	*op_stacks(const t_node *node, enum e_ops op, t_info *pinfo)
 	else if (op == PB)
 		push(pinfo->temp1, node, B, pinfo);
 	else if (op == RA)
-		rotate_right(pinfo->temp0, node, A, pinfo);
+		rotater(pinfo->temp0, node, A, pinfo);
 	else if (op == RB)
-		rotate_right(pinfo->temp0, node, B, pinfo);
+		rotater(pinfo->temp0, node, B, pinfo);
 	else if (op == RR)
-		rotate_right(pinfo->temp0,
-			rotate_right(pinfo->temp1, node, A, pinfo), B, pinfo);
+		rotater(pinfo->temp0, rotater(pinfo->temp1, node, A, pinfo), B, pinfo);
 	else if (op == RRA)
-		rotate_left(pinfo->temp0, node, A, pinfo);
+		rotatel(pinfo->temp0, node, A, pinfo);
 	else if (op == RRB)
-		rotate_left(pinfo->temp0, node, B, pinfo);
+		rotatel(pinfo->temp0, node, B, pinfo);
 	else
-		rotate_left(pinfo->temp0,
-			rotate_left(pinfo->temp1, node, A, pinfo), B, pinfo);
+		rotatel(pinfo->temp0, rotatel(pinfo->temp1, node, A, pinfo), B, pinfo);
+	pinfo->temp0->camewith = op;
 	return (pinfo);
 }

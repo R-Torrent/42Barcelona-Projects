@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 00:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/18 22:14:41 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/20 21:37:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	run_ins(t_node *node, t_info *pinfo, int *pstatus)
 	if (is_goal(node, pinfo, pstatus))
 		return ;
 	if (get_ins(&instruction, pstatus) && get_op(&op, instruction, pstatus))
-		operate_stacks(node, op, pinfo);
+		op_stacks(node, op, pinfo);
 	free(instruction);
 }
 
