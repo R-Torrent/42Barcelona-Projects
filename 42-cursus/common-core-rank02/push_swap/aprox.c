@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 20:12:02 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 20:18:40 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/20 23:35:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,31 +41,61 @@ void	det_rots(const size_t idxa, t_cand *pcand,
 			*pcand = opts[rot];
 }
 
-size_t	find_lower(const size_t *stack_b, const size_t nb, const size_t val_a)
+/* ************************************************************************** */
+/*                                                                            */
+/*   Values stores in the 'maxs' array:                                       */
+/*   maxs[0]: maximum value below the threshold (= the scrutinized 'a' value) */
+/*   maxs[1]: index in stack 'b' of maxs[0]                                   */
+/*   maxs[2]: largest value in stack 'b'                                      */
+/*   maxs[3]: index in stack 'b' of maxs[2]                                   */
+/*                                                                            */
+/* ************************************************************************** */
+
+size_t	find_idxb(const size_t *stack_b, size_t *maxs, const size_t threshold)
 {
-	if (nb < 2)
-		return (0);
-	// *** WORKING HERE
-	(void)stack_b;
-	(void)val_a;
-	return (0);
+	const size_t	nb = maxs[0];
+	size_t			idx;
+
+	idx = 0;
+	while (idx < nb)
+	{
+		if (maxs[1] <= stack_b[idx] && stack_b[idx] < threshold)
+		{
+			maxs[0] = idx;
+			maxs[1] = stack_b[idx];
+		}
+		else if (threshold < stack_b[idx] && maxs[3] < stack_b[idx])
+		{
+			maxs[2] = idx;
+			maxs[3] = stack_b[idx];
+		}
+		idx++;
+	}
+	if (maxs[0] != nb)
+		return (maxs[0]);
+	else
+		return (maxs[2]);
 }
 
 void	check_candidate(t_node *path, const size_t idxa, t_cand *pcand)
 {
-	size_t			rots_a[2];
-	size_t			rots_b[2];
-	const size_t	idxb = find_lower(path->stacks + path->n[A], path->n[B],
-			path->stacks[idxa]);
+	size_t	rots_a[2];
+	size_t	rots_b[2];
+	size_t	idxb;
 
 	rots_a[0] = path->n[A] - 1 - idxa;
 	rots_a[1] = 0;
 	if (path->n[A] > 1)
 		rots_a[1] = idxa + 1;
-	rots_b[0] = 0;
-	rots_b[1] = 0;
+	if (path->n[B] <= 1)
+	{
+		rots_b[0] = 0;
+		rots_b[1] = 0;
+	}
 	if (path->n[B] > 1)
 	{
+		idxb = find_idxb(path->stacks + path->n[A], (size_t [4]){path->n[B]},
+				path->stacks[idxa]);
 		rots_b[0] = path->n[B] - 1 - idxb;
 		rots_b[1] = idxb + 1;
 	}
