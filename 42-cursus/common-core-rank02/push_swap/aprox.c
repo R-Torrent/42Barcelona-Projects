@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/18 20:12:02 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 23:35:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/21 20:05:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,19 +85,17 @@ void	check_candidate(t_node *path, const size_t idxa, t_cand *pcand)
 
 	rots_a[0] = path->n[A] - 1 - idxa;
 	rots_a[1] = 0;
-	if (path->n[A] > 1)
+	if (path->n[A] > 1 && idxa < path->n[A] - 1)
 		rots_a[1] = idxa + 1;
-	if (path->n[B] <= 1)
-	{
-		rots_b[0] = 0;
-		rots_b[1] = 0;
-	}
+	rots_b[0] = 0;
+	rots_b[1] = 0;
 	if (path->n[B] > 1)
 	{
 		idxb = find_idxb(path->stacks + path->n[A], (size_t [4]){path->n[B]},
 				path->stacks[idxa]);
 		rots_b[0] = path->n[B] - 1 - idxb;
-		rots_b[1] = idxb + 1;
+		if (idxb < path->n[B] - 1)
+			rots_b[1] = idxb + 1;
 	}
 	det_rots(idxa, pcand, rots_a, rots_b);
 }
