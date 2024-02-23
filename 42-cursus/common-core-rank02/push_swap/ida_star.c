@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 22:33:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 20:19:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/23 17:00:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool	in_path(t_node *path, t_info *pinfo)
 			if (path->stacks[i] != pinfo->temp0->stacks[i])
 				return (false);
 			i++;
-		}	
+		}
 	}
 	return (true);
 }
@@ -83,7 +83,7 @@ unsigned int	heuristic(t_node *node, size_t n)
 	{
 		h_a++;
 		h_b++;
-	}	
+	}
 	while (++i < n)
 		if (node->stacks[i] < node->stacks[i - 1])
 			h_b++;
