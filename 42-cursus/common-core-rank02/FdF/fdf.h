@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/22 21:26:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/24 20:11:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,20 @@ char	*strerror(int errnum);
 ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
+
+typedef struct s_point
+{
+	int				x;
+	int				y;
+	int				z;
+	unsigned int	color;
+}	t_point;
+
+typedef struct s_map_points
+{
+	unsigned int	rows;
+	unsigned int	cols;
+	t_point			points[];
+}	t_map_points;
 
 #endif

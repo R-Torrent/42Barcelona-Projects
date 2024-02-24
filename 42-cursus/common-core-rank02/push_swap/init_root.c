@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 23:09:05 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 20:26:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/23 17:11:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	init_root(t_info *pinfo, unsigned int n, char *args[])
 	size_t	i;
 
 	status = WORKING;
-	if (n > SIZE_MAX >> 1)
+	if (n > (unsigned int)(SIZE_MAX >> 1))
 		status = MEM_ERR;
 	pinfo->n_args = (size_t)n;
 	pinfo->size_node = sizeof(t_node) + n * sizeof(size_t);
