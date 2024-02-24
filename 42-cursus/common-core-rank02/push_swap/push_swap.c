@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 23:11:04 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 20:19:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/24 20:39:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	main(int argc, char *argv[])
 	status = init_root(&info, (unsigned int)argc, argv);
 	if (status == WORKING)
 		push_node(&path, &info, &status);
-	if (status == WORKING)
+	if (status == WORKING && !is_goal(path, &info, &status))
 	{
 		if (argc <= MAX_EXACT)
 			ida_star(&path, &info, &status);
