@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/09 11:29:52 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/02/26 22:28:41 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,6 +49,7 @@ SRC    := ft_atoi.c\
 	ft_isprint.c\
 	ft_isspace.c\
 	ft_isupper.c\
+	ft_isxdigit.c\
 	ft_itoa.c\
 	ft_memchr.c\
 	ft_memcmp.c\
@@ -76,6 +77,8 @@ SRC    := ft_atoi.c\
 	ft_strnstr.c\
 	ft_strrchr.c\
 	ft_strspn.c\
+	ft_strtok.c\
+	ft_strtok_r.c\
 	ft_strtrim.c\
 	ft_substr.c\
 	ft_tolower.c\

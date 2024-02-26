@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/06 01:06:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/26 22:31:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int		ft_islower(int c);
 int		ft_isprint(int c);
 int		ft_isspace(int c);
 int		ft_isupper(int c);
+int		ft_isxdigit(int c);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 
@@ -88,6 +89,8 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strnstr(const char *haystack, const char *needle, size_t n);
 char	*ft_strrchr(const char *s, int c);
 size_t	ft_strspn(const char *s, const char *accept);
+char	*ft_strtok(char *s, const char *delim);
+char	*ft_strtok_r(char *s, const char *delim, char **saveptr);
 
 // functions also found in strings.h
 void	ft_bzero(void *s, size_t n);
