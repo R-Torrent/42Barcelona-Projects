@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/26 20:37:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/26 20:49:41 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,21 +86,22 @@ int	resolve_data(t_point *dst, int row, int col, char *token)
 	return (stat1 || stat2);
 }
 
-unsigned int	get_row(t_point **pdst, char *line, unsigned int *rows)
+unsigned int	get_row(t_point **pdst, char *const line, unsigned int *rows)
 {
 	unsigned int	cols;
 	char			*token;
+	char			*line1;
 
 	cols = 0;
 	if (line)
 	{
-		token = ft_strtok_r(NULL, " \n", &line);
+		token = ft_strtok_r(line, " \n", &line1);
 		while (token)
 		{
 			if (pdst && resolve_data((*pdst)++, *rows, cols, token))
 				return (UINT_MAX);
 			++cols;
-			token = ft_strtok_r(NULL, " \n", &line);
+			token = ft_strtok_r(NULL, " \n", &line1);
 		}
 		++*rows;
 		free(line);
