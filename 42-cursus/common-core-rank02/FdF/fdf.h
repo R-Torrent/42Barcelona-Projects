@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/24 20:11:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/26 20:40:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 /* ************************************************************************** */
 
 # include <fcntl.h>
+# include <limits.h>
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -34,6 +35,19 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
+enum e_colors
+{
+	BLACK = 0x000000,
+	GRAY = 0x808080,
+	WHITE = 0xffffff,
+	RED = 0xff0000,
+	GREEN = 0x00ff00,
+	BLUE = 0x0000ff,
+	CYAN = 0x00ffff,
+	MAGENTA = 0xff00ff,
+	YELLOW = 0xffff00
+};
+
 typedef struct s_point
 {
 	int				x;
@@ -47,6 +61,16 @@ typedef struct s_map_points
 	unsigned int	rows;
 	unsigned int	cols;
 	t_point			points[];
-}	t_map_points;
+}	t_map_fdf;
+
+int		read_data(t_map_fdf **pmap, const char *file_fdf);
+
+// additional 'libft' functions required for this project
+// (ctype.h the first, string.h the latter two)
+int		ft_isxdigit(int c);
+char	*ft_strtok(char *s, const char *delim);
+char	*ft_strtok_r(char *s, const char *delim, char **saveptr);
+
+/* ************************************************************************** */
 
 #endif
