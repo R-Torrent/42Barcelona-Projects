@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 00:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/20 21:37:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/29 01:41:51 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	get_op(enum e_ops *pop, const char *instruction, int *pstatus)
 	return (false);
 }
 
-bool	get_ins(char **pinstruction, int *pstatus)
+bool	get_ins(char **pinstruction)
 {
 	char	*c;
 
@@ -35,46 +35,38 @@ bool	get_ins(char **pinstruction, int *pstatus)
 		c = ft_strchr(*pinstruction, '\n');
 		if (c)
 			*c = '\0';
-		return (true);
 	}
-	*pstatus = NOT_FND;
-	return (false);
+	return (*pinstruction);
 }
 
-void	run_ins(t_node *node, t_info *pinfo, int *pstatus)
+void	run_ins(t_info *pinfo, int *pstatus)
 {
 	char		*instruction;
 	enum e_ops	op;
 
-	if (is_goal(node, pinfo, pstatus))
-		return ;
-	if (get_ins(&instruction, pstatus) && get_op(&op, instruction, pstatus))
-		op_stacks(node, op, pinfo);
+	if (get_ins(&instruction) && get_op(&op, instruction, pstatus))
+		op_stacks(pinfo->temp0, op, pinfo);
+	else if (!is_goal(pinfo->temp0, pinfo, pstatus))
+		*pstatus = NOT_FND;
 	free(instruction);
 }
 
 int	main(int argc, char *argv[])
 {
 	t_info	info;
-	t_node	*progress;
 	int		status;
 
 	if (!--argc)
 		exit(SUCCESS);
 	status = init_root(&info, (unsigned int)argc, argv);
-	progress = malloc(info.size_node);
-	if (!progress && status == WORKING)
-		status = MEM_ERR;
 	while (status == WORKING)
-		run_ins(ft_memcpy(progress, info.temp0, info.size_node),
-			&info, &status);
+		run_ins(&info, &status);
 	if (status == SUCCESS)
 		ft_putendl_fd("OK", 1);
 	else if (status == NOT_FND)
 		ft_putendl_fd("KO", 1);
 	else
 		ft_putendl_fd("Error", 2);
-	free(progress);
 	free(info.temp0);
 	exit(status);
 }
