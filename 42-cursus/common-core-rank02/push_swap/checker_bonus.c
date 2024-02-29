@@ -6,46 +6,35 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 00:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/29 01:41:51 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/29 02:33:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap_bonus.h"
 
-bool	get_op(enum e_ops *pop, const char *instruction, int *pstatus)
-{
-	*pop = SA;
-	while (*pop < ID)
-	{
-		if (!ft_strncmp(op_string(*pop), instruction, 3))
-			return (true);
-		(*pop)++;
-	}
-	*pstatus = UNK_INS;
-	return (false);
-}
-
-bool	get_ins(char **pinstruction)
-{
-	char	*c;
-
-	*pinstruction = ft_getnextline_fd(0);
-	if (*pinstruction)
-	{
-		c = ft_strchr(*pinstruction, '\n');
-		if (c)
-			*c = '\0';
-	}
-	return (*pinstruction);
-}
-
 void	run_ins(t_info *pinfo, int *pstatus)
 {
-	char		*instruction;
+	char *const	instruction = ft_getnextline_fd(0);
+	char		*c;
 	enum e_ops	op;
 
-	if (get_ins(&instruction) && get_op(&op, instruction, pstatus))
-		op_stacks(pinfo->temp0, op, pinfo);
+	if (instruction)
+	{
+		c = ft_strchr(instruction, '\n');
+		if (c)
+			*c = '\0';
+		op = SA;
+		while (op < ID)
+		{
+			if (!ft_strncmp(op_string(op), instruction, 3))
+				break ;
+			op++;
+		}
+		if (op < ID)
+			op_stacks(pinfo->temp0, op, pinfo);
+		else
+			*pstatus = UNK_INS;
+	}
 	else if (!is_goal(pinfo->temp0, pinfo, pstatus))
 		*pstatus = NOT_FND;
 	free(instruction);
