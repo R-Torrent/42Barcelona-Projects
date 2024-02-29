@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 00:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/29 02:33:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:43:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	run_ins(t_info *pinfo, int *pstatus)
 		op = SA;
 		while (op < ID)
 		{
-			if (!ft_strncmp(op_string(op), instruction, 3))
+			if (!ft_strncmp(op_string(op), instruction, 4))
 				break ;
 			op++;
 		}
