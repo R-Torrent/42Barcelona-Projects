@@ -6,23 +6,27 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/26 19:56:10 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/03 15:52:31 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Tools and options:
 
-CFLAGS     := -Werror -Wextra -Wall
-
+CFLAGS0    := -Werror -Wextra -Wall
+CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(INCLD)
+LDFLAGS     = -L$(DIRFT) -L$(LIB)
+LDLIBS     := -lft -lmlx -lmlx_Linux
 DEBUGFLAGS := -g
 
 RM         := rm -f
+
 TC         := touch
+
 RM_NT_DEBUG = find . -type f -name "*.o" -newer $(DEBUG) -delete
 
 # **************************************************************************** #
 
-# Filenames:
+# Filenames and folders:
 
 NAME   := fdf
 
@@ -36,11 +40,14 @@ SRC    := fdf.c\
 
 OBJ    := $(SRC:.c=.o)
 
-DIRLIB := libft/
+DIRFT  := libft/
+LIBFT  := libft.a
+HDRFT  := libft.h
 
-NAMELB := libft.a
-
-HDRLIB := libft.h
+LIB    := /usr/local/lib/
+LIBMLX := libmlx.a
+INCLD  := /usr/local/include/
+HDRMLX := mlx.h
 
 DEBUG  := .debug
 
@@ -61,21 +68,21 @@ $(DEBUG)::
 	@if [ -f "$@" ]; then $(RM_NT_DEBUG); else $(MAKE) -s fclean; fi
 
 $(NAME) $(DEBUG)::
-	@$(MAKE) -s -C $(DIRLIB) CFLAGS="$(CFLAGS)" all
+	@$(MAKE) -s -C $(DIRFT) CFLAGS="$(CFLAGS0)" all
 
-$(NAME):: $(OBJ) $(DIRLIB)$(NAMELB)
+$(NAME):: $(OBJ)
 
-$(DEBUG):: $(OBJ) $(DIRLIB)$(NAMELB)
-	$(CC) $^ -o $(NAME)
+$(DEBUG):: $(OBJ)
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $(NAME)
 	@$(TC) $(DEBUG)
 
 clean:
-	@$(MAKE) -C $(DIRLIB) --no-print-directory clean
+	@$(MAKE) -C $(DIRFT) --no-print-directory clean
 	$(RM) $(OBJ)
 	@$(RM) $(DEBUG)
 
 fclean: clean
-	$(RM) $(DIRLIB)$(NAMELB)
+	$(RM) $(DIRFT)$(LIBFT)
 	$(RM) $(NAME)
 
 re: fclean all
@@ -86,10 +93,10 @@ re: fclean all
 
 # Build prerequisites:
 
-$(OBJ): %.o: %.c $(HEADER) $(DIRLIB)$(HDRLIB)
+$(OBJ): %.o: %.c $(HEADER) $(DIRFT)$(HDRFT) $(INCLD)$(HDRMLX)
 
 # **************************************************************************** #
 
 # Target-specific assignments:
 
-debug: CFLAGS += $(DEBUGFLAGS)
+debug: CFLAGS0 += $(DEBUGFLAGS)
