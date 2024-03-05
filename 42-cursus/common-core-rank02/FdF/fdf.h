@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/04 02:29:16 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/05 03:29:10 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 # include <fcntl.h>
 # include <limits.h>
+# include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -66,9 +67,9 @@ typedef struct s_point
 
 typedef struct s_map_points
 {
-	unsigned int	rows;
-	unsigned int	cols;
-	t_point			points[];
+	size_t		rows;
+	size_t		cols;
+	t_point		points[];
 }	t_map_fdf;
 
 int		read_data(t_map_fdf **pmap, const char *file_fdf);

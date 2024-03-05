@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/26 21:50:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/05 03:53:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,11 @@ int	resolve_data(t_point *dst, int row, int col, char *token)
 	return (stat1 || stat2);
 }
 
-unsigned int	get_row(t_point **pdst, char *const line, unsigned int *rows)
+size_t	get_row(t_point **pdst, char *const line, size_t *rows)
 {
-	unsigned int	cols;
-	char			*token;
-	char			*line1;
+	size_t	cols;
+	char	*token;
+	char	*line1;
 
 	cols = 0;
 	if (line)
@@ -99,7 +99,7 @@ unsigned int	get_row(t_point **pdst, char *const line, unsigned int *rows)
 		while (token)
 		{
 			if (pdst && resolve_data((*pdst)++, *rows, cols, token))
-				return (UINT_MAX);
+				return (SIZE_MAX);
 			++cols;
 			token = ft_strtok_r(NULL, " \n", &line1);
 		}
@@ -111,10 +111,10 @@ unsigned int	get_row(t_point **pdst, char *const line, unsigned int *rows)
 
 int	det_dims(t_map_fdf **pmap_fdf, const char *file_fdf)
 {
-	const int		fd_fdf = open(file_fdf, O_RDONLY);
-	unsigned int	rows;
-	unsigned int	cols;
-	unsigned int	cols1;
+	const int	fd_fdf = open(file_fdf, O_RDONLY);
+	size_t		rows;
+	size_t		cols;
+	size_t		cols1;
 
 	*pmap_fdf = NULL;
 	if (fd_fdf == -1)
@@ -137,18 +137,21 @@ int	det_dims(t_map_fdf **pmap_fdf, const char *file_fdf)
 
 int	read_data(t_map_fdf **pmap_fdf, const char *file_fdf)
 {
-	const int		fd_fdf = open(file_fdf, O_RDONLY);
-	unsigned int	row;
-	t_point			*new_pt;
+	const int	fd_fdf = open(file_fdf, O_RDONLY);
+	size_t		row;
+	t_point		*new_pt;
 
-	if (det_dims(pmap_fdf, file_fdf) || fd_fdf == -1)
+	if (fd_fdf == -1)
 		return (1);
 	row = 0;
-	new_pt = (*pmap_fdf)->points;
-	while (row < (*pmap_fdf)->rows)
-		if (get_row(&new_pt, ft_getnextline_fd(fd_fdf), &row) == UINT_MAX)
-			return (1);
-	if (close(fd_fdf))
+	if (!det_dims(pmap_fdf, file_fdf))
+	{
+		new_pt = (*pmap_fdf)->points;
+		while (row < (*pmap_fdf)->rows)
+			if (get_row(&new_pt, ft_getnextline_fd(fd_fdf), &row) == SIZE_MAX)
+				break ;
+	}
+	if (close(fd_fdf) || !*pmap_fdf || row != (*pmap_fdf)->rows)
 		return (1);
 	return (0);
 }
