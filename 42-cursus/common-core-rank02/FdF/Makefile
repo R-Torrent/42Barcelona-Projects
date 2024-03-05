@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/03 15:52:31 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/04 22:05:23 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 CFLAGS0    := -Werror -Wextra -Wall
 CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(INCLD)
 LDFLAGS     = -L$(DIRFT) -L$(LIB)
-LDLIBS     := -lft -lmlx -lmlx_Linux
+LDLIBS     := -lft -lmlx -lXext -lX11
 DEBUGFLAGS := -g
 
 RM         := rm -f
