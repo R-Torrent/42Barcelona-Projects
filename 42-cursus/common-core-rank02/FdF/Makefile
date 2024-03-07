@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/04 22:05:23 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/07 21:33:58 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,9 +33,12 @@ NAME   := fdf
 HEADER := fdf.h
 
 SRC    := fdf.c\
+	ft_abs.c\
 	ft_isxdigit.c\
 	ft_strtok.c\
 	ft_strtok_r.c\
+	mappings.c\
+	plot_wires.c\
 	read_data.c
 
 OBJ    := $(SRC:.c=.o)

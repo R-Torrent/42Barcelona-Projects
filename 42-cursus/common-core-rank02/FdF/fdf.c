@@ -6,68 +6,44 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/05 04:45:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/07 21:30:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int	key_hook(int keycode, void *param[2])
+// param[0]: t_map_fdf *map_fdf
+// param[1]: void *mlx_ptr
+// param[2]: void *win_ptr
+int	key_hook(int keycode, void *param[])
 {
+	keycode = ft_toupper(keycode);
 	if (keycode == ESC)
 		mlx_destroy_window(param[0], param[1]);
+	else if (keycode == RL || keycode == UP || keycode == LF || keycode == DW
+		|| keycode == RT || keycode == ZI || keycode == ZO)
+	{
+		mlx_clear_window(param[0], param[1]);
+		if (keycode == RL)
+		{
+			isometric_projection(param[2]);
+			fit_screen_size(param[2], PIX_X, PIX_Y);
+		}
+		if (keycode == UP)
+			htranslation(param[2], -DPM, 0);
+		else if (keycode == LF)
+			htranslation(param[2], 0, -DPM);
+		else if (keycode == DW)
+			htranslation(param[2], DPM, 0);
+		else if (keycode == RT)
+			htranslation(param[2], 0, DPM);
+		else if (keycode == ZI)
+			scaling(param[2], ZR1, ZR2);
+		else if (keycode == ZO)
+			scaling(param[2], ZR2, ZR1);
+		draw_wires(param[0], param[1], param[2]);
+	}
 	return (0);
-}
-
-void	draw_wires(void *mlx_ptr, void *win_ptr, t_map_fdf *map_fdf)
-{
-}
-
-void	fit_screen_size(t_map_fdf *map_fdf, int size_x, int size_y)
-{
-	t_point	*p;
-	int		limits[4];
-
-	limits[0] = INT_MAX;
-	limits[1] = INT_MIN;
-	limits[2] = INT_MAX;
-	limits[3] = INT_MIN;
-	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
-	while (p-- > map_fdf->points)
-	{
-		if (p->x < limits[0])
-			limits[0] = p->x;
-		if (p->x > limits[1])
-			limits[1] = p->x;
-		if (p->y < limits[2])
-			limits[2] = p->y;
-		if (p->y > limits[3])
-			limits[3] = p->y;
-	}
-	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
-	while (p-- > map_fdf->points)
-	{
-		p->x = (p->x - limits[0]) * size_x / (limits[1] - limits[0]);
-		p->y = (p->y - limits[2]) * size_y / (limits[3] - limits[2]);
-	}
-}
-
-// includes a 1000-factor rescale, to mantain significant digits in the map
-void	isometric_projection(t_map_fdf *map_fdf)
-{
-	t_point	*p;
-	int		xip;
-	int		yip;
-
-	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
-	while (p-- > map_fdf->points)
-	{
-		xip = 707 * (p->x - p->z);
-		yip = 408 * (p->x + (p->y << 1) + p->z);
-		p->x = xip;
-		p->y = yip;
-		p->z = 0;
-	}
 }
 
 int	main(int argc, char *argv[])
@@ -75,22 +51,26 @@ int	main(int argc, char *argv[])
 	t_map_fdf	*map_fdf;
 	void		*mlx_ptr;
 	void		*win_ptr;
+	int			exit_status;
 
 	if (argc != 2)
 		exit(EXIT_FAILURE);
-	if (read_data(&map_fdf, argv[1]))
-		exit(EXIT_FAILURE);
-	isometric_projection(map_fdf);
-	fit_screen_size(map_fdf, PIX_X, PIX_Y);
+	exit_status = EXIT_FAILURE;
 	mlx_ptr = mlx_init();
-	if (!mlx_ptr)
-		exit(EXIT_FAILURE);
-	win_ptr = mlx_new_window(mlx_ptr, PIX_X, PIX_Y, "FdF");
-	if (!win_ptr)
-		exit(EXIT_FAILURE);
-	draw_wires(mlx_ptr, win_ptr, map_fdf);
+	if (!read_data(&map_fdf, argv[1]) && mlx_ptr)
+	{
+		win_ptr = mlx_new_window(mlx_ptr, PIX_X, PIX_Y, TITLE);
+		if (win_ptr)
+		{
+			isometric_projection(map_fdf);
+			fit_screen_size(map_fdf, PIX_X, PIX_Y);
+			draw_wires(mlx_ptr, win_ptr, map_fdf);
+			mlx_key_hook(win_ptr, key_hook,
+				(void *[3]){mlx_ptr, win_ptr, map_fdf});
+			mlx_loop(mlx_ptr);
+			exit_status = EXIT_SUCCESS;
+		}
+	}
 	free(map_fdf);
-	mlx_key_hook(win_ptr, key_hook, (void *)(void *[2]){mlx_ptr, win_ptr});
-	mlx_loop(mlx_ptr);
-	exit(EXIT_SUCCESS);
+	exit(exit_status);
 }
