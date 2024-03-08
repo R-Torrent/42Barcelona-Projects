@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/07 21:30:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/08 00:28:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	key_hook(int keycode, void *param[])
 			scaling(param[2], ZR1, ZR2);
 		else if (keycode == ZO)
 			scaling(param[2], ZR2, ZR1);
-		draw_wires(param[0], param[1], param[2]);
+		plot_wires(param[0], param[1], param[2]);
 	}
 	return (0);
 }
@@ -64,7 +64,7 @@ int	main(int argc, char *argv[])
 		{
 			isometric_projection(map_fdf);
 			fit_screen_size(map_fdf, PIX_X, PIX_Y);
-			draw_wires(mlx_ptr, win_ptr, map_fdf);
+			plot_wires(mlx_ptr, win_ptr, map_fdf);
 			mlx_key_hook(win_ptr, key_hook,
 				(void *[3]){mlx_ptr, win_ptr, map_fdf});
 			mlx_loop(mlx_ptr);
