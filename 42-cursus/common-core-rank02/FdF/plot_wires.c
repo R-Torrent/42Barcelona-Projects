@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/08 00:29:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/08 02:09:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	plot_wires(void *mlx_ptr, void *win_ptr, t_map_fdf *map_fdf)
 {
 	size_t	row;
 	size_t	col;
-	t_point (*const p)[map_fdf->rows] = (t_point (*)[map_fdf->rows])map_fdf->points;
+	t_point (*const p)[map_fdf->cols] = (t_point (*)[map_fdf->cols])map_fdf->points;
 
 	row = 1;
 	while (row < map_fdf->rows)
