@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/07 21:33:58 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/08 01:50:16 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(INCLD)
 LDFLAGS     = -L$(DIRFT) -L$(LIB)
 LDLIBS     := -lft -lmlx -lXext -lX11
 DEBUGFLAGS := -g
+
+VPATH       = $(DIRFT)
 
 RM         := rm -f
 
@@ -73,10 +75,10 @@ $(DEBUG)::
 $(NAME) $(DEBUG)::
 	@$(MAKE) -s -C $(DIRFT) CFLAGS="$(CFLAGS0)" all
 
-$(NAME):: $(OBJ)
+$(NAME) $(DEBUG):: $(OBJ) $(LDLIBS)
+	$(CC) $(LDFLAGS) $^ -o $(NAME)
 
-$(DEBUG):: $(OBJ)
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $(NAME)
+$(DEBUG):: $(OBJ) $(LDLIBS)
 	@$(TC) $(DEBUG)
 
 clean:
