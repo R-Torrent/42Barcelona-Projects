@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/08 02:09:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:49:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	bresenham(void *mlx_ptr, void *win_ptr, t_point p0, t_point p1)
 	error = d[0] + d[1];
 	while (true)
 	{
-		mlx_pixel_put(mlx_ptr, win_ptr, p0.x, p0.y, WHITE);
+		mlx_pixel_put(mlx_ptr, win_ptr, p0.y, p0.x, WHITE);
 		if (p0.x == p1.x && p0.y == p1.y)
 			break ;
 		e2 = error << 1;
@@ -58,18 +58,24 @@ void	plot_wires(void *mlx_ptr, void *win_ptr, t_map_fdf *map_fdf)
 	size_t	col;
 	t_point (*const p)[map_fdf->cols] = (t_point (*)[map_fdf->cols])map_fdf->points;
 
-	row = 1;
-	while (row < map_fdf->rows)
+	row = 0;
+	while (++row < map_fdf->rows)
 	{
 		col = 0;
 		while (col < map_fdf->cols)
+		{
 			bresenham(mlx_ptr, win_ptr, p[row - 1][col], p[row][col]);
+			col++;
+		}
 	}
-	col = 1;
-	while (col < map_fdf->cols)
+	col = 0;
+	while (++col < map_fdf->cols)
 	{
 		row = 0;
 		while (row < map_fdf->rows)
+		{
 			bresenham(mlx_ptr, win_ptr, p[row][col - 1], p[row][col]);
+			row++;
+		}
 	}
 }

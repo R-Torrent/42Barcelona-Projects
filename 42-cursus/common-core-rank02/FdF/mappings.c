@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:35:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/07 21:34:34 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:46:02 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ void	isometric_projection(t_map_fdf *map_fdf)
 	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
 	while (p-- > map_fdf->points)
 	{
-		p->x = 707 * (p->x0 - p->z0);
-		p->y = 408 * (p->x0 + (p->y0 << 1) + p->z0);
+		p->x = 408 * (p->x0 + p->y0 - (p->z0 << 1));
+		p->y = 707 * (-p->x0 + p->y0);
 		p->z = 577 * (p->x0 + p->y0 + p->z0);
 	}
 }
