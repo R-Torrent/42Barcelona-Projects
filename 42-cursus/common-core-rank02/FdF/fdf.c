@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/08 00:28:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/09 03:29:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,22 @@ int	key_hook(int keycode, void *param[])
 		mlx_clear_window(param[0], param[1]);
 		if (keycode == RL)
 		{
-			isometric_projection(param[2]);
-			fit_screen_size(param[2], PIX_X, PIX_Y);
+			((t_map_fdf *)param[2])->d_x = 0;
+			((t_map_fdf *)param[2])->d_y = 0;
+			((t_map_fdf *)param[2])->zoom = 0;
 		}
 		if (keycode == UP)
-			htranslation(param[2], -DPM, 0);
+			((t_map_fdf *)param[2])->d_x--;
 		else if (keycode == LF)
-			htranslation(param[2], 0, -DPM);
+			((t_map_fdf *)param[2])->d_y--;
 		else if (keycode == DW)
-			htranslation(param[2], DPM, 0);
+			((t_map_fdf *)param[2])->d_x++;
 		else if (keycode == RT)
-			htranslation(param[2], 0, DPM);
+			((t_map_fdf *)param[2])->d_y++;
 		else if (keycode == ZI)
-			scaling(param[2], ZR1, ZR2);
+			((t_map_fdf *)param[2])->zoom++;
 		else if (keycode == ZO)
-			scaling(param[2], ZR2, ZR1);
+			((t_map_fdf *)param[2])->zoom--;
 		plot_wires(param[0], param[1], param[2]);
 	}
 	return (0);

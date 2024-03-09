@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/07 21:09:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/09 03:57:51 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 /* ************************************************************************** */
 
 // default screen size, in pixels
-# define PIX_X 500
-# define PIX_Y 375
+# define PIX_X 600
+# define PIX_Y 450
 
 // window title
 # define TITLE "FdF"
@@ -63,9 +63,9 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define ZO 0x4b
 
 // displacement per keystroke
-# define DPM 1
+# define DPM 5
 
-// zoom ratios per keystroke
+// zoom ratio per keystroke, ZR1:ZR2
 # define ZR1 20
 # define ZR2 19
 
@@ -82,22 +82,28 @@ enum e_colors
 	YELLOW = 0xffff00
 };
 
+struct s_coord
+{
+	int	x;
+	int	y;
+	int	z;
+};
+
 typedef struct s_point
 {
-	int				x0;
-	int				y0;
-	int				z0;
-	int				x;
-	int				y;
-	int				z;
+	struct s_coord	c0;
+	struct s_coord	c1;
 	unsigned int	color;
 }	t_point;
 
-typedef struct s_map_points
+typedef struct s_map_fdf
 {
 	size_t			rows;
 	size_t			cols;
 	unsigned int	flags;
+	int				d_x;
+	int				d_y;
+	int				zoom;
 	t_point			points[];
 }	t_map_fdf;
 

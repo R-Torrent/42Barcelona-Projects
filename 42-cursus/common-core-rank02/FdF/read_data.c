@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/06 14:04:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/09 03:11:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ int	resolve_data(t_point *dst, int row, int col, char *token)
 
 	stat1 = 0;
 	stat2 = 0;
-	dst->x0 = row;
-	dst->y0 = col;
-	dst->z0 = atoi2(ft_strtok(token, ","), &stat1);
+	dst->c0.x = row;
+	dst->c0.y = col;
+	dst->c0.z = atoi2(ft_strtok(token, ","), &stat1);
 	color_str = ft_strtok(NULL, "");
 	if (color_str)
 		dst->color = atou2(color_str, &stat2);
@@ -153,5 +153,8 @@ int	read_data(t_map_fdf **pmap_fdf, const char *file_fdf)
 	}
 	if (close(fd_fdf) || !*pmap_fdf || row != (*pmap_fdf)->rows)
 		return (1);
+	(*pmap_fdf)->zoom = 0;
+	(*pmap_fdf)->d_x = 0;
+	(*pmap_fdf)->d_y = 0;
 	return (0);
 }
