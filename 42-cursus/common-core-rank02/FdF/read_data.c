@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/09 03:11:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/10 03:14:23 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ unsigned int	atou2(const char *str, int *status)
 	return (n);
 }
 
-int	resolve_data(t_point *dst, int row, int col, char *token)
+static int	resolve_data(t_point *dst, int row, int col, char *token)
 {
 	int		stat1;
 	int		stat2;
@@ -75,9 +75,9 @@ int	resolve_data(t_point *dst, int row, int col, char *token)
 
 	stat1 = 0;
 	stat2 = 0;
-	dst->c0.x = row;
-	dst->c0.y = col;
-	dst->c0.z = atoi2(ft_strtok(token, ","), &stat1);
+	dst->c0.x = SCALE * row;
+	dst->c0.y = SCALE * col;
+	dst->c0.z = SCALE * atoi2(ft_strtok(token, ","), &stat1);
 	color_str = ft_strtok(NULL, "");
 	if (color_str)
 		dst->color = atou2(color_str, &stat2);
@@ -86,7 +86,7 @@ int	resolve_data(t_point *dst, int row, int col, char *token)
 	return (stat1 || stat2);
 }
 
-size_t	get_row(t_point **pdst, char *const line, size_t *rows)
+static size_t	get_row(t_point **pdst, char *const line, size_t *rows)
 {
 	size_t	cols;
 	char	*token;
@@ -109,7 +109,7 @@ size_t	get_row(t_point **pdst, char *const line, size_t *rows)
 	return (cols);
 }
 
-int	det_dims(t_map_fdf **pmap_fdf, const char *file_fdf)
+static int	det_dims(t_map_fdf **pmap_fdf, const char *file_fdf)
 {
 	const int	fd_fdf = open(file_fdf, O_RDONLY);
 	size_t		rows;
@@ -153,8 +153,5 @@ int	read_data(t_map_fdf **pmap_fdf, const char *file_fdf)
 	}
 	if (close(fd_fdf) || !*pmap_fdf || row != (*pmap_fdf)->rows)
 		return (1);
-	(*pmap_fdf)->zoom = 0;
-	(*pmap_fdf)->d_x = 0;
-	(*pmap_fdf)->d_y = 0;
 	return (0);
 }

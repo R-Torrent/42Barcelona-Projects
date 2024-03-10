@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/09 03:57:51 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/10 03:14:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,14 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
+// ** NOTE ** The 'X' and 'Y' axes of the project form a right-handed system,
+// contrary to the axes in the MinilibX functions. This was done to reduce the
+// mental burden of calculating expressions for the coordinates of any vector
+// after two rotations.
+
 // default screen size, in pixels
-# define PIX_X 600
-# define PIX_Y 450
+# define PIX_X 450
+# define PIX_Y 600
 
 // window title
 # define TITLE "FdF"
@@ -57,10 +62,16 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define DW 0x53
 // 'D' or 'd': move right
 # define RT 0x44
-// 'J' or 'j': zoom in
-# define ZI 0x4a
-// 'K' or 'k': zoom out
-# define ZO 0x4b
+// 'Z' or 'z': zoom in
+# define ZI 0x5a
+// 'X' or 'x': zoom out
+# define ZO 0x58
+// 'F' or 'f': fit screen
+# define FS 0x46
+// 'J' or 'j': scale z down
+# define ZD 0x4a
+// 'K' or 'k': scale z up
+# define ZU 0x4b
 
 // displacement per keystroke
 # define DPM 5
@@ -68,6 +79,13 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 // zoom ratio per keystroke, ZR1:ZR2
 # define ZR1 20
 # define ZR2 19
+
+// default scaling for all dimensions
+# define SCALE 20
+
+// operation flags:
+// base zoom 'fit screen'
+# define ZOOM1 01
 
 enum e_colors
 {
@@ -101,18 +119,18 @@ typedef struct s_map_fdf
 	size_t			rows;
 	size_t			cols;
 	unsigned int	flags;
-	int				d_x;
-	int				d_y;
-	int				zoom;
+	int				shift[2];
+	int				steps_shift[2];
+	int				zoom_fit[2];
+	int				steps_zoom;
 	t_point			points[];
 }	t_map_fdf;
 
 void	plot_wires(void *mlx_ptr, void *win_ptr, t_map_fdf *map_fdf);
-void	fit_screen_size(t_map_fdf *map_fdf, int size_x, int size_y);
-void	isometric_projection(t_map_fdf *map_fdf);
-void	htranslation(t_map_fdf *map_fdf, int dx, int dy);
+void	fit_screen(t_map_fdf *map_fdf);
+void	isometric_projection(t_map_fdf *map_fdf, bool reset);
 int		read_data(t_map_fdf **pmap, const char *file_fdf);
-void	scaling(t_map_fdf *map_fdf, int num, int den);
+void	scale_z0(t_map_fdf *map_fdf, int num, int den);
 
 // additional 'libft' functions required for this project
 // (stdlib.h the first, ctype.h the second, string.h the latter two)
