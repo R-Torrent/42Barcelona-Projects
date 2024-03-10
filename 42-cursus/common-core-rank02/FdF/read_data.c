@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 03:14:23 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/10 19:44:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ static int	resolve_data(t_point *dst, int row, int col, char *token)
 
 	stat1 = 0;
 	stat2 = 0;
-	dst->c0.x = SCALE * row;
-	dst->c0.y = SCALE * col;
-	dst->c0.z = SCALE * atoi2(ft_strtok(token, ","), &stat1);
+	dst->c0.x = 10000L * BSCALE * XYSCALE * row;
+	dst->c0.y = 10000L * BSCALE * XYSCALE * col;
+	dst->c0.z = 10000L * BSCALE * atoi2(ft_strtok(token, ","), &stat1);
 	color_str = ft_strtok(NULL, "");
 	if (color_str)
 		dst->color = atou2(color_str, &stat2);

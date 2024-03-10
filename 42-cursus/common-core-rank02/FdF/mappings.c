@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:35:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 02:47:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/10 19:44:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	scale_z0(t_map_fdf *map_fdf, int num, int den)
 	isometric_projection(map_fdf, false);
 }
 
-static void	det_size(t_map_fdf *map_fdf, int limits[], int zoom_fit[])
+static void	det_size(t_map_fdf *map_fdf, long limits[], long zoom_fit[])
 {
 	t_point	*p;
 
@@ -51,25 +51,19 @@ static void	det_size(t_map_fdf *map_fdf, int limits[], int zoom_fit[])
 	}
 }
 
-void	fit_screen(t_map_fdf *map_fdf)
-{
-	isometric_projection(map_fdf, true);
-	map_fdf->flags |= ZOOM1;
-}
-
-void	isometric_projection(t_map_fdf *map_fdf, bool reset)
+void	isometric_projection(t_map_fdf *map_fdf, bool reset_view)
 {
 	t_point	*p;
-	int		limits[4];
+	long	limits[4];
 
 	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
 	while (p-- > map_fdf->points)
 	{
-		p->c1.x = 40825 * (p->c0.x + p->c0.y - (p->c0.z << 1)) / 100000;
-		p->c1.y = 70711 * (-p->c0.x + p->c0.y) / 100000;
-		p->c1.z = 57735 * (p->c0.x + p->c0.y + p->c0.z) / 100000;
+		p->c1.x = (p->c0.x + p->c0.y - (p->c0.z << 1)) / 244949L;
+		p->c1.y = (-p->c0.x + p->c0.y) / 141421L;
+		p->c1.z = (p->c0.x + p->c0.y + p->c0.z) / 173205L;
 	}
-	if (reset)
+	if (reset_view)
 	{
 		det_size(map_fdf, limits, map_fdf->zoom_fit);
 		map_fdf->shift[0] = -limits[0];
@@ -77,6 +71,5 @@ void	isometric_projection(t_map_fdf *map_fdf, bool reset)
 		map_fdf->steps_shift[0] = 0;
 		map_fdf->steps_shift[1] = 0;
 		map_fdf->steps_zoom = 0;
-		map_fdf->flags &= ~ZOOM1;
 	}
 }

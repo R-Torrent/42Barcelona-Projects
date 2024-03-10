@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 02:47:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/10 13:29:33 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int	key_hook(int keycode, void *param[])
 	if (keycode == ESC)
 		mlx_destroy_window(param[0], param[1]);
 	else if (keycode == RL || keycode == UP || keycode == LF || keycode == DW
-		|| keycode == RT || keycode == ZI || keycode == ZO || keycode == FS
-		|| keycode == ZD || keycode == ZU)
+		|| keycode == RT || keycode == ZI || keycode == ZO || keycode == ZD
+		|| keycode == ZU)
 	{
 		mlx_clear_window(param[0], param[1]);
 		if (keycode == RL)
@@ -39,8 +39,6 @@ int	key_hook(int keycode, void *param[])
 			((t_map_fdf *)param[2])->steps_zoom++;
 		else if (keycode == ZO)
 			((t_map_fdf *)param[2])->steps_zoom--;
-		else if (keycode == FS)
-			fit_screen(param[2]);
 		else if (keycode == ZD)
 			scale_z0(param[2], ZR2, ZR1);
 		else if (keycode == ZU)
