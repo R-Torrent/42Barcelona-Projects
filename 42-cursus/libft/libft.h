@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/02/26 22:31:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/10 21:43:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int		ft_snprintf(char *str, size_t size, const char *format, ...);
 int		ft_sprintf(char *str, const char *format, ...);
 
 // functions also found in stdlib.h
+int		ft_abs(int n);
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_getenv(const char *name);

@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/09 20:52:16 by rtorrent          #+#    #+#              #
-#    Updated: 2024/02/26 22:28:41 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/10 21:44:48 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,8 @@ HDRLST := liblst.h
 HDRBST := libbst.h
 HDRSTA := libsta.h
 
-SRC    := ft_atoi.c\
+SRC    := ft_abs.c\
+	ft_atoi.c\
 	ft_bzero.c\
 	ft_calloc.c\
 	ft_dprintf.c\
