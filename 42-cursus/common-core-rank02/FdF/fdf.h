@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 21:01:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/10 21:31:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define TITLE "FdF"
 
 // base scale for all dimensions
-# define BSCALE 100
+# define BSCALE 200
 // ratio of horizontal dimensions to altitude
 # define XYSCALE 1
 
-// displacement per keystroke
-# define DPM (PIX_X / 40)
+// displacement per keystroke, (PIX_X * DPK) / BSCALE
+# define DPK 2
 
 // zoom ratio per keystroke, ZR1:ZR2
 # define ZR1 20
