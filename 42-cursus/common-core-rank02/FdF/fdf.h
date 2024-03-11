@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/11 13:42:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/11 19:42:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,9 @@ enum e_colors
 
 struct s_coord
 {
-	long	x;
-	long	y;
-	long	z;
+	int	x;
+	int	y;
+	int	z;
 };
 
 typedef struct s_point
@@ -112,13 +112,13 @@ typedef struct s_point
 
 typedef struct s_map_fdf
 {
-	size_t			rows;
-	size_t			cols;
-	int				steps_shift[2];
-	int				steps_zoom;
-	long			shift[2];
-	long			zoom_fit[2];
-	t_point			points[];
+	size_t		rows;
+	size_t		cols;
+	int			steps_shift[2];
+	int			steps_zoom;
+	int			shift[2];
+	int			zoom_fit[2];
+	t_point		points[];
 }	t_map_fdf;
 
 void	plot_wires(void *mlx_ptr, void *win_ptr, t_map_fdf *map_fdf);
