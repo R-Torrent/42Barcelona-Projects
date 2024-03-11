@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:35:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/11 18:47:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/11 20:04:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	det_size(t_map_fdf *map_fdf, int limits[], int zoom_fit[])
 void	isometric_projection(t_map_fdf *map_fdf, bool reset_view)
 {
 	t_point	*p;
-	int	limits[4];
+	int		limits[4];
 
 	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
 	while (p-- > map_fdf->points)
