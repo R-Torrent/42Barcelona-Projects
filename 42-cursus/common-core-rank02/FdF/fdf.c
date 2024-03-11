@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 13:29:33 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/11 13:45:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ int	key_hook(int keycode, void *param[])
 		if (keycode == RL)
 			isometric_projection(param[2], true);
 		else if (keycode == UP)
-			((t_map_fdf *)param[2])->steps_shift[0]--;
-		else if (keycode == LF)
-			((t_map_fdf *)param[2])->steps_shift[1]--;
-		else if (keycode == DW)
 			((t_map_fdf *)param[2])->steps_shift[0]++;
-		else if (keycode == RT)
+		else if (keycode == LF)
 			((t_map_fdf *)param[2])->steps_shift[1]++;
+		else if (keycode == DW)
+			((t_map_fdf *)param[2])->steps_shift[0]--;
+		else if (keycode == RT)
+			((t_map_fdf *)param[2])->steps_shift[1]--;
 		else if (keycode == ZI)
 			((t_map_fdf *)param[2])->steps_zoom++;
 		else if (keycode == ZO)
