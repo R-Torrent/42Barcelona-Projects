@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 21:31:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/11 13:42:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 // ratio of horizontal dimensions to altitude
 # define XYSCALE 1
 
-// displacement per keystroke, (PIX_X * DPK) / BSCALE
-# define DPK 2
+// displacement per keystroke (pixels)
+# define DPK 30
 
 // zoom ratio per keystroke, ZR1:ZR2
 # define ZR1 20

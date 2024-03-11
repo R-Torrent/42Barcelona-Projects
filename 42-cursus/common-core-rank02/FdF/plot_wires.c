@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 21:28:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/11 13:42:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,10 @@ static void	bresnhm(void *mlx, void *win, struct s_coord p0, struct s_coord p1)
 static struct s_coord	tr(t_map_fdf *map, t_point *point)
 {
 	struct s_coord	coord;
-	const int		dpk = PIX_X * DPK / BSCALE;
 	int				zoom;
 
-	coord.x = point->c1.x + map->shift[0] + map->steps_shift[0] * dpk;
-	coord.y = point->c1.y + map->shift[1] + map->steps_shift[1] * dpk;
+	coord.x = point->c1.x + map->shift[0];
+	coord.y = point->c1.y + map->shift[1];
 	zoom = map->steps_zoom;
 	while (zoom > 0)
 	{
@@ -73,6 +72,8 @@ static struct s_coord	tr(t_map_fdf *map, t_point *point)
 	}
 	coord.x = coord.x * map->zoom_fit[0] / map->zoom_fit[1];
 	coord.y = coord.y * map->zoom_fit[0] / map->zoom_fit[1];
+	coord.x += map->steps_shift[0] * DPK;
+	coord.y += map->steps_shift[1] * DPK;
 	return (coord);
 }
 
