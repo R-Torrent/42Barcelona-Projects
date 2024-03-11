@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/11 13:42:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/11 19:56:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	bresnhm(void *mlx, void *win, struct s_coord p0, struct s_coord p1)
 	int			error[2];
 
 	error[0] = d[0] + d[1];
-	while (mlx_pixel_put(mlx, win, (int)p0.y, (int)p0.x, WHITE))
+	while (mlx_pixel_put(mlx, win, p0.y, p0.x, WHITE))
 	{
 		if (p0.x == p1.x && p0.y == p1.y)
 			break ;
