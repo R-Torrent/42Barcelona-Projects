@@ -6,32 +6,32 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:35:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/11 20:04:11 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/13 22:53:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	scale_z0(t_map_fdf *map_fdf, int num, int den)
+void	scale_z0(t_map_fdf *map, int num, int den)
 {
 	t_point	*p;
 
-	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
-	while (p-- > map_fdf->points)
+	p = map->points + map->rows * map->cols;
+	while (p-- > map->points)
 		p->c0.z = p->c0.z * num / den;
-	isometric_projection(map_fdf, false);
+	isometric_projection(map, false);
 }
 
-static void	det_size(t_map_fdf *map_fdf, int limits[], int zoom_fit[])
+static void	det_size(t_map_fdf *map, int limits[], int zoom_fit[])
 {
 	t_point	*p;
 
-	limits[0] = map_fdf->points->c1.x;
+	limits[0] = map->points->c1.x;
 	limits[1] = limits[0];
-	limits[2] = map_fdf->points->c1.y;
+	limits[2] = map->points->c1.y;
 	limits[3] = limits[2];
-	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
-	while (p-- > map_fdf->points)
+	p = map->points + map->rows * map->cols;
+	while (p-- > map->points)
 	{
 		if (p->c1.x < limits[0])
 			limits[0] = p->c1.x;
@@ -51,13 +51,13 @@ static void	det_size(t_map_fdf *map_fdf, int limits[], int zoom_fit[])
 	}
 }
 
-void	isometric_projection(t_map_fdf *map_fdf, bool reset_view)
+void	isometric_projection(t_map_fdf *map, bool reset_view)
 {
 	t_point	*p;
 	int		limits[4];
 
-	p = map_fdf->points + map_fdf->rows * map_fdf->cols;
-	while (p-- > map_fdf->points)
+	p = map->points + map->rows * map->cols;
+	while (p-- > map->points)
 	{
 		p->c1.x = 1000 * (p->c0.x + p->c0.y - (p->c0.z << 1)) / 2449;
 		p->c1.y = 1000 * (-p->c0.x + p->c0.y) / 1414;
@@ -65,11 +65,12 @@ void	isometric_projection(t_map_fdf *map_fdf, bool reset_view)
 	}
 	if (reset_view)
 	{
-		det_size(map_fdf, limits, map_fdf->zoom_fit);
-		map_fdf->shift[0] = -limits[0];
-		map_fdf->shift[1] = -limits[2];
-		map_fdf->steps_shift[0] = 0;
-		map_fdf->steps_shift[1] = 0;
-		map_fdf->steps_zoom = 0;
+		map->flags = 0;
+		det_size(map, limits, map->zoom_fit);
+		map->shift[0] = -limits[0];
+		map->shift[1] = -limits[2];
+		map->steps_shift[0] = 0;
+		map->steps_shift[1] = 0;
+		map->steps_zoom = 0;
 	}
 }

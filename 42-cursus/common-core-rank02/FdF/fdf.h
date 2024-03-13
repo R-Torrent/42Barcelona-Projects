@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/11 19:42:06 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/13 22:34:00 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,6 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define PIX_X 450
 # define PIX_Y 600
 
-// window title
-# define TITLE "FdF"
-
 // base scale for all dimensions
 # define BSCALE 200
 // ratio of horizontal dimensions to altitude
@@ -82,6 +79,12 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 # define ZD 0x4a
 // 'K' or 'k': scale z up
 # define ZU 0x4b
+// 'C' or 'c' toggle color gradation
+# define CG 0x43
+
+// flags
+// color gradient between endpoints
+# define CGRAD 01
 
 enum e_colors
 {
@@ -112,19 +115,23 @@ typedef struct s_point
 
 typedef struct s_map_fdf
 {
-	size_t		rows;
-	size_t		cols;
-	int			steps_shift[2];
-	int			steps_zoom;
-	int			shift[2];
-	int			zoom_fit[2];
-	t_point		points[];
+	void			*mlx_ptr;
+	void			*win_ptr;	
+	unsigned int	flags;
+	size_t			rows;
+	size_t			cols;
+	int				steps_shift[2];
+	int				steps_zoom;
+	int				shift[2];
+	int				zoom_fit[2];
+	t_point			points[];
 }	t_map_fdf;
 
-void	plot_wires(void *mlx_ptr, void *win_ptr, t_map_fdf *map_fdf);
-void	isometric_projection(t_map_fdf *map_fdf, bool reset_view);
+void	isometric_projection(t_map_fdf *map, bool reset_view);
+int		pixel_color(t_map_fdf *map, const t_point *a, t_point *p, const t_point *b);
+void	plot_wires(t_map_fdf *map);
 int		read_data(t_map_fdf **pmap, const char *file_fdf);
-void	scale_z0(t_map_fdf *map_fdf, int num, int den);
+void	scale_z0(t_map_fdf *map, int num, int den);
 
 // additional 'libft' functions required for this project
 // (stdlib.h the first, ctype.h the second, string.h the latter two)

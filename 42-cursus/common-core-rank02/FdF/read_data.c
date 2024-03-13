@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/11 19:59:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/13 22:43:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,14 +109,14 @@ static size_t	get_row(t_point **pdst, char *const line, size_t *rows)
 	return (cols);
 }
 
-static int	det_dims(t_map_fdf **pmap_fdf, const char *file_fdf)
+static int	det_dims(t_map_fdf **pmap, const char *file_fdf)
 {
 	const int	fd_fdf = open(file_fdf, O_RDONLY);
 	size_t		rows;
 	size_t		cols;
 	size_t		cols1;
 
-	*pmap_fdf = NULL;
+	*pmap = NULL;
 	if (fd_fdf == -1)
 		return (1);
 	rows = 0;
@@ -127,15 +127,15 @@ static int	det_dims(t_map_fdf **pmap_fdf, const char *file_fdf)
 		if (cols1 != cols)
 			break ;
 	}
-	*pmap_fdf = malloc(sizeof(t_map_fdf) + rows * cols * sizeof(t_point));
-	if (close(fd_fdf) || (cols && cols1) || !*pmap_fdf)
+	*pmap = malloc(sizeof(t_map_fdf) + rows * cols * sizeof(t_point));
+	if (close(fd_fdf) || (cols && cols1) || !*pmap)
 		return (1);
-	(*pmap_fdf)->rows = rows;
-	(*pmap_fdf)->cols = cols;
+	(*pmap)->rows = rows;
+	(*pmap)->cols = cols;
 	return (0);
 }
 
-int	read_data(t_map_fdf **pmap_fdf, const char *file_fdf)
+int	read_data(t_map_fdf **pmap, const char *file_fdf)
 {
 	const int	fd_fdf = open(file_fdf, O_RDONLY);
 	size_t		row;
@@ -144,14 +144,14 @@ int	read_data(t_map_fdf **pmap_fdf, const char *file_fdf)
 	if (fd_fdf == -1)
 		return (1);
 	row = 0;
-	if (!det_dims(pmap_fdf, file_fdf))
+	if (!det_dims(pmap, file_fdf))
 	{
-		new_pt = (*pmap_fdf)->points;
-		while (row < (*pmap_fdf)->rows)
+		new_pt = (*pmap)->points;
+		while (row < (*pmap)->rows)
 			if (get_row(&new_pt, ft_getnextline_fd(fd_fdf), &row) == SIZE_MAX)
 				break ;
 	}
-	if (close(fd_fdf) || !*pmap_fdf || row != (*pmap_fdf)->rows)
+	if (close(fd_fdf) || !*pmap || row != (*pmap)->rows)
 		return (1);
 	return (0);
 }

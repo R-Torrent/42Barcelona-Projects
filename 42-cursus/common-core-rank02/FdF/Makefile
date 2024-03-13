@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/08 01:50:16 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/12 02:11:20 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ SRC    := fdf.c\
 	ft_strtok.c\
 	ft_strtok_r.c\
 	mappings.c\
+	pixel_color.c\
 	plot_wires.c\
 	read_data.c
 
