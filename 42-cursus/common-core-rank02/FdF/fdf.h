@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/13 22:34:00 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/13 23:17:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,8 @@ typedef struct s_map_fdf
 }	t_map_fdf;
 
 void	isometric_projection(t_map_fdf *map, bool reset_view);
-int		pixel_color(t_map_fdf *map, const t_point *a, t_point *p, const t_point *b);
+int		pixel_color(t_map_fdf *map, const t_point *a, t_point *p,
+			const t_point *b);
 void	plot_wires(t_map_fdf *map);
 int		read_data(t_map_fdf **pmap, const char *file_fdf);
 void	scale_z0(t_map_fdf *map, int num, int den);

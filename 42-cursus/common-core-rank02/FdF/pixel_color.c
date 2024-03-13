@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/13 22:54:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/13 23:20:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	pixel_color(t_map_fdf *map, const t_point *a, t_point *p, const t_point *b)
 			color[1] = b->color & mask;
 			p->color <<= 8;
 			p->color |= isqrt(dist[0] * color[0] * color[0]
-				+ dist[1] * color[1] * color[1]) / k;
+					+ dist[1] * color[1] * color[1]) / k;
 			mask >>= 8;
 		}
 	}

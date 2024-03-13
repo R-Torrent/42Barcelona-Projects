@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/13 22:31:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/13 23:19:35 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ static void	bresnhm(t_map_fdf *m, t_point a, t_point b)
 	int				error[2];
 
 	error[0] = d[0] + d[1];
-	while (mlx_pixel_put(m->mlx_ptr, m->win_ptr, a.c1.y, a.c1.x,
-		pixel_color(m, &a0, &a, &b)) && (a.c1.x != b.c1.x || a.c1.y != b.c1.y))
+	while (mlx_pixel_put(m->mlx_ptr, m->win_ptr, a.c1.y, a.c1.x, pixel_color(m,
+				&a0, &a, &b)) && (a.c1.x != b.c1.x || a.c1.y != b.c1.y))
 	{
 		error[1] = error[0] << 1;
 		if (error[1] >= d[1])
