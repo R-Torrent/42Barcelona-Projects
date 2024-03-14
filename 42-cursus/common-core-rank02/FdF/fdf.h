@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 14:21:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:53:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ typedef struct s_point
 {
 	struct s_coord	c0;
 	struct s_coord	c;
-	unsigned int	color;
+	unsigned int	color_trgb;
 }	t_point;
 
 typedef struct s_map_fdf
@@ -145,12 +145,13 @@ typedef struct s_data_fdf
 typedef unsigned int	(*t_fcol)(const t_point *, t_point *, const t_point *);
 
 void			fdf_clear_image(void *mlx_ptr, struct s_img *img);
-unsigned int	fdf_pixel(struct s_img *img, int x, int y, unsigned int color);
+unsigned int	fdf_pixel(void *mlx_ptr, struct s_img *img, int *x,
+					unsigned int color_trgb);
 void			isometric_projection(t_map_fdf *map, bool reset_view);
 unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b);
 unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b);
 void			plot_wires(t_data_fdf *data);
-int				read_data(t_data_fdf *data, const char *file_fdf);
+int				read_data(t_map_fdf **pmap, const char *file_fdf);
 void			scale_z0(t_map_fdf *map, int num, int den);
 
 // additional 'libft' functions required for this project

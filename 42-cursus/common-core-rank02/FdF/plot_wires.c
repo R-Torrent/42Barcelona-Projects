@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 14:22:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:54:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ static void	bresenham(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
 	int				error[2];
 
 	error[0] = d[0] + d[1];
-	while (fdf_pixel(data->img, a->c.x, a->c.y, fcol(&a0, a, b))
-		&& (a->c.x != b->c.x || a->c.y != b->c.y))
+	while (fdf_pixel(data->mlx_ptr, data->img, (int [2]){a->c.x, a->c.y},
+		fcol(&a0, a, b)) && (a->c.x != b->c.x || a->c.y != b->c.y))
 	{
 		error[1] = error[0] << 1;
 		if (error[1] >= d[1])

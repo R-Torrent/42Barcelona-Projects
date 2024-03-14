@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 13:02:34 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 17:55:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,18 @@ int	key_hook(int keycode, t_data_fdf *data)
 	return (0);
 }
 
-unsigned int	fdf_pixel(struct s_img *img, int x, int y, unsigned int color)
+unsigned int	fdf_pixel(void *mlx_ptr, struct s_img *img, int *x,
+	unsigned int color_trgb)
 {
 	char		*pixel;
-	const int	bytes_per_pixel = img->bits_per_pixel >> 3;
+	const int	bytes_per_pixel = img->bits_per_pixel / CHAR_BIT;
 
-	if (x >= 0 && x < PIX_X && y >= 0 && y < PIX_Y)
+	if (x[0] >= 0 && x[0] < PIX_X && x[1] >= 0 && x[1] < PIX_Y)
 	{
-		pixel = img->addr + (x * img->size_line + y * bytes_per_pixel);
-		*(unsigned int *)pixel = color;
+		pixel = img->addr + (x[0] * img->size_line + x[1] * bytes_per_pixel);
+		*(unsigned int *)pixel = mlx_get_color_value(mlx_ptr, color_trgb);
 	}
-	return (color);
+	return (color_trgb);
 }
 
 void	fdf_clear_image(void *mlx_ptr, struct s_img *img)
@@ -69,7 +70,7 @@ void	fdf_clear_image(void *mlx_ptr, struct s_img *img)
 	int					x;
 	int					y;
 	char				*pixel;
-	const int			bytes_per_pixel = img->bits_per_pixel >> 3;
+	const int			bytes_per_pixel = img->bits_per_pixel / CHAR_BIT;
 	const unsigned int	black = mlx_get_color_value(mlx_ptr, BLACK);
 
 	x = PIX_X;
@@ -94,7 +95,7 @@ int	main(int argc, char *argv[])
 	if (argc == 2)
 	{
 		fdf.mlx_ptr = mlx_init();
-		if (!read_data(&fdf, argv[1]) && fdf.mlx_ptr)
+		if (!read_data(&fdf.map, argv[1]) && fdf.mlx_ptr)
 		{
 			fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, PIX_Y, PIX_X, argv[1]);
 			img.img_ptr = mlx_new_image(fdf.mlx_ptr, PIX_Y, PIX_X);

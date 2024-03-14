@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 14:28:27 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 18:05:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 // integer square root
 // version of Heron's method, as found in
 // https://en.wikipedia.org/wiki/Integer_square_root
-static unsigned int	isqrt(unsigned int num)
+static unsigned int	isqrt(unsigned int num, unsigned int den)
 {
-	if (num <= 1)
-		return (num);
-	return (num / 2);
+	unsigned int	n = num / den; // <---- ** CONTINUE WORK HERE ***
+
+	if (n <= 1)
+		return (n);
+	return (n / 2);
 }
 
 // Chebyshev distance (L_inf metric)
@@ -38,42 +40,44 @@ unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b)
 {
 	int	dist[2];
 
-	if (a->color != b->color)
+	if (a->color_trgb != b->color_trgb)
 	{
 		dist[0] = dist_chebyshev(&p->c, &a->c);
 		dist[1] = dist_chebyshev(&p->c, &b->c);
 		if (dist[1] > dist[0])
-			p->color = a->color;
+			p->color_trgb = a->color_trgb;
 		else
-			p->color = b->color;
+			p->color_trgb = b->color_trgb;
 	}
-	return (p->color);
+	return (p->color_trgb);
 }
 
 // nice color gradation
 unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b)
 {
-	int				dist[2];
-	unsigned int	k;
-	int				mask;
-	int				color[2];
+	int	dist[3];
+	int	color_trgb[4];
+	int	i;
 
-	if (a->color != b->color)
+	if (a->color_trgb != b->color_trgb)
 	{
 		dist[0] = dist_chebyshev(&p->c, &a->c);
 		dist[1] = dist_chebyshev(&p->c, &b->c);
-		k = isqrt(dist[0] + dist[1]);
-		p->color = 0;
-		mask = RED;
-		while (mask)
+		dist[2] = dist[0] + dist[1];
+		color_trgb[0] = a->color_trgb;
+		color_trgb[1] = b->color_trgb;
+		p->color_trgb = BLACK;
+		i = 3;
+		while (i--)
 		{
-			color[0] = a->color & mask;
-			color[1] = b->color & mask;
-			p->color <<= 8;
-			p->color |= isqrt(dist[0] * color[0] * color[0]
-					+ dist[1] * color[1] * color[1]) / k;
-			mask >>= 8;
+			color_trgb[2] = color_trgb[0] & BLUE;
+			color_trgb[3] = color_trgb[1] & BLUE;
+			p->color_trgb <<= 8;
+			p->color_trgb |= isqrt(dist[0] * color_trgb[2] * color_trgb[2]
+					+ dist[1] * color_trgb[3] * color_trgb[3], dist[2]);
+			color_trgb[0] >>= 8;
+			color_trgb[1] >>= 8;
 		}
 	}
-	return (p->color);
+	return (p->color_trgb);
 }
