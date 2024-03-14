@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 04:48:17 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 13:02:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,11 @@ unsigned int	fdf_pixel(struct s_img *img, int x, int y, unsigned int color)
 	char		*pixel;
 	const int	bytes_per_pixel = img->bits_per_pixel >> 3;
 
-	pixel = img->addr + (x * img->size_line + y * bytes_per_pixel);
-	*(unsigned int *)pixel = color;
+	if (x >= 0 && x < PIX_X && y >= 0 && y < PIX_Y)
+	{
+		pixel = img->addr + (x * img->size_line + y * bytes_per_pixel);
+		*(unsigned int *)pixel = color;
+	}
 	return (color);
 }
 

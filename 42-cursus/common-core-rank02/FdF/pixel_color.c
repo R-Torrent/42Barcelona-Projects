@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 04:01:00 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 13:12:09 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static int	dist_chebyshev(const struct s_coord p1, const struct s_coord p2)
 	return (dist[0]);
 }
 
+// simple color scheme (default)
 unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b)
 {
 	int	dist[2];
@@ -49,6 +50,7 @@ unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b)
 	return (p->color);
 }
 
+// nice color gradation
 unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b)
 {
 	int				dist[2];
