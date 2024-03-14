@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/13 23:20:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 04:01:00 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,7 @@ static unsigned int	isqrt(unsigned int num)
 {
 	if (num <= 1)
 		return (num);
-	return (0xff);
-}
-
-static int	simple_color(const int *dist, const t_point *a, const t_point *b)
-{
-	if (dist[1] > dist[0])
-		return (a->color);
-	return (b->color);
+	return (num / 2);
 }
 
 // Chebyshev distance (L_inf metric)
@@ -40,7 +33,23 @@ static int	dist_chebyshev(const struct s_coord p1, const struct s_coord p2)
 	return (dist[0]);
 }
 
-int	pixel_color(t_map_fdf *map, const t_point *a, t_point *p, const t_point *b)
+unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b)
+{
+	int	dist[2];
+
+	if (a->color != b->color)
+	{
+		dist[0] = dist_chebyshev(p->c1, a->c1);
+		dist[1] = dist_chebyshev(p->c1, b->c1);
+		if (dist[1] > dist[0])
+			p->color = a->color;
+		else
+			p->color = b->color;
+	}
+	return (p->color);
+}
+
+unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b)
 {
 	int				dist[2];
 	unsigned int	k;
@@ -51,8 +60,6 @@ int	pixel_color(t_map_fdf *map, const t_point *a, t_point *p, const t_point *b)
 	{
 		dist[0] = dist_chebyshev(p->c1, a->c1);
 		dist[1] = dist_chebyshev(p->c1, b->c1);
-		if (!(map->flags & CGRAD))
-			return (simple_color(dist, a, b));
 		k = isqrt(dist[0] + dist[1]);
 		p->color = 0;
 		mask = RED;
