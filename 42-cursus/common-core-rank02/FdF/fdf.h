@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 04:43:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 14:21:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ struct s_coord
 typedef struct s_point
 {
 	struct s_coord	c0;
-	struct s_coord	c1;
+	struct s_coord	c;
 	unsigned int	color;
 }	t_point;
 

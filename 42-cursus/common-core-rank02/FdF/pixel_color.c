@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 13:12:09 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/14 14:28:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ static unsigned int	isqrt(unsigned int num)
 
 // Chebyshev distance (L_inf metric)
 // https://en.wikipedia.org/wiki/Chebyshev_distance
-static int	dist_chebyshev(const struct s_coord p1, const struct s_coord p2)
+static int	dist_chebyshev(const struct s_coord *c1, const struct s_coord *c2)
 {
-	const int	dist[2] = {ft_abs(p1.x - p2.x), ft_abs(p1.y - p2.y)};
+	const int	dist[2] = {ft_abs(c1->x - c2->x), ft_abs(c1->y - c2->y)};
 
 	if (dist[1] > dist[0])
 		return (dist[1]);
@@ -40,8 +40,8 @@ unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b)
 
 	if (a->color != b->color)
 	{
-		dist[0] = dist_chebyshev(p->c1, a->c1);
-		dist[1] = dist_chebyshev(p->c1, b->c1);
+		dist[0] = dist_chebyshev(&p->c, &a->c);
+		dist[1] = dist_chebyshev(&p->c, &b->c);
 		if (dist[1] > dist[0])
 			p->color = a->color;
 		else
@@ -60,8 +60,8 @@ unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b)
 
 	if (a->color != b->color)
 	{
-		dist[0] = dist_chebyshev(p->c1, a->c1);
-		dist[1] = dist_chebyshev(p->c1, b->c1);
+		dist[0] = dist_chebyshev(&p->c, &a->c);
+		dist[1] = dist_chebyshev(&p->c, &b->c);
 		k = isqrt(dist[0] + dist[1]);
 		p->color = 0;
 		mask = RED;
