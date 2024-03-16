@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/12 02:11:20 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/16 21:29:50 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ NAME   := fdf
 HEADER := fdf.h
 
 SRC    := fdf.c\
+	fdf_utils.c\
 	ft_abs.c\
 	ft_isxdigit.c\
 	ft_strtok.c\
