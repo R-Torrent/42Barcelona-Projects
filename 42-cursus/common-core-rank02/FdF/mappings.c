@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:35:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 14:21:39 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/16 13:36:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,27 @@ void	scale_z0(t_map_fdf *map, int num, int den)
 	while (p-- > map->points)
 		p->c0.z = p->c0.z * num / den;
 	isometric_projection(map, false);
+}
+
+void	shift_view(t_map_fdf *map, int step_x, int step_y)
+{
+	int	zoom;
+	int	shift;
+
+	shift = DPK * map->zoom_fit[1] / map->zoom_fit[0];
+	zoom = map->steps_zoom;
+	while (zoom > 0)
+	{
+		shift = shift * ZR2 / ZR1;
+		zoom--;
+	}
+	while (zoom < 0)
+	{
+		shift = shift * ZR1 / ZR2;
+		zoom++;
+	}
+	map->view.x += step_x * shift;
+	map->view.y += step_y * shift;
 }
 
 static void	det_size(t_map_fdf *map, int limits[], int zoom_fit[])
@@ -51,6 +72,8 @@ static void	det_size(t_map_fdf *map, int limits[], int zoom_fit[])
 	}
 }
 
+// Third component after rotation, prior to projection:
+// p->c.z = 1000 * (p->c0.x + p->c0.y + p->c0.z) / 1732;
 void	isometric_projection(t_map_fdf *map, bool reset_view)
 {
 	t_point	*p;
@@ -61,16 +84,13 @@ void	isometric_projection(t_map_fdf *map, bool reset_view)
 	{
 		p->c.x = 1000 * (p->c0.x + p->c0.y - (p->c0.z << 1)) / 2449;
 		p->c.y = 1000 * (-p->c0.x + p->c0.y) / 1414;
-		p->c.z = 1000 * (p->c0.x + p->c0.y + p->c0.z) / 1732;
 	}
 	if (reset_view)
 	{
 		map->flags = 0;
 		det_size(map, limits, map->zoom_fit);
-		map->shift[0] = -limits[0];
-		map->shift[1] = -limits[2];
-		map->steps_shift[0] = 0;
-		map->steps_shift[1] = 0;
+		map->view.x = (limits[1] + limits[0]) / 2;
+		map->view.y = (limits[3] + limits[2]) / 2;
 		map->steps_zoom = 0;
 	}
 }

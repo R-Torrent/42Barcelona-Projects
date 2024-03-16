@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 18:05:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/16 13:35:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static unsigned int	isqrt(unsigned int num, unsigned int den)
 
 // Chebyshev distance (L_inf metric)
 // https://en.wikipedia.org/wiki/Chebyshev_distance
-static int	dist_chebyshev(const struct s_coord *c1, const struct s_coord *c2)
+static int	dist_chebyshev(const struct s_coord2 *c1, const struct s_coord2 *c2)
 {
 	const int	dist[2] = {ft_abs(c1->x - c2->x), ft_abs(c1->y - c2->y)};
 

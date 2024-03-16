@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 17:54:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/16 13:39:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ static t_point	*transform(t_map_fdf *map, t_point *dst, const t_point *src)
 {
 	int		zoom;
 
-	*dst = *src;
-	dst->c.x += map->shift[0];
-	dst->c.y += map->shift[1];
+	dst->color_trgb = src->color_trgb;
+	dst->c.x = src->c.x - map->view.x;
+	dst->c.y = src->c.y - map->view.y;
 	zoom = map->steps_zoom;
 	while (zoom > 0)
 	{
@@ -71,10 +71,8 @@ static t_point	*transform(t_map_fdf *map, t_point *dst, const t_point *src)
 		dst->c.y = dst->c.y * ZR2 / ZR1;
 		zoom++;
 	}
-	dst->c.x = dst->c.x * map->zoom_fit[0] / map->zoom_fit[1];
-	dst->c.y = dst->c.y * map->zoom_fit[0] / map->zoom_fit[1];
-	dst->c.x += map->steps_shift[0] * DPK;
-	dst->c.y += map->steps_shift[1] * DPK;
+	dst->c.x = dst->c.x * map->zoom_fit[0] / map->zoom_fit[1] + ICEN_X;
+	dst->c.y = dst->c.y * map->zoom_fit[0] / map->zoom_fit[1] + ICEN_Y;
 	return (dst);
 }
 

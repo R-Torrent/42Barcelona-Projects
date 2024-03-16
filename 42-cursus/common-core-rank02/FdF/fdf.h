@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/14 17:53:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/16 13:38:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,13 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 // mental burden of calculating expressions for the coordinates of any vector
 // after two rotations.
 
-// default screen size, in pixels
+// default window size, in pixels
 # define PIX_X 450
 # define PIX_Y 600
+
+// image center, in pixels
+# define ICEN_X 225
+# define ICEN_Y 300
 
 // base scale for all dimensions
 # define BSCALE 200
@@ -99,17 +103,23 @@ enum e_colors
 	YELLOW = 0xffff00
 };
 
-struct s_coord
+struct s_coord3
 {
 	int	x;
 	int	y;
 	int	z;
 };
 
+struct s_coord2
+{
+	int	x;
+	int	y;
+};
+
 typedef struct s_point
 {
-	struct s_coord	c0;
-	struct s_coord	c;
+	struct s_coord3	c0;
+	struct s_coord2	c;
 	unsigned int	color_trgb;
 }	t_point;
 
@@ -118,10 +128,9 @@ typedef struct s_map_fdf
 	unsigned int	flags;
 	size_t			rows;
 	size_t			cols;
-	int				steps_shift[2];
 	int				steps_zoom;
-	int				shift[2];
 	int				zoom_fit[2];
+	struct s_coord2	view;
 	t_point			points[];
 }	t_map_fdf;
 
@@ -153,6 +162,7 @@ unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b);
 void			plot_wires(t_data_fdf *data);
 int				read_data(t_map_fdf **pmap, const char *file_fdf);
 void			scale_z0(t_map_fdf *map, int num, int den);
+void			shift_view(t_map_fdf *map, int step_x, int step_y);
 
 // additional 'libft' functions required for this project
 // (stdlib.h the first, ctype.h the second, string.h the latter two)
