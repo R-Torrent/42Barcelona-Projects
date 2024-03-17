@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/16 13:35:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 03:05:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b)
 			color_trgb[2] = color_trgb[0] & BLUE;
 			color_trgb[3] = color_trgb[1] & BLUE;
 			p->color_trgb <<= 8;
-			p->color_trgb |= isqrt(dist[0] * color_trgb[2] * color_trgb[2]
-					+ dist[1] * color_trgb[3] * color_trgb[3], dist[2]);
+			p->color_trgb |= isqrt(dist[0] * color_trgb[3] * color_trgb[3]
+					+ dist[1] * color_trgb[2] * color_trgb[2], dist[2]);
 			color_trgb[0] >>= 8;
 			color_trgb[1] >>= 8;
 		}
