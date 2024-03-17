@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 01:43:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 02:17:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	bresenham(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
 	}
 }
 
-static void	check_wire(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
+static void	wire_visibility(t_data_fdf *dt, t_point *a, t_point *b, t_fcol fcol)
 {
 	const int	cp[4] = {cross_prod_sign(a->c.x, a->c.y, b->c.x, b->c.y),
 		cross_prod_sign(a->c.x - PIX_X + 1, a->c.y, b->c.x - PIX_X + 1, b->c.y),
@@ -63,7 +63,7 @@ static void	check_wire(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
 		|| (0 <= b->c.x && b->c.x < PIX_X && 0 <= b->c.y && b->c.y < PIX_Y)
 		|| cp[0] * cp[1] <= 0 || cp[0] * cp[2] <= 0 || cp[1] * cp[3] <= 0
 		|| cp[2] * cp[3] <= 0)
-		bresenham(data, a, b, fcol);
+		bresenham(dt, a, b, fcol);
 }
 
 static t_point	*transform(t_map_fdf *map, t_point *dst, const t_point *src)
@@ -106,7 +106,7 @@ void	plot_wires(t_data_fdf *dt)
 	{
 		rc[1] = dt->map->cols;
 		while (rc[1]--)
-			check_wire(dt, transform(dt->map, dst, &src[rc[0] - 1][rc[1]]),
+			wire_visibility(dt, transform(dt->map, dst, &src[rc[0] - 1][rc[1]]),
 				transform(dt->map, dst + 1, &src[rc[0]][rc[1]]), fcol);
 	}
 	rc[1] = 0;
@@ -114,7 +114,7 @@ void	plot_wires(t_data_fdf *dt)
 	{
 		rc[0] = dt->map->rows;
 		while (rc[0]--)
-			check_wire(dt, transform(dt->map, dst, &src[rc[0]][rc[1] - 1]),
+			wire_visibility(dt, transform(dt->map, dst, &src[rc[0]][rc[1] - 1]),
 				transform(dt->map, dst + 1, &src[rc[0]][rc[1]]), fcol);
 	}
 	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img->img_ptr, 0, 0);
