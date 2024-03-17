@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/16 21:32:50 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:43:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,14 @@ static void	bresenham(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
 
 static void	check_wire(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
 {
-	const int	cp[4] = {cross_product(a->c.x, a->c.y, b->c.x, b->c.y),
-		cross_product(a->c.x - PIX_X, a->c.y, b->c.x - PIX_X, b->c.y),
-		cross_product(a->c.x, a->c.y - PIX_Y, b->c.x, b->c.y - PIX_Y),
-		cross_product(a->c.x - PIX_X, a->c.y - PIX_Y, b->c.x - PIX_X,
-			b->c.y - PIX_Y)};
+	const int	cp[4] = {cross_prod_sign(a->c.x, a->c.y, b->c.x, b->c.y),
+		cross_prod_sign(a->c.x - PIX_X + 1, a->c.y, b->c.x - PIX_X + 1, b->c.y),
+		cross_prod_sign(a->c.x, a->c.y - PIX_Y + 1, b->c.x, b->c.y - PIX_Y + 1),
+		cross_prod_sign(a->c.x - PIX_X + 1, a->c.y - PIX_Y + 1,
+			b->c.x - PIX_X + 1, b->c.y - PIX_Y + 1)};
 
-	if ((0 <= a->c.x && a->c.x < PIX_X && 0 <= b->c.x && b->c.x < PIX_X
-			&& 0 <= a->c.y && a->c.y < PIX_Y && 0 <= b->c.y && b->c.y < PIX_Y)
+	if ((0 <= a->c.x && a->c.x < PIX_X && 0 <= a->c.y && a->c.y < PIX_Y)
+		|| (0 <= b->c.x && b->c.x < PIX_X && 0 <= b->c.y && b->c.y < PIX_Y)
 		|| cp[0] * cp[1] <= 0 || cp[0] * cp[2] <= 0 || cp[1] * cp[3] <= 0
 		|| cp[2] * cp[3] <= 0)
 		bresenham(data, a, b, fcol);

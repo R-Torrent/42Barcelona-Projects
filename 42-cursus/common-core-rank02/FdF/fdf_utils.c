@@ -6,15 +6,21 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:29:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/16 21:32:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:43:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int	cross_product(int vax, int vay, int vbx, int vby)
+int	cross_prod_sign(int vax, int vay, int vbx, int vby)
 {
-	return (vax * vby - vay * vbx);
+	const int	cp = vax * vby - vay * vbx;
+
+	if (cp < 0)
+		return (-1);
+	else if (cp > 0)
+		return (+1);
+	return (0);
 }
 
 int	atoi2(const char *str, int *status)

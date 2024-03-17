@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/16 21:35:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:44:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ typedef unsigned int	(*t_fcol)(const t_point *, t_point *, const t_point *);
 
 int				atoi2(const char *str, int *status);
 unsigned int	atou2(const char *str, int *status);
-int				cross_product(int vax, int vay, int vbx, int vby);
+int				cross_prod_sign(int vax, int vay, int vbx, int vby);
 void			fdf_clear_image(void *mlx_ptr, struct s_img *img);
 unsigned int	fdf_pixel(void *mlx_ptr, struct s_img *img, int *x,
 					unsigned int color_trgb);
