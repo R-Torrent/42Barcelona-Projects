@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 13:36:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 18:12:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 void	exit_fdf(t_data_fdf *data, int exit_status)
 {
-		if (data->img->img_ptr)
-			mlx_destroy_image(data->mlx_ptr, data->img->img_ptr);
-		if (data->win_ptr)
-			mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-		free(data->map);
-		exit(exit_status);
+	if (data->img->img_ptr)
+		mlx_destroy_image(data->mlx_ptr, data->img->img_ptr);
+	if (data->win_ptr)
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	free(data->map);
+	exit(exit_status);
 }
 
 int	key_hook(int keycode, t_data_fdf *data)
