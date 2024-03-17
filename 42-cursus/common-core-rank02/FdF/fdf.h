@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 01:44:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 13:01:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,27 +64,27 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 
 // user options (ASCII codes):
 // 'ESC': window escape
-# define ESC 0x1b
+# define ESC 0xff1b
 // 'R' or 'r': reload isometric projection
-# define RL 0x52
+# define RL 0x72
 // 'W' or 'w': move up
-# define UP 0x57
+# define UP 0x77
 // 'A' or 'a': move left
-# define LF 0x41
+# define LF 0x61
 // 'S' or 's': move down
-# define DW 0x53
+# define DW 0x73
 // 'D' or 'd': move right
-# define RT 0x44
+# define RT 0x64
 // 'Z' or 'z': zoom in
-# define ZI 0x5a
+# define ZI 0x7a
 // 'X' or 'x': zoom out
-# define ZO 0x58
+# define ZO 0x78
 // 'J' or 'j': scale z down
-# define ZD 0x4a
+# define ZD 0x6a
 // 'K' or 'k': scale z up
-# define ZU 0x4b
+# define ZU 0x6b
 // 'C' or 'c' toggle color gradation
-# define CG 0x43
+# define CG 0x63
 
 // flags
 // color gradation between endpoints

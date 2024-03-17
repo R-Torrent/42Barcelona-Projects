@@ -6,20 +6,26 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/16 13:21:39 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/17 13:36:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
+void	exit_fdf(t_data_fdf *data, int exit_status)
+{
+		if (data->img->img_ptr)
+			mlx_destroy_image(data->mlx_ptr, data->img->img_ptr);
+		if (data->win_ptr)
+			mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+		free(data->map);
+		exit(exit_status);
+}
+
 int	key_hook(int keycode, t_data_fdf *data)
 {
-	keycode = ft_toupper(keycode);
 	if (keycode == ESC)
-	{
-		mlx_destroy_image(data->mlx_ptr, data->img->img_ptr);
-		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-	}
+		exit_fdf(data, EXIT_SUCCESS);
 	else if (keycode == RL || keycode == UP || keycode == LF || keycode == DW
 		|| keycode == RT || keycode == ZI || keycode == ZO || keycode == ZD
 		|| keycode == ZU || keycode == CG)
@@ -89,29 +95,21 @@ int	main(int argc, char *argv[])
 {
 	t_data_fdf		fdf;
 	struct s_img	img;
-	int				exit_status;
 
-	exit_status = EXIT_FAILURE;
-	if (argc == 2)
+	fdf = (t_data_fdf){mlx_init(), NULL, &img, NULL};
+	if (argc == 2 && fdf.mlx_ptr && !read_data(&fdf.map, argv[1]))
 	{
-		fdf.mlx_ptr = mlx_init();
-		if (!read_data(&fdf.map, argv[1]) && fdf.mlx_ptr)
+		fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, PIX_Y, PIX_X, argv[1]);
+		img.img_ptr = mlx_new_image(fdf.mlx_ptr, PIX_Y, PIX_X);
+		if (fdf.win_ptr && img.img_ptr)
 		{
-			fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, PIX_Y, PIX_X, argv[1]);
-			img.img_ptr = mlx_new_image(fdf.mlx_ptr, PIX_Y, PIX_X);
-			if (fdf.win_ptr && img.img_ptr)
-			{
-				img.addr = mlx_get_data_addr(img.img_ptr, &img.bits_per_pixel,
-						&img.size_line, &img.endian);
-				fdf.img = &img;
-				isometric_projection(fdf.map, true);
-				plot_wires(&fdf);
-				mlx_key_hook(fdf.win_ptr, key_hook, &fdf);
-				mlx_loop(fdf.mlx_ptr);
-				exit_status = EXIT_SUCCESS;
-			}
+			img.addr = mlx_get_data_addr(img.img_ptr, &img.bits_per_pixel,
+					&img.size_line, &img.endian);
+			isometric_projection(fdf.map, true);
+			plot_wires(&fdf);
+			mlx_key_hook(fdf.win_ptr, key_hook, &fdf);
+			mlx_loop(fdf.mlx_ptr);
 		}
-		free(fdf.map);
 	}
-	exit(exit_status);
+	exit_fdf(&fdf, EXIT_FAILURE);
 }
