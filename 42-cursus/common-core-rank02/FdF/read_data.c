@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 13:22:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/18 14:18:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,11 @@ static int	det_dims(t_map_fdf **pmap, const char *file_fdf)
 		return (1);
 	rows = 0;
 	cols = get_row(NULL, ft_getnextline_fd(fd_fdf), &rows);
-	while (cols)
-	{
+	cols1 = cols;
+	while (cols1 == cols)
 		cols1 = get_row(NULL, ft_getnextline_fd(fd_fdf), &rows);
-		if (cols1 != cols)
-			break ;
-	}
+	if (cols1)
+		return (1);
 	*pmap = malloc(sizeof(t_map_fdf) + rows * cols * sizeof(t_point));
 	if (close(fd_fdf) || (cols && cols1) || !*pmap)
 		return (1);
