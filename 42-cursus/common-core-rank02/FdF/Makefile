@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/16 21:29:50 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/18 18:58:47 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 CFLAGS0    := -Werror -Wextra -Wall
 CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(INCLD)
 LDFLAGS     = -L$(DIRFT) -L$(LIB)
-LDLIBS     := -lft -lmlx -lXext -lX11
+LDLIBS     := -lft -lmlx_Linux -lXext -lX11
 DEBUGFLAGS := -g
 
 VPATH       = $(DIRFT)
@@ -52,7 +52,6 @@ LIBFT  := libft.a
 HDRFT  := libft.h
 
 LIB    := /usr/local/lib/
-LIBMLX := libmlx.a
 INCLD  := /usr/local/include/
 HDRMLX := mlx.h
 
