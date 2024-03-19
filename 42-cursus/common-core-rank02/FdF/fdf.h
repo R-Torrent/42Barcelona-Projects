@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/18 20:48:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/19 01:38:59 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,28 +63,31 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 # define ZR2 19
 
 // user options (ASCII codes):
+enum e_options
+{
 // 'ESC': window escape
-# define ESC 0xff1b
+	ESC = 0xff1b,
 // 'R' or 'r': reload isometric projection
-# define RL 0x72
+	RL = 0x72,
 // 'W' or 'w': move up
-# define UP 0x77
+	UP = 0x77,
 // 'A' or 'a': move left
-# define LF 0x61
+	LF = 0x61,
 // 'S' or 's': move down
-# define DW 0x73
+	DW = 0x73,
 // 'D' or 'd': move right
-# define RT 0x64
+	RT = 0x64,
 // 'Z' or 'z': zoom in
-# define ZI 0x7a
+	ZI = 0x7a,
 // 'X' or 'x': zoom out
-# define ZO 0x78
+	ZO = 0x78,
 // 'J' or 'j': scale z down
-# define ZD 0x6a
+	ZD = 0x6a,
 // 'K' or 'k': scale z up
-# define ZU 0x6b
+	ZU = 0x6b,
 // 'C' or 'c' toggle color gradation
-# define CG 0x63
+	CG = 0x63
+};
 
 // flags
 // color gradation between endpoints
