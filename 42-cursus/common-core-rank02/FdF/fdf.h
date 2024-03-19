@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/19 14:06:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/19 15:39:41 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,9 +167,7 @@ typedef unsigned int	(*t_fcol)(const t_point *, t_point *, const t_point *);
 int				atoi2(const char *str, int *status);
 unsigned int	atou2(const char *str, int *status);
 int				cross_prod_sign(int vax, int vay, int vbx, int vby);
-int				exit_fdf(t_data_fdf *data);
 void			isometric_projection(t_map_fdf *map, bool reset_view);
-int				key_hook(int keycode, t_data_fdf *data);
 unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b);
 unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b);
 int				plot_wires(t_data_fdf *data);
