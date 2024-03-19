@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 02:17:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/19 01:03:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	slope(int n0, int n1)
 // line drawing algorithm
 // version of Bresenham's algorithm, as found in
 // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-static void	bresenham(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
+static void	bresenham(t_data_fdf *dt, t_point *a, t_point *b, t_fcol fcol)
 {
 	const t_point	a0 = *a;
 	const int		d[2] = {ft_abs(b->c.x - a->c.x), -ft_abs(b->c.y - a->c.y)};
@@ -30,8 +30,8 @@ static void	bresenham(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
 	int				error[2];
 
 	error[0] = d[0] + d[1];
-	while (fdf_pixel(data->mlx_ptr, data->img, (int [2]){a->c.x, a->c.y},
-		fcol(&a0, a, b)) && (a->c.x != b->c.x || a->c.y != b->c.y))
+	while (fdf_pixel(dt->mlx_ptr, dt->img + dt->img_buffer, (int [2]){a->c.x,
+			a->c.y}, fcol(&a0, a, b)) && (a->c.x != b->c.x || a->c.y != b->c.y))
 	{
 		error[1] = error[0] << 1;
 		if (error[1] >= d[1])
@@ -51,14 +51,18 @@ static void	bresenham(t_data_fdf *data, t_point *a, t_point *b, t_fcol fcol)
 	}
 }
 
-static void	wire_visibility(t_data_fdf *dt, t_point *a, t_point *b, t_fcol fcol)
+static void	wire_visibility(t_data_fdf *dt, t_point *a, t_point *b)
 {
+	t_fcol		fcol;
 	const int	cp[4] = {cross_prod_sign(a->c.x, a->c.y, b->c.x, b->c.y),
 		cross_prod_sign(a->c.x - PIX_X + 1, a->c.y, b->c.x - PIX_X + 1, b->c.y),
 		cross_prod_sign(a->c.x, a->c.y - PIX_Y + 1, b->c.x, b->c.y - PIX_Y + 1),
 		cross_prod_sign(a->c.x - PIX_X + 1, a->c.y - PIX_Y + 1,
 			b->c.x - PIX_X + 1, b->c.y - PIX_Y + 1)};
 
+	fcol = pixel_color_smp;
+	if (dt->map->flags & CGRAD)
+		fcol = pixel_color_grd;
 	if ((0 <= a->c.x && a->c.x < PIX_X && 0 <= a->c.y && a->c.y < PIX_Y)
 		|| (0 <= b->c.x && b->c.x < PIX_X && 0 <= b->c.y && b->c.y < PIX_Y)
 		|| cp[0] * cp[1] <= 0 || cp[0] * cp[2] <= 0 || cp[1] * cp[3] <= 0
@@ -93,29 +97,28 @@ static t_point	*transform(t_map_fdf *map, t_point *dst, const t_point *src)
 
 void	plot_wires(t_data_fdf *dt)
 {
-	size_t	rc[2];
+	size_t	row;
+	size_t	col;
 	t_point	dst[2];
-	t_fcol	fcol;
 
-	fcol = pixel_color_smp;
-	if (dt->map->flags & CGRAD)
-		fcol = pixel_color_grd;
 	t_point (*const src)[dt->map->cols] = (void *)dt->map->points;
-	rc[0] = 0;
-	while (++rc[0] < dt->map->rows)
+	row = 0;
+	while (++row < dt->map->rows)
 	{
-		rc[1] = dt->map->cols;
-		while (rc[1]--)
-			wire_visibility(dt, transform(dt->map, dst, &src[rc[0] - 1][rc[1]]),
-				transform(dt->map, dst + 1, &src[rc[0]][rc[1]]), fcol);
+		col = dt->map->cols;
+		while (col--)
+			wire_visibility(dt, transform(dt->map, dst, &src[row - 1][col]),
+				transform(dt->map, dst + 1, &src[row][col]));
 	}
-	rc[1] = 0;
-	while (++rc[1] < dt->map->cols)
+	col = 0;
+	while (++col < dt->map->cols)
 	{
-		rc[0] = dt->map->rows;
-		while (rc[0]--)
-			wire_visibility(dt, transform(dt->map, dst, &src[rc[0]][rc[1] - 1]),
-				transform(dt->map, dst + 1, &src[rc[0]][rc[1]]), fcol);
+		row = dt->map->rows;
+		while (row--)
+			wire_visibility(dt, transform(dt->map, dst, &src[row][col - 1]),
+				transform(dt->map, dst + 1, &src[row][col]));
 	}
-	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img->img_ptr, 0, 0);
+	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr,
+		dt->img[dt->img_buffer].img_ptr, 0, 0);
+	dt->img_buffer ^= 1;
 }

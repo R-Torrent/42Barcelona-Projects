@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 13:01:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:48:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ typedef struct s_data_fdf
 {
 	void				*mlx_ptr;
 	void				*win_ptr;
+	size_t				img_buffer;
 	struct s_img		*img;
 	struct s_map_fdf	*map;
 }	t_data_fdf;
