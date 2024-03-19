@@ -6,16 +6,16 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/19 15:39:02 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/19 16:21:17 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Tools and options:
 
-CFLAGS0    := -Werror -Wextra -Wall
+CFLAGS0    := -Werror -Wextra -Wall -O3
 CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(INCLD)
 LDFLAGS     = -L$(DIRFT) -L$(LIB)
-LDLIBS     := -lft -lmlx_Linux -lXext -lX11
+LDLIBS     := -lft -lmlx -lXext -lX11
 DEBUGFLAGS := -g
 
 VPATH       = $(DIRFT)

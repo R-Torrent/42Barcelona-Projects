@@ -4,7 +4,7 @@
 
 		sudo apt-get libxext-dev
 
-- Extract the compress file `sources.tgz` that contains, among other things, the **MiniLibX** library
+- Extract the compress file `minilibx-linux.tgz` that contains, among other things, the **MiniLibX** library
 
 		tar -xvf minilibx-linux.tgz -C /target/directory
 
@@ -12,15 +12,17 @@
 
 		make all
 
-- Copy the newly created library (`libmlx_Linux.a`) and its header (`mlx.h`) into desired locations of the system. For example,
+- Copy the newly created library (`libmlx.a`) and its header (`mlx.h`) into desired locations of the system. For example,
 
-		cp libmlx_Linux.a /usr/local/lib/
-		cp mlx.h /usr/local/include/
+		sudo cp libmlx.a /usr/local/lib/
+		sudo cp mlx.h /usr/local/include/
+
+  NOTE: The alternative `libmlx_Linux.a` library or the *same* `libmlx.a` library compiled from the `sources.tgz` folder, will both make the project crash when the close button of the window is clicked.
 
 - Adapt the **FdF** project's Makefile to include the new header and link the appropriate libraries. The compilation and linker options should incorporate the following flags
 
 		CFLAGS = -I/usr/local/include/
 		LDFLAGS = -L/usr/local/lib/
-		LDLIBS = -lmlx_Linux -lXext -lX11
+		LDLIBS = -lmlx -lXext -lX11
 
   Notice that the actual libraries are stored in a specialized variable, `LDLIBS`, implicitly used by the linker
