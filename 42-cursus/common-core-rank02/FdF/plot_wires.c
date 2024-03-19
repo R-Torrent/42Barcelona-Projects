@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/19 14:35:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/19 16:16:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,5 +126,5 @@ int	plot_wires(t_data_fdf *dt)
 				transform(dt->map, dst + 1, &src[row][col]));
 	}
 	return (mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr,
-		dt->img[dt->img_buffer].img_ptr, 0, 0));
+			dt->img[dt->img_buffer].img_ptr, 0, 0));
 }
