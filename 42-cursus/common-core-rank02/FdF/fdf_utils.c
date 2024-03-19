@@ -6,11 +6,18 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:29:20 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 01:43:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/19 12:44:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+int	slope(int n0, int n1)
+{
+	if (n0 < n1)
+		return (1);
+	return (-1);
+}
 
 int	cross_prod_sign(int vax, int vay, int vbx, int vby)
 {

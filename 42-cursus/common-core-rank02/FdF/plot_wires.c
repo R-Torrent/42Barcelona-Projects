@@ -6,17 +6,24 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 21:32:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/19 01:03:34 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/19 13:23:47 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-static int	slope(int n0, int n1)
+static unsigned int	put_pixel(void *mlx_ptr, struct s_img *img, int *x,
+	unsigned int color_trgb)
 {
-	if (n0 < n1)
-		return (1);
-	return (-1);
+	char		*pixel;
+	const int	bytes_per_pixel = img->bits_per_pixel / CHAR_BIT;
+
+	if (x[0] >= 0 && x[0] < PIX_X && x[1] >= 0 && x[1] < PIX_Y)
+	{
+		pixel = img->addr + (x[0] * img->size_line + x[1] * bytes_per_pixel);
+		*(unsigned int *)pixel = mlx_get_color_value(mlx_ptr, color_trgb);
+	}
+	return (color_trgb);
 }
 
 // line drawing algorithm
@@ -30,7 +37,7 @@ static void	bresenham(t_data_fdf *dt, t_point *a, t_point *b, t_fcol fcol)
 	int				error[2];
 
 	error[0] = d[0] + d[1];
-	while (fdf_pixel(dt->mlx_ptr, dt->img + dt->img_buffer, (int [2]){a->c.x,
+	while (put_pixel(dt->mlx_ptr, dt->img + dt->img_buffer, (int [2]){a->c.x,
 			a->c.y}, fcol(&a0, a, b)) && (a->c.x != b->c.x || a->c.y != b->c.y))
 	{
 		error[1] = error[0] << 1;
@@ -95,7 +102,7 @@ static t_point	*transform(t_map_fdf *map, t_point *dst, const t_point *src)
 	return (dst);
 }
 
-void	plot_wires(t_data_fdf *dt)
+int	plot_wires(t_data_fdf *dt)
 {
 	size_t	row;
 	size_t	col;
@@ -120,5 +127,5 @@ void	plot_wires(t_data_fdf *dt)
 	}
 	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr,
 		dt->img[dt->img_buffer].img_ptr, 0, 0);
-	dt->img_buffer ^= 1;
+	return (0);
 }

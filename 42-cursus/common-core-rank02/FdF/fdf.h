@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/19 01:38:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/19 13:12:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,12 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
-// ** NOTE ** The 'X' and 'Y' axes of the project form a right-handed system,
-// contrary to the axes in the MiniLibX functions. This was done to reduce the
-// mental burden of calculating expressions for the coordinates of any vector
-// after two rotations.
+/*
+	** NOTE ** The 'X' and 'Y' axes of the project form a right-handed system,
+	contrary to the axes in the MiniLibX functions. This was done to reduce the
+	mental burden of calculating expressions for the coordinates of any vector
+	after two rotations.
+*/
 
 // default window size, in pixels
 # define PIX_X 450
@@ -62,35 +64,39 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 # define ZR1 20
 # define ZR2 19
 
-// user options (ASCII codes):
+/*
+	user options (ASCII codes)
+	ESC = 'ESC' : window escape
+	RL  = 'R' or 'r' : reload isometric projection
+	UP  = 'W' or 'w' : move up
+	LF  = 'A' or 'a' : move left
+	DW  = 'S' or 's' : move down
+	RT  = 'D' or 'd' : move right
+	ZI  = 'Z' or 'z' : zoom in
+	ZO  = 'X' or 'x' : zoom out
+	ZD  = 'J' or 'j' : scale z down
+	ZU  = 'K' or 'k' : scale z up
+	CG  = 'C' or 'c' : toggle color gradation
+*/
 enum e_options
 {
-// 'ESC': window escape
 	ESC = 0xff1b,
-// 'R' or 'r': reload isometric projection
 	RL = 0x72,
-// 'W' or 'w': move up
 	UP = 0x77,
-// 'A' or 'a': move left
 	LF = 0x61,
-// 'S' or 's': move down
 	DW = 0x73,
-// 'D' or 'd': move right
 	RT = 0x64,
-// 'Z' or 'z': zoom in
 	ZI = 0x7a,
-// 'X' or 'x': zoom out
 	ZO = 0x78,
-// 'J' or 'j': scale z down
 	ZD = 0x6a,
-// 'K' or 'k': scale z up
 	ZU = 0x6b,
-// 'C' or 'c' toggle color gradation
 	CG = 0x63
 };
 
-// flags
-// color gradation between endpoints
+/*
+	flags
+	CGRAD : color gradation between endpoints enabled
+*/
 # define CGRAD 01
 
 enum e_colors
@@ -150,6 +156,7 @@ typedef struct s_data_fdf
 {
 	void				*mlx_ptr;
 	void				*win_ptr;
+	int					exit_status;
 	size_t				img_buffer;
 	struct s_img		*img;
 	struct s_map_fdf	*map;
@@ -160,16 +167,16 @@ typedef unsigned int	(*t_fcol)(const t_point *, t_point *, const t_point *);
 int				atoi2(const char *str, int *status);
 unsigned int	atou2(const char *str, int *status);
 int				cross_prod_sign(int vax, int vay, int vbx, int vby);
-void			fdf_clear_image(void *mlx_ptr, struct s_img *img);
-unsigned int	fdf_pixel(void *mlx_ptr, struct s_img *img, int *x,
-					unsigned int color_trgb);
+int				exit_fdf(t_data_fdf *data);
 void			isometric_projection(t_map_fdf *map, bool reset_view);
+int				key_hook(int keycode, t_data_fdf *data);
 unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b);
 unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b);
-void			plot_wires(t_data_fdf *data);
+int				plot_wires(t_data_fdf *data);
 int				read_data(t_map_fdf **pmap, const char *file_fdf);
 void			scale_z0(t_map_fdf *map, int num, int den);
 void			shift_view(t_map_fdf *map, int step_x, int step_y);
+int				slope(int n0, int n1);
 
 // additional 'libft' functions required for this project
 // (stdlib.h the first, ctype.h the second, string.h the latter two)
