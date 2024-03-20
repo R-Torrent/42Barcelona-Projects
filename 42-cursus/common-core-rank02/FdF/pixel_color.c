@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 02:03:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/17 21:08:21 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/20 20:33:33 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static unsigned int	isqrt(unsigned int num, unsigned int den)
 	{
 		m = (l + r) / 2;
 		if (m * m * den <= num)
-		l = m;
+			l = m;
 		else
 			r = m;
 	}
