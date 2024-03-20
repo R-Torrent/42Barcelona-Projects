@@ -1,4 +1,4 @@
-## MiniLibX installation guide, as performed with a Raspberry Pi 2:
+## Simple MiniLibX installation guide, as performed with a Raspberry Pi 2:
 
 - Download and install the X11 development package
 
@@ -26,3 +26,5 @@
 		LDLIBS = -lmlx -lXext -lX11
 
   Notice that the actual libraries are stored in a specialized variable, `LDLIBS`, implicitly used by the linker
+
+## The Makefile present in this project extracts, compiles, and archives the desired library in a folder next to the source code.
