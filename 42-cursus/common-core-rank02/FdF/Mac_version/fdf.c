@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/20 18:36:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/20 20:20:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int	main(int argc, char *argv[])
 	t_data_fdf		fdf;
 
 	fdf = (t_data_fdf){mlx_init(), NULL, EXIT_SUCCESS, 0,
-		(struct s_img [2]){{NULL}, {NULL}}, NULL};
+		(struct s_img [2]){{NULL, NULL, 0, 0, 0}, {NULL, NULL, 0, 0, 0}}, NULL};
 	if (argc == 2 && fdf.mlx_ptr && !read_data(&fdf.map, argv[1]))
 	{
 		fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, PIX_Y, PIX_X, argv[1]);
