@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/20 01:42:40 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/20 19:16:45 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,10 @@
 
 # Tools and options:
 
-CFLAGS0    := -Werror -Wextra -Wall
-CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(DIRMLX) -I$(INCLD)
-LDFLAGS     = -L$(DIRFT) -L$(DIRMLX) -L$(LIB)
-LDLIBS     := -lft -lmlx -framework OpenGL -framework AppKit
+CFLAGS0    := 
+CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(DIRMLX)
+LDFLAGS     = -L$(DIRFT) -L$(DIRMLX) -framework OpenGL -framework AppKit
+LDLIBS     := -lft -lmlx
 OPTIMIZE   := -O3
 DEBUGFLAGS := -g -Og
 
@@ -60,9 +60,6 @@ DIRMLX := minilibx_macos/
 LIBMLX := libmlx.a
 HDRMLX := mlx.h
 TARMLX := resources/minilibx_macos_sierra_20161017.tgz
-
-LIB    := /usr/local/lib/
-INCLD  := /usr/local/include/
 
 DEBUG  := .debug
 
