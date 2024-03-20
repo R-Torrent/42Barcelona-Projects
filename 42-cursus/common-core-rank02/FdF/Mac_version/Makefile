@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/20 19:16:45 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/20 21:09:28 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 # Tools and options:
 
-CFLAGS0    := 
+CFLAGS0    := -Werror -Wextra -Wall
 CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(DIRMLX)
 LDFLAGS     = -L$(DIRFT) -L$(DIRMLX) -framework OpenGL -framework AppKit
 LDLIBS     := -lft -lmlx
@@ -59,7 +59,7 @@ HDRFT  := libft.h
 DIRMLX := minilibx_macos/
 LIBMLX := libmlx.a
 HDRMLX := mlx.h
-TARMLX := resources/minilibx_macos_sierra_20161017.tgz
+TARMLX := minilibx_macos_sierra_20161017.tgz
 
 DEBUG  := .debug
 
@@ -95,6 +95,7 @@ $(LDLIBS):
 
 clean:
 	@$(MAKE) -C $(DIRFT) --no-print-directory clean
+	@if [ -d "$(DIRMLX)" ]; then $(MAKE) -C $(DIRMLX) --no-print-directory clean; fi
 	$(RM) $(OBJ)
 	@$(RM) $(DEBUG)
 

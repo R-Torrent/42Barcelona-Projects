@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/20 00:44:57 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/20 21:10:02 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -96,6 +96,7 @@ $(LDLIBS):
 
 clean:
 	@$(MAKE) -C $(DIRFT) --no-print-directory clean
+	@if [ -d "$(DIRMLX)" ]; then $(MAKE) -C $(DIRMLX) --no-print-directory clean; fi
 	$(RM) $(OBJ)
 	@$(RM) $(DEBUG)
 
