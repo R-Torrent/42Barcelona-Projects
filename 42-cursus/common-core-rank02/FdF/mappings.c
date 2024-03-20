@@ -6,21 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:35:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/16 13:36:57 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:32:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-
-void	scale_z0(t_map_fdf *map, int num, int den)
-{
-	t_point	*p;
-
-	p = map->points + map->rows * map->cols;
-	while (p-- > map->points)
-		p->c0.z = p->c0.z * num / den;
-	isometric_projection(map, false);
-}
 
 void	shift_view(t_map_fdf *map, int step_x, int step_y)
 {
@@ -72,17 +62,34 @@ static void	det_size(t_map_fdf *map, int limits[], int zoom_fit[])
 	}
 }
 
+static int	distort_z(int steps_dz, int z)
+{
+	while (steps_dz > 0)
+	{
+		z = z * ZR1 / ZR2;
+		steps_dz--;
+	}
+	while (steps_dz < 0)
+	{
+		z = z * ZR2 / ZR1;
+		steps_dz++;
+	}
+	return (z);
+}
+
 // Third component after rotation, prior to projection:
 // p->c.z = 1000 * (p->c0.x + p->c0.y + p->c0.z) / 1732;
 void	isometric_projection(t_map_fdf *map, bool reset_view)
 {
 	t_point	*p;
+	int		z1;
 	int		limits[4];
 
 	p = map->points + map->rows * map->cols;
 	while (p-- > map->points)
 	{
-		p->c.x = 1000 * (p->c0.x + p->c0.y - (p->c0.z << 1)) / 2449;
+		z1 = distort_z(map->steps_dz, p->c0.z);
+		p->c.x = 1000 * (p->c0.x + p->c0.y - (z1 << 1)) / 2449;
 		p->c.y = 1000 * (-p->c0.x + p->c0.y) / 1414;
 	}
 	if (reset_view)

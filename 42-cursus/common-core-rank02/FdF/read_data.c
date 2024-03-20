@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 18:48:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/18 14:18:53 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:12:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ static int	det_dims(t_map_fdf **pmap, const char *file_fdf)
 		return (1);
 	(*pmap)->rows = rows;
 	(*pmap)->cols = cols;
+	(*pmap)->steps_dz = 0;
 	return (0);
 }
 

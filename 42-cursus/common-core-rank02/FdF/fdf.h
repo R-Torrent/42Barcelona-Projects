@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:05:25 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/19 15:39:41 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/20 15:51:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ typedef struct s_map_fdf
 	unsigned int	flags;
 	size_t			rows;
 	size_t			cols;
+	int				steps_dz;
 	int				steps_zoom;
 	int				zoom_fit[2];
 	struct s_coord2	view;
@@ -172,7 +173,6 @@ unsigned int	pixel_color_grd(const t_point *a, t_point *p, const t_point *b);
 unsigned int	pixel_color_smp(const t_point *a, t_point *p, const t_point *b);
 int				plot_wires(t_data_fdf *data);
 int				read_data(t_map_fdf **pmap, const char *file_fdf);
-void			scale_z0(t_map_fdf *map, int num, int den);
 void			shift_view(t_map_fdf *map, int step_x, int step_y);
 int				slope(int n0, int n1);
 

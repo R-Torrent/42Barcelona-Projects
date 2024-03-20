@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 20:48:07 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/19 15:38:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:30:50 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,16 @@ static void	transform_image(int keycode, t_data_fdf *data)
 		data->map->steps_zoom++;
 	else if (keycode == ZO)
 		data->map->steps_zoom--;
-	else if (keycode == ZD)
-		scale_z0(data->map, ZR2, ZR1);
-	else if (keycode == ZU)
-		scale_z0(data->map, ZR1, ZR2);
+	else if (keycode == ZD || keycode == ZU)
+	{
+		if (keycode == ZD)
+			data->map->steps_dz--;
+		else
+			data->map->steps_dz++;
+		isometric_projection(data->map, false);
+	}
 	else if (keycode == CG)
 		data->map->flags ^= CGRAD;
-	data->img_buffer ^= 1;
-	clear_image(data->mlx_ptr, data->img + data->img_buffer);
-	mlx_clear_window(data->mlx_ptr, data->win_ptr);
-	plot_wires(data);
 }
 
 static int	key_hook(int keycode, t_data_fdf *data)
@@ -79,13 +79,22 @@ static int	key_hook(int keycode, t_data_fdf *data)
 	else if (keycode == RL || keycode == UP || keycode == LF || keycode == DW
 		|| keycode == RT || keycode == ZI || keycode == ZO || keycode == ZD
 		|| keycode == ZU || keycode == CG)
+	{
 		transform_image(keycode, data);
+		data->img_buffer ^= 1;
+		clear_image(data->mlx_ptr, data->img + data->img_buffer);
+		mlx_clear_window(data->mlx_ptr, data->win_ptr);
+		plot_wires(data);
+	}
 	return (0);
 }
 
-// 'KeyPress' event (2) + 'KeyPressMask' (1L << 0)
-// 'Expose' event (12) + 'ExposureMask' (1L << 15)
-// 'DestroyNotify' event (17) + 'StructureNotifyMask' (1L << 17)
+/*
+	Event Names + Input Event Masks, as found in the /usr/include/X11/X.h header
+	'KeyPress' (2) + 'KeyPressMask' (1L << 0)
+	'Expose' (12) + 'ExposureMask' (1L << 15)
+	'DestroyNotify' (17) + 'StructureNotifyMask' (1L << 17)
+*/
 int	main(int argc, char *argv[])
 {
 	t_data_fdf		fdf;
@@ -105,9 +114,9 @@ int	main(int argc, char *argv[])
 					.bits_per_pixel, &fdf.img[1].size_line, &fdf.img[1].endian);
 			isometric_projection(fdf.map, true);
 			plot_wires(&fdf);
-			mlx_hook(fdf.win_ptr, 2, 1L << 0, key_hook, &fdf);
-			mlx_hook(fdf.win_ptr, 12, 1L << 15, plot_wires, &fdf);
-			mlx_hook(fdf.win_ptr, 17, 1L << 17, exit_fdf, &fdf);
+			mlx_hook(fdf.win_ptr, 2, 1 << 0, key_hook, &fdf);
+			mlx_hook(fdf.win_ptr, 12, 1 << 15, plot_wires, &fdf);
+			mlx_hook(fdf.win_ptr, 17, 1 << 17, exit_fdf, &fdf);
 			mlx_loop(fdf.mlx_ptr);
 		}
 	}

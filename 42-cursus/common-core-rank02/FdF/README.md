@@ -4,7 +4,7 @@
 
 - Images are buffered to prevent screen-tearing as the pixels are plotted.
 
-- Information is not lost as one traverses the image. For example, one could zoom in or zoom out until reaching *overflow* levels, spoiling the plot, and still undo the movements without data degradation.
+- Information is not lost as one manipulates the image. For example, one could zoom in (`Z` key) until reaching *overflow* levels, spoiling the plot, and still undo the movements without data degradation. Likewise, flattening a map to zero with the vertical distortion `J` key is also reversible.
 
 - Out of view lines are not processed, to further improve performance. Segments that do show in the image are still rendered even when the endpoints fall outside the image. *Only the plotted portions are actually calculated*.
 
