@@ -1,6 +1,10 @@
+# FdF
+
+**Resolution of `common-core-rank02/FdF` (version 3) project, *mandatory* & 3/5 of the *bonus* parts.**
+
 ## FdF features
 
-- The entire program has been constructed with 32-bit integer variables! There isn't a single `long`, `float`, or `double` in the code. Both the zoom and the displacement are agile and the response is immediate. This, I found, was the only way to get my Raspberry Pi to draw 500 × 500 point maps. Color gradients are a bit more resource intensive, but they too are built with `int` variables \[see image D\].
+- The entire program has been constructed with 32-bit integer variables! There isn't a single `long`, `float`, or `double` in the code. Both the zoom and the displacement are agile and the response is immediate. This, I found, was the only way to get my Raspberry Pi to draw 500 × 500 point maps. Color gradients are a bit more resource intensive, but they too are built with `int` variables \[see image src/D.png\].
 
 - Images are buffered to prevent screen-tearing as the pixels are plotted.
 
@@ -25,6 +29,26 @@ This project responds correctly to the typical window operations, such as the *m
 	'C' or 'c' : toggle color gradation
 
 The default color treatment is to split the segments evenly between the endpoint colors. A more interesting—and quite stunning—effect is accomplished with the color gradiient option (`C` key).
+
+## Screen captures
+
+General view. Map is loaded, centered in the window, and zoomed until it hits the frame. Isometric perspective from the usual octant.
+
+![General view](src/A.png "It works!")
+
+Elevation distorted with the `K` key.
+
+![Exaggerated elevation](src/B.png)
+
+Users may move around the map and zoom in at will. The default color assignment splits segments at the midpoint, with each half taking on the color of its endpoint.
+
+![Zoom & default coloring](src/C.png)
+
+`C` key toggles a stunning color gradation between endpoints.
+
+![Close-up of the color gradation, same view](src/D.png "Wow!")
+
+---
 
 ## Simple MiniLibX installation guide, as performed with my Raspberry Pi 2
 
@@ -55,4 +79,20 @@ The default color treatment is to split the segments evenly between the endpoint
 
   Notice that the actual libraries are stored in a specialized variable, `LDLIBS`, implicitly used by the linker
 
-#### NOTE: The Makefile present in this project extracts, compiles, and archives the desired library into a folder next to the source code.
+#### NOTE: The **Makefile** present in this project extracts, compiles, and archives the desired library into a new folder next to the source code. The *Linux* version searches for it in `resources/`, while the *Mac* version—the actual version evaluated in class—expects the compressed file in the main directory. If these options are not convenient, it is but a simple thing to edit the definition of the `TARMLX` variable.
+
+---
+
+## TODO
+
+Unfortunately, this project was rushed 25 hours before *Blackhole Absorption* and banishment from 42Barcelona. Some features that would have secured a 5/5 *bonus* evaluation had been projected, but had to be dismissed for lack of time:
+
+- Rotations, nicely coded with quaternions
+
+- ON/OFF toggle for the visibility of hidden wires
+
+- Cycle between all eight octants for the direction of the isometric projection
+
+- Some conic perspective with two additional keys to control distance from viewer. Perhaps with anoher pair of keys to play with the focal length as well
+
+- On-screen data annotations for the user, again with some ON/OFF toggle. Perhaps some *help* screen too
