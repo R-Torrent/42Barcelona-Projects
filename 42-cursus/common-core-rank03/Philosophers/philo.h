@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/23 18:58:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/25 00:05:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 /* ************************************************************************** */
 
+# include <limits.h>
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
@@ -36,6 +37,19 @@ int		pthread_mutex_lock(pthread_mutex_t *mutex);
 int		pthread_mutex_unlock(pthread_mutex_t *mutex);
 int		usleep(useconds_t usec);
 ssize_t	write(int fildes, const void *buf, size_t nbyte);
+
+/* ************************************************************************** */
+
+struct s_data
+{
+	int	number_of_philosophers;
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
+	int	number_of_times_each_philosopher_must_eat;
+};
+
+int		read_data(int param, char **args, struct s_data *pdata);
 
 /* ************************************************************************** */
 

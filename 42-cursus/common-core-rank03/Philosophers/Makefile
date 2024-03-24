@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/23 18:32:36 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/23 18:38:22 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/25 00:06:35 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ NAME    := philo
 HEADER  := philo.h
 
 SRC :=	philo.c\
+	read_data.c
 
 OBJ     := $(SRC:.c=.o)
 
@@ -65,7 +66,7 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all  debug clean fclean re
+.PHONY: all debug clean fclean re
 
 # **************************************************************************** #
 
