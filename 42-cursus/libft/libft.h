@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:19:33 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/10 21:43:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:21:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ int		ft_tolower(int c);
 int		ft_toupper(int c);
 
 // functions also found in stdio.h
-int		ft_printf(const char *format, ...);
 int		ft_dprintf(int fd, const char *format, ...);
+int		ft_printf(const char *format, ...);
 int		ft_snprintf(char *str, size_t size, const char *format, ...);
 int		ft_sprintf(char *str, const char *format, ...);
 
