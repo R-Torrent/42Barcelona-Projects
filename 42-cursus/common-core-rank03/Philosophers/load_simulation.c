@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read_data.c                                        :+:      :+:    :+:   */
+/*   load_simulation.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/25 10:03:39 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:34:09 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ static int	atoi3(const char *str, int *n, const int min)
 	return (0);
 }
 
-int	read_data(int param, char **args, struct s_data *pdata, int *status)
+int	load_sim(struct s_data *pdata, int param, char **args)
 {
-	*status = param < 4 || param > 5
+	const int		check_args = param < 4 || param > 5
 		|| atoi3(*args++, &pdata->number_of_philosophers, 1)
 		|| atoi3(*args++, &pdata->time_to_die, 0)
 		|| atoi3(*args++, &pdata->time_to_eat, 0)
@@ -59,5 +59,18 @@ int	read_data(int param, char **args, struct s_data *pdata, int *status)
 		|| (param == 5
 			&& atoi3(*args, &pdata->number_of_times_each_philosopher_must_eat,
 				0));
-	return (*status);
+	pthread_mutex_t	*fork;
+
+	pdata->philo = malloc(pdata->number_of_philosophers * sizeof(pthread_t));
+	pdata->fork = malloc(pdata->number_of_philosophers
+			* sizeof(pthread_mutex_t));
+	pdata->exit_status = (check_args || !pdata->philo || !pdata->fork);
+	if (!pdata->exit_status)
+	{
+		fork = pdata->fork + pdata->number_of_philosophers;
+		while (fork-- > pdata->fork && !pdata->exit_status)
+			if (pthread_mutex_init(fork, NULL))
+				destroy_forks(pdata, fork, 1);
+	}
+	return (pdata->exit_status);
 }

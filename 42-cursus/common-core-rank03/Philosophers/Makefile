@@ -6,14 +6,14 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/23 18:32:36 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/25 00:06:35 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/25 19:35:17 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Tools and options:
 
-CFLAGS     := -Werror -Wextra -Wall
-
+CFLAGS     := -Werror -Wextra -Wall -pthread
+LDFLAGS    := -pthread
 DEBUGFLAGS := -g
 
 RM         := rm -f
@@ -28,8 +28,8 @@ NAME    := philo
 
 HEADER  := philo.h
 
-SRC :=	philo.c\
-	read_data.c
+SRC     := load_simulation.c\
+	philo.c
 
 OBJ     := $(SRC:.c=.o)
 

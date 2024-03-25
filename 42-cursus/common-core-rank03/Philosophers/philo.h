@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/25 10:04:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/25 18:55:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,18 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 struct s_data
 {
-	int	number_of_philosophers;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	number_of_times_each_philosopher_must_eat;
+	int				number_of_philosophers;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				number_of_times_each_philosopher_must_eat;
+	int				exit_status;
+	pthread_t		*philo;
+	pthread_mutex_t	*fork;
 };
 
-int		read_data(int param, char **args, struct s_data *pdata, int *status);
+void	destroy_forks(struct s_data *pdata, pthread_mutex_t *last, int error);
+int		load_sim(struct s_data *pdata, int param, char **args);
 
 /* ************************************************************************** */
 
