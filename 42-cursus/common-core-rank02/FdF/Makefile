@@ -6,15 +6,15 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/22 21:04:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/20 21:10:02 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/25 02:42:09 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Tools and options:
 
 CFLAGS0    := -Werror -Wextra -Wall
-CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(DIRMLX) -I$(INCLD)
-LDFLAGS     = -L$(DIRFT) -L$(DIRMLX) -L$(LIB)
+CFLAGS      = $(CFLAGS0) -I$(DIRFT) -I$(DIRMLX)
+LDFLAGS     = -L$(DIRFT) -L$(DIRMLX)
 LDLIBS     := -lft -lmlx -lXext -lX11
 OPTIMIZE   := -O3
 DEBUGFLAGS := -g -Og
@@ -58,9 +58,6 @@ DIRMLX := minilibx-linux/
 LIBMLX := libmlx.a
 HDRMLX := mlx.h
 TARMLX := resources/minilibx-linux.tgz
-
-LIB    := /usr/local/lib/
-INCLD  := /usr/local/include/
 
 DEBUG  := .debug
 
