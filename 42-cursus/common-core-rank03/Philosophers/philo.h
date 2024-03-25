@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/25 00:05:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/25 10:04:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ struct s_data
 	int	number_of_times_each_philosopher_must_eat;
 };
 
-int		read_data(int param, char **args, struct s_data *pdata);
+int		read_data(int param, char **args, struct s_data *pdata, int *status);
 
 /* ************************************************************************** */
 

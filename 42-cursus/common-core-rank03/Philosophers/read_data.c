@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/25 00:03:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/25 10:03:39 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,16 +49,15 @@ static int	atoi3(const char *str, int *n, const int min)
 	return (0);
 }
 
-int	read_data(int param, char **args, struct s_data *pdata)
+int	read_data(int param, char **args, struct s_data *pdata, int *status)
 {
-	if (param < 4 || param > 5
+	*status = param < 4 || param > 5
 		|| atoi3(*args++, &pdata->number_of_philosophers, 1)
 		|| atoi3(*args++, &pdata->time_to_die, 0)
 		|| atoi3(*args++, &pdata->time_to_eat, 0)
 		|| atoi3(*args++, &pdata->time_to_sleep, 0)
 		|| (param == 5
 			&& atoi3(*args, &pdata->number_of_times_each_philosopher_must_eat,
-				0)))
-		return (1);
-	return (0);
+				0));
+	return (*status);
 }
