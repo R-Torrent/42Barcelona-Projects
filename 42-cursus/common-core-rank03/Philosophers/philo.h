@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/25 18:55:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/26 13:11:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,18 @@ struct s_data
 	int				exit_status;
 	pthread_t		*philo;
 	pthread_mutex_t	*fork;
+	struct s_args	*args;
+};
+
+struct s_args
+{
+	struct s_data	*pdata;
+	int				nphilo;
 };
 
 void	destroy_forks(struct s_data *pdata, pthread_mutex_t *last, int error);
 int		load_sim(struct s_data *pdata, int param, char **args);
+void	*run_sim(struct s_args *args);
 
 /* ************************************************************************** */
 
