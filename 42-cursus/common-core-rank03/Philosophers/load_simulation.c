@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 00:54:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 14:05:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	*run(struct s_args *philo_args)
 		*philo_exit = (think(pdata, nphilo, timestamp)
 				|| pick_forks(pdata, nphilo, nforks, timestamp)
 				|| eat(pdata, nphilo, timestamp)
-				|| drop_forks(pdata, nphilo, nforks, tiemstamp)
+				|| drop_forks(pdata, nphilo, nforks, timestamp)
 				|| sleep(pdata, nphilo, timestamp));
 	return (NULL);
 }
@@ -66,6 +66,8 @@ static int	create_forks_n_philos(t_data *pdata)
 	return (!pdata->exit_status);
 }
 
+// variation on the atoi lib function, it returns an error flag,
+// with extra argument 'minimum' valid input
 static int	atoi3(const char *str, int *n, const int min)
 {
 	int	i;
@@ -97,12 +99,11 @@ int	load(t_data *pdata, int params, char **args)
 {
 	const int	check_args = params < 4 || params > 5
 		|| atoi3(*args++, &pdata->number_of_philos, 1)
-		|| atoi3(*args++, &pdata->time_to_die, 0)
-		|| atoi3(*args++, &pdata->time_to_eat, 0)
-		|| atoi3(*args++, &pdata->time_to_sleep, 0)
-		|| (params == 5
-			&& atoi3(*args, &pdata->number_of_times_each_philo_must_eat,
-				0))
+		|| atoi3(*args++, (int *)&pdata->time_to_die, 0)
+		|| atoi3(*args++, (int *)&pdata->time_to_eat, 0)
+		|| atoi3(*args++, (int *)&pdata->time_to_sleep, 0)
+		|| (params == 5 && atoi3(*args,
+				&pdata->number_of_times_each_philo_must_eat, 0))
 		|| gettimeofday(pdata->t0, NULL);
 
 	pdata->fork = malloc(pdata->number_of_philos * sizeof(pthread_mutex_t));
@@ -114,6 +115,9 @@ int	load(t_data *pdata, int params, char **args)
 			|| !pdata->philo || !pdata->philo_args || !pdata->philo_result);
 	if (!pdata->exit_status && create_forks_n_philos(pdata))
 	{
+		pdata->time_to_die *= 1000U;
+		pdata->time_to_eat *= 1000U;
+		pdata->time_to_sleep *= 1000U;
 		memset(pdata->fork_held, 0, pdata->number_of_philos * sizeof(int));
 		memset(pdata->philo_result, 0, pdata->number_of_philos * sizeof(int));
 	}

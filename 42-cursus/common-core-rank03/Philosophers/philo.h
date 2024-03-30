@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 01:01:11 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 13:55:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,22 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
+// minimum waiting period between fork retrials, in microseconds
+# define DELAY_FORK_RE 100U
+
 enum e_hand
 {
 	LEFT,
 	RIGHT
 };
 
+// NOTE: time_to_X variables stored in microseconds
 typedef struct s_data
 {
 	int				number_of_philos;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
+	unsigned int	time_to_die;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
 	int				number_of_times_each_philo_must_eat;
 	int				exit_status;
 	struct timeval	*t0;

@@ -6,14 +6,14 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 01:07:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 14:05:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 /*
 static int	eat(t_data *pdata
-	if (usleep(1000 * (unsigned int)pdata->time_to_eat)
+	if (usleep((unsigned int)pdata->time_to_eat)
 		|| pthread_mutex_unlock(&fork[LEFT]) || pthread_mutex_unlock(&fork[RIGHT]))
 		return (1);
 	*fork_held[LEFT] = 0;
@@ -36,7 +36,7 @@ static int	pick_forks(t_data *pdata, int nphilo, int *nforks, char *timestamp)
 			return (1);
 		if (!fork_held[LEFT] && nphilo != 1 && !fork_held[RIGHT])
 			break ;
-		if (pthread_mutex_unlock(pdata->forks_locked) || usleep(100U))
+		if (pthread_mutex_unlock(pdata->forks_locked) || usleep(DELAY_FORK_RE))
 			return (1);
 	}
 	hand = LEFT;
