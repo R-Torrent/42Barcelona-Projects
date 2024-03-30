@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 15:16:02 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 18:50:20 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,23 +49,21 @@ enum e_hand
 	RIGHT
 };
 
-// NOTE: time_to_X variables stored in microseconds
-typedef struct s_data
+typedef struct s_fork
 {
-	int				number_of_philos;
-	unsigned int	time_to_die;
-	unsigned int	time_to_eat;
-	unsigned int	time_to_sleep;
-	int				number_of_times_each_philo_must_eat;
-	int				exit_status;
-	struct timeval	*t0;
-	pthread_mutex_t	*forks_locked;
-	pthread_mutex_t	*fork;
-	int				*fork_held;
-	pthread_t		*philo;
-	struct s_args	*philo_args;
-	int				*philo_result;
-}	t_data;
+	int				n;
+	int				held;
+	pthread_mutex_t	lock;
+}	t_fork;
+
+typedef struct s_philo
+{
+	int				n;
+	int				meals_left;
+	unsigned int	last_meal;
+	int				result;
+	pthread_t		thread;
+}	t_philo;
 
 struct s_args
 {
@@ -73,13 +71,29 @@ struct s_args
 	int				nphilo;
 };
 
-void	destroy_forks(t_data *pdata, pthread_mutex_t *fork, int error);
+// NOTE: time_to_X variables stored in microseconds
+typedef struct s_data
+{
+	int				number_of_philos;
+	unsigned int	time_to_die;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
+	int				exit_status;
+	struct timeval	*t0;
+	pthread_mutex_t	*forks_locked;
+	struct s_fork	*fork;
+	struct s_philo	*philo;
+	struct s_args	*philo_args;
+}	t_data;
+
+void	destroy_forks(t_data *pdata, t_fork *fork, int error);
 int		drop_forks(t_data *const pdata, const int nphilo, const int *nforks,
 			char *timestamp);
 int		eat(t_data *const pdata, const int nphilo, char *timestamp);
-int		load(t_data *pdata, int params, char **args, struct timeval *t0);
+int		load_sim(t_data *pdata, int params, char **args);
 int		pick_forks(t_data *const pdata, const int nphilo, const int *nforks,
 			char *timestamp);
+int		*run_philo(struct s_args *philo_args);
 int		sleep(t_data *const pdata, const int nphilo, char *timestamp));
 int		think(t_data *const pdata, const int nphilo, char *timestamp);
 char	*tstamp(char *timestamp, struct timeval *t0, struct timeval *t);
