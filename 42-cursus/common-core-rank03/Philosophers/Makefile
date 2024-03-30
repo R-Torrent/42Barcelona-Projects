@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/23 18:32:36 by rtorrent          #+#    #+#              #
-#    Updated: 2024/03/25 19:35:17 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/03/29 10:50:07 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,8 @@ NAME    := philo
 HEADER  := philo.h
 
 SRC     := load_simulation.c\
-	philo.c
+	philo.c\
+	run_philosopher.c
 
 OBJ     := $(SRC:.c=.o)
 

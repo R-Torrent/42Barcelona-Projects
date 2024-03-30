@@ -6,52 +6,50 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/26 13:28:33 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 01:06:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*run_sim(struct s_args *args)
+char	*tstamp(char *timestamp, struct timeval *t0, struct timeval *t)
 {
-	struct s_data *const	pdata = args->pdata;
-	const int				nphilo = args->nphilo;
-
-	printf("Thread: %ld, philo: %d\n", (long)pdata->philo[nphilo - 1], nphilo);
-	return (NULL);
+// ***** CONTINUE WITH THIS!!
+	return (timestamp);
 }
 
-void	destroy_forks(struct s_data *pdata, pthread_mutex_t *last, int error)
+void	destroy_forks(t_data *pdata, pthread_mutex_t *fork, int error)
 {
-	pthread_mutex_t	*fork;
+	pthread_mutex_t *const	last = pdata->fork + pdata->number_of_philos;
 
-	fork = pdata->fork;
+	error = (pthread_mutex_destroy(pdata->forks_locked) || error);
 	while (fork < last)
-	{
-		error = (pthread_mutex_unlock(fork) || error);
 		error = (pthread_mutex_destroy(fork++) || error);
-	}
 	pdata->exit_status = (pdata->exit_status || error);
 }
 
 int	main(int argc, char *argv[])
 {
 	struct s_data	data;
-	struct timeval	tstart;
+	struct timeval	t0;
 	pthread_t		*philo;
+	int				*philo_result;
 
-	if (!load_sim(&data, --argc, ++argv))
+	data.t0 = &t0;
+	if (load(&data, --argc, ++argv))
 	{
-		if (!gettimeofday(&tstart, NULL))
-		{
-			philo = data.philo + data.number_of_philosophers;
-			while (philo-- > data.philo)
-				pthread_join(*philo, NULL);
-		}
-		destroy_forks(&data, data.fork + data.number_of_philosophers, 0);
+		philo = data.philo + data.number_of_philos;
+		while (philo-- > data.philo)
+			pthread_join(*philo, NULL);
+		philo_result = data.philo_result + data.number_of_philos;
+		while (philo_result-- > data.philo_result)
+			data.exit_status = (data.exit_status || *philo_result);
+		destroy_forks(&data, data.fork, 0);
 	}
 	free(data.fork);
+	free(data.fork_held);
 	free(data.philo);
-	free(data.args);
+	free(data.philo_args);
+	free(data.philo_result);
 	return (data.exit_status);
 }

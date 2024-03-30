@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/26 13:11:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 01:01:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,28 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
-struct s_data
+enum e_hand
 {
-	int				number_of_philosophers;
+	LEFT,
+	RIGHT
+};
+
+typedef struct s_data
+{
+	int				number_of_philos;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	int				number_of_times_each_philosopher_must_eat;
+	int				number_of_times_each_philo_must_eat;
 	int				exit_status;
-	pthread_t		*philo;
+	struct timeval	*t0;
+	pthread_mutex_t	*forks_locked;
 	pthread_mutex_t	*fork;
-	struct s_args	*args;
-};
+	int				*fork_held;
+	pthread_t		*philo;
+	struct s_args	*philo_args;
+	int				*philo_result;
+}	t_data;
 
 struct s_args
 {
@@ -59,9 +69,9 @@ struct s_args
 	int				nphilo;
 };
 
-void	destroy_forks(struct s_data *pdata, pthread_mutex_t *last, int error);
-int		load_sim(struct s_data *pdata, int param, char **args);
-void	*run_sim(struct s_args *args);
+void	destroy_forks(t_data *pdata, pthread_mutex_t *fork, int error);
+int		load(t_data *pdata, int params, char **args, struct timeval *t0);
+char	*tstamp(char *timestamp, struct timeval *t0, struct timeval *t);
 
 /* ************************************************************************** */
 
