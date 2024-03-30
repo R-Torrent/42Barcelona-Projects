@@ -6,16 +6,38 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 01:06:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 14:51:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+static void	place_digit(long n, char **pstr)
+{
+	long	x;
+
+	x = n / 10L;
+	if (x)
+		place_digit(x, pstr);
+	if (n < 0)
+		x = '0' - n % 10L;
+	else
+		x = '0' + n % 10L;
+	*(*pstr)++ = x;
+}
+
 char	*tstamp(char *timestamp, struct timeval *t0, struct timeval *t)
 {
-// ***** CONTINUE WITH THIS!!
-	return (timestamp);
+	char *const	timestamp0 = timestamp;
+	long		elapsed;
+
+	elpased = (long)(t->tv_sec - t0->tv_sec) * 1000L
+		+ (long)(t->tv_usec - t0->tv_usec) / 1000L;
+	if (elapsed < 0)
+		*timestamp++ = '-';
+	place_digit(elapsed, &timestamp);
+	*timestamp = '\0';
+	return (timestamp0);
 }
 
 void	destroy_forks(t_data *pdata, pthread_mutex_t *fork, int error)
