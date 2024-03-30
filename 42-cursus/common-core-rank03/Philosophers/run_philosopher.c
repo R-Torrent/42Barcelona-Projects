@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 14:05:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 15:39:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static int	eat(t_data *pdata
 	return (0);
 }
 */
-static int	pick_forks(t_data *pdata, int nphilo, int *nforks, char *timestamp)
+int	pick_forks(t_data *const pdata, const int nphilo, const int *nforks,
+		char *timestamp)
 {
 	const int				*fork_held[2] = {pdata->fork_held + nforks[LEFT],
 		pdata->fork_held = nforks[RIGHT]};
@@ -48,4 +49,14 @@ static int	pick_forks(t_data *pdata, int nphilo, int *nforks, char *timestamp)
 				&tfork[hand++]), nphilo);
 	}
 	return (hand <= RIGHT);
+}
+
+int	think(t_data *const pdata, const int nphilo, char *timestamp)
+{
+	struct timeval	tthink;
+	const int		error_status = gettimeofday(&tthink);
+	
+	if (!error_status)
+		printf("%s %i has taken a fork\n", tstamp(timestamp, pdata->t0, &tthink), nphilo);
+	return (error_status);
 }

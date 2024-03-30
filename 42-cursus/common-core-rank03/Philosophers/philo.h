@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 13:55:12 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/30 15:16:02 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,14 @@ struct s_args
 };
 
 void	destroy_forks(t_data *pdata, pthread_mutex_t *fork, int error);
+int		drop_forks(t_data *const pdata, const int nphilo, const int *nforks,
+			char *timestamp);
+int		eat(t_data *const pdata, const int nphilo, char *timestamp);
 int		load(t_data *pdata, int params, char **args, struct timeval *t0);
+int		pick_forks(t_data *const pdata, const int nphilo, const int *nforks,
+			char *timestamp);
+int		sleep(t_data *const pdata, const int nphilo, char *timestamp));
+int		think(t_data *const pdata, const int nphilo, char *timestamp);
 char	*tstamp(char *timestamp, struct timeval *t0, struct timeval *t);
 
 /* ************************************************************************** */
