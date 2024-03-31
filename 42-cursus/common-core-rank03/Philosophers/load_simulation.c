@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 18:49:41 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/31 01:06:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	create_forks_n_philos(t_data *pdata)
 	while ((fork--, philo--, args--) > pdata->philo_args && !pdata->exit_status)
 	{
 		args->pdata = pdata;
-		args->nphilo = philo->n;
+		args->n = philo->n;
 		if (pthread_mutex_init(&fork->lock, NULL))
 			destroy_forks(pdata, ++fork, 1);
 		else if (pthread_create(&philo->thread, NULL,
@@ -49,7 +49,7 @@ static int	create_forks_n_philos(t_data *pdata)
 
 // variation on the atoi lib function, it returns an error flag,
 // with extra argument 'minimum' valid input
-static int	atoi3(const char *str, int *n, const int min)
+static int	atoi3(const char *str, int *n, int min)
 {
 	int	i;
 	int	sg;
@@ -76,7 +76,7 @@ static int	atoi3(const char *str, int *n, const int min)
 	return (0);
 }
 
-static int	init_data(t_data *pdata, const int times_each_philo_must_eat)
+static int	init_data(t_data *pdata, int times_each_philo_must_eat)
 {
 	int	i;
 
@@ -90,10 +90,12 @@ static int	init_data(t_data *pdata, const int times_each_philo_must_eat)
 		i = 0;
 		while (i < pdata->number_of_philos)
 		{
-			pdata->philo[i].meals_left = times_each_philo_must_eat;
 			pdata->fork[i].n = i + 1;
+			pdata->philo[i].meals_left = times_each_philo_must_eat;
 			pdata->philo[i].n = i + 1;
-			i++;
+			pdata->philo[i].fork[LEFT] = pdata->fork + i;
+			pdata->philo[i].fork[RIGHT] = pdata->fork
+				+ ++i % pdata->number_of_philos;
 		}
 		pdata->exit_status = (phtread_mutex_init(pdata->forks_locked, NULL)
 				|| gettimeofday(pdata->t0, NULL));

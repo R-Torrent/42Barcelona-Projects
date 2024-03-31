@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 18:50:20 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/31 04:24:59 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,21 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 /* ************************************************************************** */
 
 // minimum waiting period between fork retrials, in microseconds
-# define DELAY_FORK_RE 100U
+# define DELAY_FORK_RE 10U
 
 enum e_hand
 {
 	LEFT,
 	RIGHT
+};
+
+enum e_philo_status
+{
+	THINKING,
+	PICKING,
+	EATING,
+	DROPPING,
+	SLEEPING
 };
 
 typedef struct s_fork
@@ -62,13 +71,14 @@ typedef struct s_philo
 	int				meals_left;
 	unsigned int	last_meal;
 	int				result;
+	t_fork			*fork[2];
 	pthread_t		thread;
 }	t_philo;
 
 struct s_args
 {
 	struct s_data	*pdata;
-	int				nphilo;
+	int				n;
 };
 
 // NOTE: time_to_X variables stored in microseconds
@@ -87,16 +97,10 @@ typedef struct s_data
 }	t_data;
 
 void	destroy_forks(t_data *pdata, t_fork *fork, int error);
-int		drop_forks(t_data *const pdata, const int nphilo, const int *nforks,
-			char *timestamp);
-int		eat(t_data *const pdata, const int nphilo, char *timestamp);
 int		load_sim(t_data *pdata, int params, char **args);
-int		pick_forks(t_data *const pdata, const int nphilo, const int *nforks,
-			char *timestamp);
-int		*run_philo(struct s_args *philo_args);
-int		sleep(t_data *const pdata, const int nphilo, char *timestamp));
-int		think(t_data *const pdata, const int nphilo, char *timestamp);
-char	*tstamp(char *timestamp, struct timeval *t0, struct timeval *t);
+int		print_stamp(unsigned int *dst, const struct timeval *t0, int n,
+			const char *str);
+void	*run_philo(struct s_args *philo_args);
 
 /* ************************************************************************** */
 

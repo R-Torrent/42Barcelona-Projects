@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/30 18:22:29 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/31 00:39:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,33 @@ static void	place_digit(long n, char **pstr)
 	*(*pstr)++ = x;
 }
 
-char	*tstamp(char *timestamp, struct timeval *t0, struct timeval *t)
+static char	*tstamp(char *timestamp, unsigned int *dst,
+		const struct timeval *t0, const struct timeval *t)
 {
 	char *const	timestamp0 = timestamp;
 	long		elapsed;
 
 	elpased = (long)(t->tv_sec - t0->tv_sec) * 1000L
 		+ (long)(t->tv_usec - t0->tv_usec) / 1000L;
+	if (dst)
+		*dst = (unsigned int)elapsed;
 	if (elapsed < 0)
 		*timestamp++ = '-';
 	place_digit(elapsed, &timestamp);
 	*timestamp = '\0';
 	return (timestamp0);
+}
+
+int	print_stamp(unsigned int *dst, const struct timeval *t0, int n,
+		const char *str)
+{
+	struct timeval	t;
+	const int		error_status = gettimeofday(&t);
+	char			timestamp[12];
+
+	if (!error_status)
+		printf("%s %i %s\n", tstamp(timestamp, dst, t0, &t), n, str);
+	return (error_status);
 }
 
 void	destroy_forks(t_data *pdata, t_fork *fork, int error)
@@ -56,7 +71,6 @@ int	main(int argc, char *argv[])
 	struct timeval	t0;
 	pthread_mutex_t	forks_locked;
 	pthread_t		*philo;
-	int				*philo_result;
 
 	data.forks_locked = &forks_locked;
 	data.t0 = &t0;
@@ -64,10 +78,10 @@ int	main(int argc, char *argv[])
 	{
 		philo = data.philo + data.number_of_philos;
 		while (philo-- > data.philo)
-			pthread_join(*philo, NULL);
-		philo_result = data.philo_result + data.number_of_philos;
-		while (philo_result-- > data.philo_result)
-			data.exit_status = (data.exit_status || *philo_result);
+		{
+			pthread_join(philo->thread, NULL);
+			data.exit_status = (data.exit_status || philo->result);
+		}
 		destroy_forks(&data, data.fork, 0);
 	}
 	free(data.fork);
