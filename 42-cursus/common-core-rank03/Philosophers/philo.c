@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/31 00:39:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/31 14:47:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static char	*tstamp(char *timestamp, unsigned int *dst,
 	char *const	timestamp0 = timestamp;
 	long		elapsed;
 
-	elpased = (long)(t->tv_sec - t0->tv_sec) * 1000L
+	elapsed = (long)(t->tv_sec - t0->tv_sec) * 1000L
 		+ (long)(t->tv_usec - t0->tv_usec) / 1000L;
 	if (dst)
 		*dst = (unsigned int)elapsed;
@@ -47,7 +47,7 @@ int	print_stamp(unsigned int *dst, const struct timeval *t0, int n,
 		const char *str)
 {
 	struct timeval	t;
-	const int		error_status = gettimeofday(&t);
+	const int		error_status = gettimeofday(&t, NULL);
 	char			timestamp[12];
 
 	if (!error_status)
@@ -70,11 +70,11 @@ int	main(int argc, char *argv[])
 	struct s_data	data;
 	struct timeval	t0;
 	pthread_mutex_t	forks_locked;
-	pthread_t		*philo;
+	struct s_philo	*philo;
 
 	data.forks_locked = &forks_locked;
 	data.t0 = &t0;
-	if (load(&data, --argc, ++argv))
+	if (load_sim(&data, --argc, ++argv))
 	{
 		philo = data.philo + data.number_of_philos;
 		while (philo-- > data.philo)

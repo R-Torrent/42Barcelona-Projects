@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/31 01:06:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/03/31 15:09:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,10 @@ static int	init_data(t_data *pdata, int times_each_philo_must_eat)
 			pdata->philo[i].n = i + 1;
 			pdata->philo[i].fork[LEFT] = pdata->fork + i;
 			pdata->philo[i].fork[RIGHT] = pdata->fork
-				+ ++i % pdata->number_of_philos;
+				+ (i + 1) % pdata->number_of_philos;
+			i++;
 		}
-		pdata->exit_status = (phtread_mutex_init(pdata->forks_locked, NULL)
+		pdata->exit_status = (pthread_mutex_init(pdata->forks_locked, NULL)
 				|| gettimeofday(pdata->t0, NULL));
 	}
 	return (pdata->exit_status);
