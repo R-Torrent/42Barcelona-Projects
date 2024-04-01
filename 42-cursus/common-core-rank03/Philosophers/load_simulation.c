@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 19:37:19 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:39:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	create_locks(t_data *pdata)
 	return (pdata->exit_status);
 }
 
-static int	init_data(t_data *pdata, int times_each_philo_must_eat)
+static void	init_data(t_data *pdata, int times_each_philo_must_eat)
 {
 	int	i;
 
@@ -70,6 +70,8 @@ static int	init_data(t_data *pdata, int times_each_philo_must_eat)
 	{
 		pdata->fork[i].n = i + 1;
 		pdata->philo[i].meals_left = times_each_philo_must_eat;
+		if (!times_each_philo_must_eat)
+			pdata->philo[i].flags |= MEALS__OK;
 		pdata->philo[i].n = i + 1;
 		pdata->philo[i].fork[LEFT] = pdata->fork + i;
 		pdata->philo[i].fork[RIGHT] = pdata->fork
@@ -77,8 +79,6 @@ static int	init_data(t_data *pdata, int times_each_philo_must_eat)
 		pdata->philo[i].pdata = pdata;
 		i++;
 	}
-	pdata->exit_status = gettimeofday(pdata->t0, NULL);
-	return (pdata->exit_status);
 }
 
 // variation on the atoi lib function, it returns an error flag,
@@ -127,6 +127,12 @@ int	load_sim(t_data *pdata, int params, char **args)
 	pdata->philo = malloc(pdata->number_of_philos * sizeof(t_philo));
 	pdata->exit_status = (check_args || !pdata->shared_locks || !pdata->fork
 			|| !pdata->philo);
-	return (pdata->exit_status || init_data(pdata, times_each_philo_must_eat)
-		|| create_locks(pdata) || create_forks_n_philos(pdata));
+	if (!pdata->exit_status)
+	{
+		init_data(pdata, times_each_philo_must_eat);
+		pdata->exit_status = (create_locks(pdata) || create_forks_n_philos(pdata)
+				|| gettimeofday(pdata->t0, NULL)
+				|| pthread_mutex_unlock(&pdata->shared_locks[INIT_SIM]);
+	}
+	return (pdata->exit_status);
 }

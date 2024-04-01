@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 19:59:12 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:34:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	main(int argc, char *argv[])
 		while (philo-- > data.philo)
 		{
 			pthread_join(philo->thread, NULL);
-			data.exit_status = (data.exit_status || philo->result);
+			data.exit_status = (data.exit_status || (philo->flags & PHILO_ERR));
 		}
 		destroy_forks(&data, data.fork, 0);
 	}

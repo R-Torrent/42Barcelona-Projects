@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 20:20:41 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:35:37 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ static int	drop_forks(pthread_mutex_t *shared_locks, t_philo *philo)
 
 	if (pthread_mutex_lock(shared_locks + DATA_RECORDING))
 		return (1);
-	philo->meals_left--;
+	if (!philo->meals_left--)
+		philo->flags |= MEALS__OK;
 	if (pthread_mutex_unlock(shared_locks + DATA_RECORDING)
 		|| pthread_mutex_lock(shared_locks + FORK_PICKING))
 		return (1);
@@ -76,6 +77,8 @@ void	*run_philo(t_philo *philo)
 				|| print_stamp(NULL, pdata->t0, philo, str[SLEEPING])
 				|| usleep(pdata->time_to_sleep)))
 			;
-	philo->result = 1;
+	pthread_mutex_lock(pdata->shared_locks + DATA_RECORDING);
+	philo->flags |= PHILO_ERR;
+	pthread_mutex_unlock(pdata->shared_locks + DATA_RECORDING);
 	return (NULL);
 }

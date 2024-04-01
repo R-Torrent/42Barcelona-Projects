@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 19:54:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:27:11 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ enum e_philo_status
 	SLEEPING
 };
 
+// philosopher flags
+# define PHILO_ERR 01
+# define MEALS__OK 02
+# define TERMINATE 04
+
 enum e_shared_locks
 {
 	INIT_SIM,
@@ -79,7 +84,7 @@ typedef struct s_philo
 	int				n;
 	int				meals_left;
 	unsigned int	last_meal;
-	int				result;
+	int				flags;
 	struct s_fork	*fork[2];
 	struct s_data	*pdata;
 	pthread_t		thread;
