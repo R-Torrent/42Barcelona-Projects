@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 01:59:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:42:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,15 @@ static int	create_forks_n_philos(t_data *pdata)
 {
 	struct s_fork	*fork;
 	struct s_philo	*philo;
-	struct s_args	*args;
 
 	fork = pdata->fork + pdata->number_of_philos;
 	philo = pdata->philo + pdata->number_of_philos;
-	args = pdata->philo_args + pdata->number_of_philos;
-	while ((fork--, philo--, args--) > pdata->philo_args)
+	while ((fork--, philo--) > pdata->philo)
 	{
-		args->pdata = pdata;
-		args->n = philo->n;
 		if (pthread_mutex_init(&fork->lock, NULL))
 			return (destroy_forks(pdata, ++fork, 1));
 		else if (pthread_create(&philo->thread, NULL,
-				(void *(*)(void *))run_philo, args))
+				(void *(*)(void *))run_philo, philo))
 		{
 			while (++philo < pdata->philo + pdata->number_of_philos)
 				pthread_detach(philo->thread);
@@ -77,6 +73,7 @@ static int	init_data(t_data *pdata, int times_each_philo_must_eat)
 		pdata->philo[i].fork[LEFT] = pdata->fork + i;
 		pdata->philo[i].fork[RIGHT] = pdata->fork
 			+ (i + 1) % pdata->number_of_philos;
+		pdata->philo[i].pdata = pdata;
 		i++;
 	}
 	pdata->exit_status = gettimeofday(pdata->t0, NULL);
@@ -127,9 +124,8 @@ int	load_sim(t_data *pdata, int params, char **args)
 	pdata->shared_locks = malloc(NUMBER_OF_LOCKS * sizeof(pthread_mutex_t));
 	pdata->fork = malloc(pdata->number_of_philos * sizeof(t_fork));
 	pdata->philo = malloc(pdata->number_of_philos * sizeof(t_philo));
-	pdata->philo_args = malloc(pdata->number_of_philos * sizeof(struct s_args));
 	pdata->exit_status = (check_args || !pdata->shared_locks || !pdata->fork
-			|| !pdata->philo || !pdata->philo_args);
+			|| !pdata->philo);
 	return (pdata->exit_status || init_data(pdata, times_each_philo_must_eat)
 		|| create_locks(pdata) || create_forks_n_philos(pdata));
 }

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 01:55:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:39:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,15 +78,10 @@ typedef struct s_philo
 	int				meals_left;
 	unsigned int	last_meal;
 	int				result;
-	t_fork			*fork[2];
+	struct s_fork	*fork[2];
+	struct s_data	*pdata;
 	pthread_t		thread;
 }	t_philo;
-
-struct s_args
-{
-	struct s_data	*pdata;
-	int				n;
-};
 
 // NOTE: time_to_X variables stored in microseconds
 typedef struct s_data
@@ -100,14 +95,13 @@ typedef struct s_data
 	pthread_mutex_t	*shared_locks;
 	struct s_fork	*fork;
 	struct s_philo	*philo;
-	struct s_args	*philo_args;
 }	t_data;
 
 int		destroy_forks(t_data *pdata, t_fork *fork, int error);
 int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, const struct timeval *t0, int n,
 			const char *str);
-void	*run_philo(struct s_args *philo_args);
+void	*run_philo(t_philo *philo);
 
 /* ************************************************************************** */
 

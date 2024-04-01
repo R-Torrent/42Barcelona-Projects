@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:27:23 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:41:09 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,9 @@ static int	pick_forks(const struct timeval *t0, pthread_mutex_t *forks_locked,
 	return (1);
 }
 
-void	*run_philo(struct s_args *philo_args)
+void	*run_philo(t_philo *philo)
 {
-	t_data *const	pdata = philo_args->pdata;
-	t_philo *const	philo = pdata->philo + philo_args->n - 1;
+	t_data *const	pdata = philo->pdata;
 	const char		*str[] = {"is thinking", "has taken a fork", "is eating",
 		"", "is sleeping"};
 

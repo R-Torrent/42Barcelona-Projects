@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:28:16 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:35:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,5 @@ int	main(int argc, char *argv[])
 	free(data.shared_locks);
 	free(data.fork);
 	free(data.philo);
-	free(data.philo_args);
 	return (data.exit_status);
 }
