@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 03:44:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 19:51:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,21 @@ static int	tstamp(char *timestamp, unsigned int *dst,
 int	print_stamp(unsigned int *dst, const struct timeval *t0, t_philo *philo,
 		const char *str)
 {
-	struct timeval	t;
-	const int		error_status = gettimeofday(&t, NULL);
-	char			timestamp[12];
+	pthread_mutex_t *const	pl = philo->pdata->shared_locks + PRINT_LOG;
+	pthread_mutex_t *const	dr = philo->pdata->shared_locks + DATA_RECORDING;
+	struct timeval			t;
+	int						err;
+	char					timestamp[12];
 
-	if (!error_status
-		&& !tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t},
-		&philo->pdata->shared_locks[DATA_RECORDING]))
+	us = gettimeofday(&t, NULL);
+	err = (tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t}, dr)
+			|| pthread_mutex_lock(pl));
+	if (!err)
+	{
 		printf("%s %i %s\n", timestamp, philo->n, str);
-	return (error_status);
+		err = pthread_mutex_unlock(pl);
+	}
+	return (err);
 }
 
 void	destroy_forks(t_data *pdata, t_fork *fork, int error)

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 03:21:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 19:49:40 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ enum e_shared_locks
 {
 	FORK_PICKING,
 	DATA_RECORDING,
+	PRINT_LOG,
 	NUMBER_OF_LOCKS
 };
 
