@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 19:51:06 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 19:59:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ int	print_stamp(unsigned int *dst, const struct timeval *t0, t_philo *philo,
 	int						err;
 	char					timestamp[12];
 
-	us = gettimeofday(&t, NULL);
-	err = (tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t}, dr)
+	err = (gettimeofday(&t, NULL)
+			|| tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t}, dr)
 			|| pthread_mutex_lock(pl));
 	if (!err)
 	{
