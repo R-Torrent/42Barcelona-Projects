@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:57:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 19:37:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ static int	create_forks_n_philos(t_data *pdata)
 			break ;
 		}
 	}
-	if (pthread_mutex_unlock(&pdata->shared_locks[FORK_PICKING])
-		|| philo >= pdata->philo)
+	if (philo >= pdata->philo)
 		destroy_forks(pdata, ++fork, 1);
 	return (pdata->exit_status);
 }
@@ -50,7 +49,7 @@ static int	create_locks(t_data *pdata)
 		i++;
 	}
 	pdata->exit_status = (i != NUMBER_OF_LOCKS
-			|| pthread_mutex_lock(&pdata->shared_locks[FORK_PICKING]));
+			|| pthread_mutex_lock(&pdata->shared_locks[INIT_SIM]));
 	if (pdata->exit_status)
 		while (i >= 0)
 			pthread_mutex_destroy(pdata->shared_locks + --i);
