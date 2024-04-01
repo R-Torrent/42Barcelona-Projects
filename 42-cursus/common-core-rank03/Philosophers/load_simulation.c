@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 20:39:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:46:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	create_forks_n_philos(t_data *pdata)
 		}
 	}
 	if (philo >= pdata->philo)
-		destroy_forks(pdata, ++fork, 1);
+		destroy_locks(pdata, ++fork, 1);
 	return (pdata->exit_status);
 }
 
@@ -132,7 +132,7 @@ int	load_sim(t_data *pdata, int params, char **args)
 		init_data(pdata, times_each_philo_must_eat);
 		pdata->exit_status = (create_locks(pdata) || create_forks_n_philos(pdata)
 				|| gettimeofday(pdata->t0, NULL)
-				|| pthread_mutex_unlock(&pdata->shared_locks[INIT_SIM]);
+				|| pthread_mutex_unlock(&pdata->shared_locks[INIT_SIM]));
 	}
 	return (pdata->exit_status);
 }

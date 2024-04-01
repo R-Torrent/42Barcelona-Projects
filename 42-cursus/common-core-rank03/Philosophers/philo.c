@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 20:34:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:44:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	print_stamp(unsigned int *dst, const struct timeval *t0, t_philo *philo,
 	return (err);
 }
 
-void	destroy_forks(t_data *pdata, t_fork *fork, int error)
+void	destroy_locks(t_data *pdata, t_fork *fork, int error)
 {
 	t_fork *const	last = pdata->fork + pdata->number_of_philos;
 	int				i;
@@ -102,7 +102,7 @@ int	main(int argc, char *argv[])
 			pthread_join(philo->thread, NULL);
 			data.exit_status = (data.exit_status || (philo->flags & PHILO_ERR));
 		}
-		destroy_forks(&data, data.fork, 0);
+		destroy_locks(&data, data.fork, 0);
 	}
 	free(data.shared_locks);
 	free(data.fork);
