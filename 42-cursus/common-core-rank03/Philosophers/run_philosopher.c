@@ -6,24 +6,28 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:41:09 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 03:56:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	drop_forks(pthread_mutex_t *forks_locked, t_philo *philo)
+static int	drop_forks(pthread_mutex_t *shared_locks, t_philo *philo)
 {
 	int	err[2];
 
+	if (pthread_mutex_lock(shared_locks + DATA_RECORDING))
+		return (1);
 	philo->meals_left--;
-	if (pthread_mutex_lock(forks_locked))
+	if (pthread_mutex_unlock(shared_locks + DATA_RECORDING)
+		|| pthread_mutex_lock(shared_locks + FORK_PICKING))
 		return (1);
 	err[LEFT] = pthread_mutex_unlock(&philo->fork[LEFT]->lock);
 	philo->fork[LEFT]->held = 0;
 	err[RIGHT] = pthread_mutex_unlock(&philo->fork[RIGHT]->lock);
 	philo->fork[RIGHT]->held = 0;
-	return (pthread_mutex_unlock(forks_locked) || err[LEFT] || err[RIGHT]);
+	return (pthread_mutex_unlock(shared_locks + FORK_PICKING)
+		|| err[LEFT] || err[RIGHT]);
 }
 
 static int	pick_forks(const struct timeval *t0, pthread_mutex_t *forks_locked,
@@ -41,10 +45,10 @@ static int	pick_forks(const struct timeval *t0, pthread_mutex_t *forks_locked,
 			return (1);
 	}
 	err[LEFT] = pthread_mutex_lock(&philo->fork[LEFT]->lock);
-	err[2] = print_stamp(NULL, t0, philo->n, str);
+	err[2] = print_stamp(NULL, t0, philo, str);
 	philo->fork[LEFT]->held = 1;
 	err[RIGHT] = pthread_mutex_lock(&philo->fork[RIGHT]->lock);
-	err[3] = print_stamp(NULL, t0, philo->n, str);
+	err[3] = print_stamp(NULL, t0, philo, str);
 	philo->fork[RIGHT]->held = 1;
 	if (!err[LEFT] && !err[RIGHT] && !err[2] && !err[3])
 		return (0);
@@ -61,14 +65,15 @@ void	*run_philo(t_philo *philo)
 	const char		*str[] = {"is thinking", "has taken a fork", "is eating",
 		"", "is sleeping"};
 
-	while (!(print_stamp(NULL, pdata->t0, philo->n, str[THINKING])
-			|| pick_forks(pdata->t0, &pdata->shared_locks[FORK_PICKING],
-				philo, str[PICKING])
-			|| print_stamp(&philo->last_meal, pdata->t0, philo->n, str[EATING])
+	while (!(print_stamp(NULL, pdata->t0, philo, str[THINKING])
+			|| pick_forks(pdata->t0, &pdata->shared_locks[FORK_PICKING], philo,
+				str[PICKING])
+			|| print_stamp(&philo->last_meal, pdata->t0, philo, str[EATING])
 			|| usleep(pdata->time_to_eat)
-			|| drop_forks(&pdata->shared_locks[FORK_PICKING], philo)
-			|| print_stamp(NULL, pdata->t0, philo->n, str[SLEEPING])
+			|| drop_forks(pdata->shared_locks, philo)
+			|| print_stamp(NULL, pdata->t0, philo, str[SLEEPING])
 			|| usleep(pdata->time_to_sleep)))
 		;
+	philo->result = 1;
 	return (NULL);
 }

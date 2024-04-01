@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:57:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 03:44:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,32 +26,45 @@ static void	place_digit(long n, char **pstr)
 	*(*pstr)++ = x;
 }
 
-static char	*tstamp(char *timestamp, unsigned int *dst,
-		const struct timeval *t0, const struct timeval *t)
+static int	tstamp(char *timestamp, unsigned int *dst,
+		const struct timeval *t[2], pthread_mutex_t *lock)
 {
-	char *const	timestamp0 = timestamp;
-	long		elapsed;
+	long	elapsed;
+	int		err;
 
-	elapsed = (long)(t->tv_sec - t0->tv_sec) * 1000L
-		+ (long)(t->tv_usec - t0->tv_usec) / 1000L;
+	err = 0;
+	elapsed = (long)(t[1]->tv_sec - t[0]->tv_sec) * 1000L
+		+ (long)(t[1]->tv_usec - t[0]->tv_usec) / 1000L;
 	if (dst)
-		*dst = (unsigned int)elapsed;
-	if (elapsed < 0)
-		*timestamp++ = '-';
-	place_digit(elapsed, &timestamp);
-	*timestamp = '\0';
-	return (timestamp0);
+	{
+		err = pthread_mutex_lock(lock);
+		if (!err)
+		{
+			*dst = (unsigned int)elapsed;
+			err = pthread_mutex_unlock(lock);
+		}
+	}
+	if (!err)
+	{
+		if (elapsed < 0)
+			*timestamp++ = '-';
+		place_digit(elapsed, &timestamp);
+		*timestamp = '\0';
+	}
+	return (err);
 }
 
-int	print_stamp(unsigned int *dst, const struct timeval *t0, int n,
+int	print_stamp(unsigned int *dst, const struct timeval *t0, t_philo *philo,
 		const char *str)
 {
 	struct timeval	t;
 	const int		error_status = gettimeofday(&t, NULL);
 	char			timestamp[12];
 
-	if (!error_status)
-		printf("%s %i %s\n", tstamp(timestamp, dst, t0, &t), n, str);
+	if (!error_status
+		&& !tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t},
+		&philo->pdata->shared_locks[DATA_RECORDING]))
+		printf("%s %i %s\n", timestamp, philo->n, str);
 	return (error_status);
 }
 
