@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/31 15:22:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:27:23 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,14 @@ void	*run_philo(struct s_args *philo_args)
 	const char		*str[] = {"is thinking", "has taken a fork", "is eating",
 		"", "is sleeping"};
 
-	while (!print_stamp(NULL, pdata->t0, philo->n, str[THINKING])
-		&& !pick_forks(pdata->t0, pdata->forks_locked, philo, str[PICKING])
-		&& !print_stamp(&philo->last_meal, pdata->t0, philo->n, str[EATING])
-		&& !usleep(pdata->time_to_eat)
-		&& !drop_forks(pdata->forks_locked, philo)
-		&& !print_stamp(NULL, pdata->t0, philo->n, str[SLEEPING])
-		&& !usleep(pdata->time_to_sleep))
+	while (!(print_stamp(NULL, pdata->t0, philo->n, str[THINKING])
+			|| pick_forks(pdata->t0, &pdata->shared_locks[FORK_PICKING],
+				philo, str[PICKING])
+			|| print_stamp(&philo->last_meal, pdata->t0, philo->n, str[EATING])
+			|| usleep(pdata->time_to_eat)
+			|| drop_forks(&pdata->shared_locks[FORK_PICKING], philo)
+			|| print_stamp(NULL, pdata->t0, philo->n, str[SLEEPING])
+			|| usleep(pdata->time_to_sleep)))
 		;
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/31 04:24:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 01:55:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,13 @@ enum e_philo_status
 	SLEEPING
 };
 
+enum e_shared_locks
+{
+	FORK_PICKING,
+	MEAL_RECORDING,
+	NUMBER_OF_LOCKS
+};
+
 typedef struct s_fork
 {
 	int				n;
@@ -90,13 +97,13 @@ typedef struct s_data
 	unsigned int	time_to_sleep;
 	int				exit_status;
 	struct timeval	*t0;
-	pthread_mutex_t	*forks_locked;
+	pthread_mutex_t	*shared_locks;
 	struct s_fork	*fork;
 	struct s_philo	*philo;
 	struct s_args	*philo_args;
 }	t_data;
 
-void	destroy_forks(t_data *pdata, t_fork *fork, int error);
+int		destroy_forks(t_data *pdata, t_fork *fork, int error);
 int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, const struct timeval *t0, int n,
 			const char *str);

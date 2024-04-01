@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/31 14:47:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:28:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,24 +55,28 @@ int	print_stamp(unsigned int *dst, const struct timeval *t0, int n,
 	return (error_status);
 }
 
-void	destroy_forks(t_data *pdata, t_fork *fork, int error)
+int	destroy_forks(t_data *pdata, t_fork *fork, int error)
 {
 	t_fork *const	last = pdata->fork + pdata->number_of_philos;
+	int				i;
 
-	error = (pthread_mutex_destroy(pdata->forks_locked) || error);
+	if (error)
+		pthread_mutex_unlock(&pdata->shared_locks[FORK_PICKING]);
+	i = 0;
+	while (i < NUMBER_OF_LOCKS)
+		error = (pthread_mutex_destroy(pdata->shared_locks + i++) || error);
 	while (fork < last)
 		error = (pthread_mutex_destroy(&fork++->lock) || error);
 	pdata->exit_status = (pdata->exit_status || error);
+	return (pdata->exit_status);
 }
 
 int	main(int argc, char *argv[])
 {
 	struct s_data	data;
 	struct timeval	t0;
-	pthread_mutex_t	forks_locked;
 	struct s_philo	*philo;
 
-	data.forks_locked = &forks_locked;
 	data.t0 = &t0;
 	if (load_sim(&data, --argc, ++argv))
 	{
@@ -84,6 +88,7 @@ int	main(int argc, char *argv[])
 		}
 		destroy_forks(&data, data.fork, 0);
 	}
+	free(data.shared_locks);
 	free(data.fork);
 	free(data.philo);
 	free(data.philo_args);

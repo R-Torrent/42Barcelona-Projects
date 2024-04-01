@@ -6,20 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/03/31 15:09:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 01:59:47 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static void	detach_philos(t_data *pdata, t_fork *fork, t_philo *philo)
-{
-	t_philo *const	last = pdata->philo + pdata->number_of_philos;
-
-	destroy_forks(pdata, fork, 1);
-	while (philo < last)
-		pthread_detach(philo++->thread);
-}
 
 static int	create_forks_n_philos(t_data *pdata)
 {
@@ -30,21 +21,66 @@ static int	create_forks_n_philos(t_data *pdata)
 	fork = pdata->fork + pdata->number_of_philos;
 	philo = pdata->philo + pdata->number_of_philos;
 	args = pdata->philo_args + pdata->number_of_philos;
-	if (pthread_mutex_lock(pdata->forks_locked))
-		destroy_forks(pdata, fork, 1);
-	while ((fork--, philo--, args--) > pdata->philo_args && !pdata->exit_status)
+	while ((fork--, philo--, args--) > pdata->philo_args)
 	{
 		args->pdata = pdata;
 		args->n = philo->n;
 		if (pthread_mutex_init(&fork->lock, NULL))
-			destroy_forks(pdata, ++fork, 1);
+			return (destroy_forks(pdata, ++fork, 1));
 		else if (pthread_create(&philo->thread, NULL,
 				(void *(*)(void *))run_philo, args))
-			detach_philos(pdata, fork, ++philo);
+		{
+			while (++philo < pdata->philo + pdata->number_of_philos)
+				pthread_detach(philo->thread);
+			return (destroy_forks(pdata, fork, 1));
+		}
 	}
-	if (!pdata->exit_status && pthread_mutex_unlock(pdata->forks_locked))
-		destroy_forks(pdata, ++fork, 1);
-	return (!pdata->exit_status);
+	if (pthread_mutex_unlock(&pdata->shared_locks[FORK_PICKING]))
+		return (destroy_forks(pdata, ++fork, 1));
+	return (pdata->exit_status);
+}
+
+static int	create_locks(t_data *pdata)
+{
+	int	i;
+
+	i = 0;
+	while (i < NUMBER_OF_LOCKS)
+	{
+		if (pthread_mutex_init(pdata->shared_locks + i, NULL))
+			break ;
+		i++;
+	}
+	pdata->exit_status = (i != NUMBER_OF_LOCKS
+			|| pthread_mutex_lock(&pdata->shared_locks[FORK_PICKING]));
+	if (pdata->exit_status)
+		while (i >= 0)
+			pthread_mutex_destroy(pdata->shared_locks + --i);
+	return (pdata->exit_status);
+}
+
+static int	init_data(t_data *pdata, int times_each_philo_must_eat)
+{
+	int	i;
+
+	pdata->time_to_die *= 1000U;
+	pdata->time_to_eat *= 1000U;
+	pdata->time_to_sleep *= 1000U;
+	memset(pdata->fork, 0, pdata->number_of_philos * sizeof(t_fork));
+	memset(pdata->philo, 0, pdata->number_of_philos * sizeof(t_philo));
+	i = 0;
+	while (i < pdata->number_of_philos)
+	{
+		pdata->fork[i].n = i + 1;
+		pdata->philo[i].meals_left = times_each_philo_must_eat;
+		pdata->philo[i].n = i + 1;
+		pdata->philo[i].fork[LEFT] = pdata->fork + i;
+		pdata->philo[i].fork[RIGHT] = pdata->fork
+			+ (i + 1) % pdata->number_of_philos;
+		i++;
+	}
+	pdata->exit_status = gettimeofday(pdata->t0, NULL);
+	return (pdata->exit_status);
 }
 
 // variation on the atoi lib function, it returns an error flag,
@@ -76,34 +112,6 @@ static int	atoi3(const char *str, int *n, int min)
 	return (0);
 }
 
-static int	init_data(t_data *pdata, int times_each_philo_must_eat)
-{
-	int	i;
-
-	if (!pdata->exit_status)
-	{
-		pdata->time_to_die *= 1000U;
-		pdata->time_to_eat *= 1000U;
-		pdata->time_to_sleep *= 1000U;
-		memset(pdata->fork, 0, pdata->number_of_philos * sizeof(t_fork));
-		memset(pdata->philo, 0, pdata->number_of_philos * sizeof(t_philo));
-		i = 0;
-		while (i < pdata->number_of_philos)
-		{
-			pdata->fork[i].n = i + 1;
-			pdata->philo[i].meals_left = times_each_philo_must_eat;
-			pdata->philo[i].n = i + 1;
-			pdata->philo[i].fork[LEFT] = pdata->fork + i;
-			pdata->philo[i].fork[RIGHT] = pdata->fork
-				+ (i + 1) % pdata->number_of_philos;
-			i++;
-		}
-		pdata->exit_status = (pthread_mutex_init(pdata->forks_locked, NULL)
-				|| gettimeofday(pdata->t0, NULL));
-	}
-	return (pdata->exit_status);
-}
-
 int	load_sim(t_data *pdata, int params, char **args)
 {
 	int			times_each_philo_must_eat;
@@ -116,12 +124,12 @@ int	load_sim(t_data *pdata, int params, char **args)
 
 	if (params != 5)
 		times_each_philo_must_eat = -1;
+	pdata->shared_locks = malloc(NUMBER_OF_LOCKS * sizeof(pthread_mutex_t));
 	pdata->fork = malloc(pdata->number_of_philos * sizeof(t_fork));
 	pdata->philo = malloc(pdata->number_of_philos * sizeof(t_philo));
 	pdata->philo_args = malloc(pdata->number_of_philos * sizeof(struct s_args));
-	pdata->exit_status = (check_args || !pdata->fork || !pdata->philo
-			|| !pdata->philo_args);
-	if (!init_data(pdata, times_each_philo_must_eat))
-		create_forks_n_philos(pdata);
-	return (!pdata->exit_status);
+	pdata->exit_status = (check_args || !pdata->shared_locks || !pdata->fork
+			|| !pdata->philo || !pdata->philo_args);
+	return (pdata->exit_status || init_data(pdata, times_each_philo_must_eat)
+		|| create_locks(pdata) || create_forks_n_philos(pdata));
 }
