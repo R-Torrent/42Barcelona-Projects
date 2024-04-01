@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:39:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:57:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ typedef struct s_data
 	struct s_philo	*philo;
 }	t_data;
 
-int		destroy_forks(t_data *pdata, t_fork *fork, int error);
+void	destroy_forks(t_data *pdata, t_fork *fork, int error);
 int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, const struct timeval *t0, int n,
 			const char *str);

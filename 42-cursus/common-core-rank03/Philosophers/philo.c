@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:35:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:57:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,20 +55,17 @@ int	print_stamp(unsigned int *dst, const struct timeval *t0, int n,
 	return (error_status);
 }
 
-int	destroy_forks(t_data *pdata, t_fork *fork, int error)
+void	destroy_forks(t_data *pdata, t_fork *fork, int error)
 {
 	t_fork *const	last = pdata->fork + pdata->number_of_philos;
 	int				i;
 
-	if (error)
-		pthread_mutex_unlock(&pdata->shared_locks[FORK_PICKING]);
 	i = 0;
 	while (i < NUMBER_OF_LOCKS)
 		error = (pthread_mutex_destroy(pdata->shared_locks + i++) || error);
 	while (fork < last)
 		error = (pthread_mutex_destroy(&fork++->lock) || error);
 	pdata->exit_status = (pdata->exit_status || error);
-	return (pdata->exit_status);
 }
 
 int	main(int argc, char *argv[])

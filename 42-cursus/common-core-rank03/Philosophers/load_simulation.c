@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 02:42:14 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/01 02:57:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,19 @@ static int	create_forks_n_philos(t_data *pdata)
 	while ((fork--, philo--) > pdata->philo)
 	{
 		if (pthread_mutex_init(&fork->lock, NULL))
-			return (destroy_forks(pdata, ++fork, 1));
+			break ;
 		else if (pthread_create(&philo->thread, NULL,
 				(void *(*)(void *))run_philo, philo))
 		{
 			while (++philo < pdata->philo + pdata->number_of_philos)
 				pthread_detach(philo->thread);
-			return (destroy_forks(pdata, fork, 1));
+			fork--;
+			break ;
 		}
 	}
-	if (pthread_mutex_unlock(&pdata->shared_locks[FORK_PICKING]))
-		return (destroy_forks(pdata, ++fork, 1));
+	if (pthread_mutex_unlock(&pdata->shared_locks[FORK_PICKING])
+		|| philo >= pdata->philo)
+		destroy_forks(pdata, ++fork, 1);
 	return (pdata->exit_status);
 }
 
