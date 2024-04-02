@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 20:35:37 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/02 03:29:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ static int	drop_forks(pthread_mutex_t *shared_locks, t_philo *philo)
 {
 	int	err[2];
 
-	if (pthread_mutex_lock(shared_locks + DATA_RECORDING))
+	if (pthread_mutex_lock(&philo->access))
 		return (1);
 	if (!philo->meals_left--)
 		philo->flags |= MEALS__OK;
-	if (pthread_mutex_unlock(shared_locks + DATA_RECORDING)
+	if (pthread_mutex_unlock(&philo->access)
 		|| pthread_mutex_lock(shared_locks + FORK_PICKING))
 		return (1);
 	err[LEFT] = pthread_mutex_unlock(&philo->fork[LEFT]->lock);
@@ -77,8 +77,8 @@ void	*run_philo(t_philo *philo)
 				|| print_stamp(NULL, pdata->t0, philo, str[SLEEPING])
 				|| usleep(pdata->time_to_sleep)))
 			;
-	pthread_mutex_lock(pdata->shared_locks + DATA_RECORDING);
+	pthread_mutex_lock(&philo->access);
 	philo->flags |= PHILO_ERR;
-	pthread_mutex_unlock(pdata->shared_locks + DATA_RECORDING);
+	pthread_mutex_unlock(&philo->access);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 20:46:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/02 03:15:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,25 @@ static int	create_forks_n_philos(t_data *pdata)
 static int	create_locks(t_data *pdata)
 {
 	int	i;
+	int	j;
 
-	i = 0;
-	while (i < NUMBER_OF_LOCKS)
-	{
+	i = NUMBER_OF_LOCKS;
+	while (i-- > 0)
 		if (pthread_mutex_init(pdata->shared_locks + i, NULL))
 			break ;
-		i++;
-	}
-	pdata->exit_status = (i != NUMBER_OF_LOCKS
+	j = pdata->number_of_philos;
+	while (j-- > 0)
+		if (pthread_mutex_init(&pdata->philo[j].access, NULL))
+			break ;
+	pdata->exit_status = (i != -1 || j != -1
 			|| pthread_mutex_lock(&pdata->shared_locks[INIT_SIM]));
 	if (pdata->exit_status)
-		while (i >= 0)
-			pthread_mutex_destroy(pdata->shared_locks + --i);
+	{
+		while (++i < NUMBER_OF_LOCKS)
+			pthread_mutex_destroy(pdata->shared_locks + i);
+		while (++j < pdata->number_of_philos)
+			pthread_mutex_destroy(&pdata->philo[j].access);
+	}
 	return (pdata->exit_status);
 }
 
@@ -130,7 +136,8 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (!pdata->exit_status)
 	{
 		init_data(pdata, times_each_philo_must_eat);
-		pdata->exit_status = (create_locks(pdata) || create_forks_n_philos(pdata)
+		pdata->exit_status = (create_locks(pdata)
+				|| create_forks_n_philos(pdata)
 				|| gettimeofday(pdata->t0, NULL)
 				|| pthread_mutex_unlock(&pdata->shared_locks[INIT_SIM]));
 	}

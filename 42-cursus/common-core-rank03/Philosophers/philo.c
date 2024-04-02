@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/01 20:44:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/02 03:25:32 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,33 +57,39 @@ static int	tstamp(char *timestamp, unsigned int *dst,
 int	print_stamp(unsigned int *dst, const struct timeval *t0, t_philo *philo,
 		const char *str)
 {
-	pthread_mutex_t *const	pl = philo->pdata->shared_locks + PRINT_LOG;
-	pthread_mutex_t *const	dr = philo->pdata->shared_locks + DATA_RECORDING;
+	pthread_mutex_t *const	print_lock = philo->pdata->shared_locks + PRINT_LOG;
+	pthread_mutex_t *const	access_lock = &philo->access;
 	struct timeval			t;
 	int						err;
 	char					timestamp[12];
 
 	err = (gettimeofday(&t, NULL)
-			|| tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t}, dr)
-			|| pthread_mutex_lock(pl));
+			|| tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t},
+				access_lock)
+			|| pthread_mutex_lock(print_lock));
 	if (!err)
 	{
 		printf("%s %i %s\n", timestamp, philo->n, str);
-		err = pthread_mutex_unlock(pl);
+		err = pthread_mutex_unlock(print_lock);
 	}
 	return (err);
 }
 
 void	destroy_locks(t_data *pdata, t_fork *fork, int error)
 {
-	t_fork *const	last = pdata->fork + pdata->number_of_philos;
+	t_fork *const	lastf = pdata->fork + pdata->number_of_philos;
+	t_philo *const	lastp = pdata->philo + pdata->number_of_philos;
+	t_philo			*philo;
 	int				i;
 
 	i = 0;
 	while (i < NUMBER_OF_LOCKS)
 		error = (pthread_mutex_destroy(pdata->shared_locks + i++) || error);
-	while (fork < last)
+	while (fork < lastf)
 		error = (pthread_mutex_destroy(&fork++->lock) || error);
+	philo = pdata->philo;
+	while (philo < lastp)
+		error = (pthread_mutex_destroy(&philo++->access) || error);
 	pdata->exit_status = (pdata->exit_status || error);
 }
 
