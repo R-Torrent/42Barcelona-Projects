@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/03 02:19:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:15:38 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ typedef struct s_data
 }	t_data;
 
 // philosopher actions
-typedef int	(*t_philo_func)(t_philo *, const struct timeval *, const char *);
+typedef int	(*t_philo_func)(t_philo *, const struct timeval *);
 
 void	destroy_locks(t_data *pdata, t_fork *fork, int error);
 int		load_sim(t_data *pdata, int params, char **args);
