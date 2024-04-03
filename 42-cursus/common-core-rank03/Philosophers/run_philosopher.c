@@ -6,44 +6,62 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/02 03:29:14 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/03 02:19:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	drop_forks(pthread_mutex_t *shared_locks, t_philo *philo)
+static int	philo_sleep(t_philo *philo, const struct timeval *t0,
+	const char *str)
 {
-	int	err[2];
+	t_data *const	pdata = philo->pdata;
 
-	if (pthread_mutex_lock(&philo->access))
+	return (print_stamp(NULL, t0, philo, str) || usleep(pdata->time_to_sleep));
+}
+
+static int	eat(t_philo *philo, const struct timeval *t0, const char *str)
+{
+	t_data *const	pdata = philo->pdata;
+	int				err[2];
+
+	if (print_stamp(&philo->last_meal, t0, philo, str)
+		|| usleep(pdata->time_to_eat))
 		return (1);
+	*err = 0;
 	if (!philo->meals_left--)
-		philo->flags |= MEALS__OK;
-	if (pthread_mutex_unlock(&philo->access)
-		|| pthread_mutex_lock(shared_locks + FORK_PICKING))
+	{
+		*err = pthread_mutex_lock(&philo->access);
+		if (!*err)
+		{
+			philo->flags |= MEALS__OK;
+			*err = pthread_mutex_unlock(&philo->access);
+		}
+	}
+	if (*err || pthread_mutex_lock(pdata->shared_locks + FORK_PICKING))
 		return (1);
 	err[LEFT] = pthread_mutex_unlock(&philo->fork[LEFT]->lock);
 	philo->fork[LEFT]->held = 0;
 	err[RIGHT] = pthread_mutex_unlock(&philo->fork[RIGHT]->lock);
 	philo->fork[RIGHT]->held = 0;
-	return (pthread_mutex_unlock(shared_locks + FORK_PICKING)
+	return (pthread_mutex_unlock(pdata->shared_locks + FORK_PICKING)
 		|| err[LEFT] || err[RIGHT]);
 }
 
-static int	pick_forks(const struct timeval *t0, pthread_mutex_t *forks_locked,
-		t_philo *philo, const char *str)
+static int	pick_forks(t_philo *philo, const struct timeval *t0,
+	const char *str)
 {
-	const int	f = philo->fork[LEFT] != philo->fork[RIGHT];
-	int			err[4];
+	t_data *const	pdata = philo->pdata;
+	const int		f = philo->fork[LEFT] == philo->fork[RIGHT];
+	int				err[4];
 
-	while (1)
+	*err = pthread_mutex_lock(pdata->shared_locks + FORK_PICKING);
+	if (!*err && (f || philo->fork[LEFT]->held || philo->fork[RIGHT]->held))
 	{
-		*err = pthread_mutex_lock(forks_locked);
-		if (!*err && f && !philo->fork[LEFT]->held && !philo->fork[RIGHT]->held)
-			break ;
-		if (*err || pthread_mutex_unlock(forks_locked) || usleep(DELAY_FORK_RE))
+		*err = pthread_mutex_unlock(pdata->shared_locks + FORK_PICKING);
+		if (*err || usleep(DELAY_FORK_RETRIAL))
 			return (1);
+		return (RETURN_FORK_RETRIAL);
 	}
 	err[LEFT] = pthread_mutex_lock(&philo->fork[LEFT]->lock);
 	err[2] = print_stamp(NULL, t0, philo, str);
@@ -60,23 +78,34 @@ static int	pick_forks(const struct timeval *t0, pthread_mutex_t *forks_locked,
 	return (1);
 }
 
+static int	think(t_philo *philo, const struct timeval *t0, const char *str)
+{
+	return (print_stamp(NULL, t0, philo, str));
+}
+
 void	*run_philo(t_philo *philo)
 {
-	t_data *const	pdata = philo->pdata;
-	const char		*str[] = {"is thinking", "has taken a fork", "is eating",
-		"", "is sleeping"};
+	t_data *const		pdata = philo->pdata;
+	const char			*str[] = {"is thinking", "has taken a fork",
+		"is eating", "is sleeping"};
+	const t_philo_func	philo_func[] = {think, pick_forks, eat, philo_sleep};
+	enum e_philo_action	action;
+	int					ret;
 
 	if (!pthread_mutex_lock(pdata->shared_locks + INIT_SIM)
 		&& !pthread_mutex_unlock(pdata->shared_locks + INIT_SIM))
-		while (!(print_stamp(NULL, pdata->t0, philo, str[THINKING])
-				|| pick_forks(pdata->t0, pdata->shared_locks + FORK_PICKING,
-					philo, str[PICKING])
-				|| print_stamp(&philo->last_meal, pdata->t0, philo, str[EATING])
-				|| usleep(pdata->time_to_eat)
-				|| drop_forks(pdata->shared_locks, philo)
-				|| print_stamp(NULL, pdata->t0, philo, str[SLEEPING])
-				|| usleep(pdata->time_to_sleep)))
-			;
+	{
+		action = THINK;
+		while (1)
+		{
+			ret = philo_func[action](philo, philo->pdata->t0, str[action]);
+			if (ret == RETURN_FORK_RETRIAL)
+				continue ;
+			else if (ret)
+				break ;
+			action = (action + 1) % NUMBER_OF_ACTIONS;
+		}
+	}
 	pthread_mutex_lock(&philo->access);
 	philo->flags |= PHILO_ERR;
 	pthread_mutex_unlock(&philo->access);

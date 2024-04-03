@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/02 03:09:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/03 02:19:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 /* ************************************************************************** */
 
 // minimum waiting period between fork retrials, in microseconds
-# define DELAY_FORK_RE 10U
+# define DELAY_FORK_RETRIAL 10U
+
+// function return for a fork retrial
+# define RETURN_FORK_RETRIAL -4
 
 enum e_hand
 {
@@ -49,13 +52,13 @@ enum e_hand
 	RIGHT
 };
 
-enum e_philo_status
+enum e_philo_action
 {
-	THINKING,
-	PICKING,
-	EATING,
-	DROPPING,
-	SLEEPING
+	THINK,
+	PICK,
+	EAT,
+	SLEEP,
+	NUMBER_OF_ACTIONS
 };
 
 // philosopher flags
@@ -103,6 +106,9 @@ typedef struct s_data
 	struct s_fork	*fork;
 	struct s_philo	*philo;
 }	t_data;
+
+// philosopher actions
+typedef int	(*t_philo_func)(t_philo *, const struct timeval *, const char *);
 
 void	destroy_locks(t_data *pdata, t_fork *fork, int error);
 int		load_sim(t_data *pdata, int params, char **args);
