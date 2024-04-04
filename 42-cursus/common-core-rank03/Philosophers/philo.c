@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/02 03:25:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/04 17:23:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ static void	place_digit(long n, char **pstr)
 	*(*pstr)++ = x;
 }
 
-static int	tstamp(char *timestamp, unsigned int *dst,
-		const struct timeval *t[2], pthread_mutex_t *lock)
+static int	tstamp(char *timestamp, unsigned int *dst, struct timeval **t,
+		pthread_mutex_t *lock)
 {
 	long	elapsed;
 	int		err;
@@ -54,25 +54,23 @@ static int	tstamp(char *timestamp, unsigned int *dst,
 	return (err);
 }
 
-int	print_stamp(unsigned int *dst, const struct timeval *t0, t_philo *philo,
+int	print_stamp(unsigned int *dst, struct timeval **t, t_philo *philo,
 		const char *str)
 {
-	pthread_mutex_t *const	print_lock = philo->pdata->shared_locks + PRINT_LOG;
-	pthread_mutex_t *const	access_lock = &philo->access;
-	struct timeval			t;
+	struct timeval			t1;
 	int						err;
 	char					timestamp[12];
 
-	err = (gettimeofday(&t, NULL)
-			|| tstamp(timestamp, dst, (const struct timeval *[2]){t0, &t},
-				access_lock)
-			|| pthread_mutex_lock(print_lock));
-	if (!err)
+	err = 0;
+	if (!t[1])
 	{
-		printf("%s %i %s\n", timestamp, philo->n, str);
-		err = pthread_mutex_unlock(print_lock);
+		err = gettimeofday(&t1, NULL);
+		t[1] = &t1;
 	}
-	return (err);
+	if (err || tstamp(timestamp, dst, t, &philo->access))
+		return (1);
+	printf("%s %i %s\n", timestamp, philo->n, str);
+	return (0);
 }
 
 void	destroy_locks(t_data *pdata, t_fork *fork, int error)
