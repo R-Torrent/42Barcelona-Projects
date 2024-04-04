@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/02 03:15:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/04 15:55:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	create_locks(t_data *pdata)
 		if (pthread_mutex_init(&pdata->philo[j].access, NULL))
 			break ;
 	pdata->exit_status = (i != -1 || j != -1
-			|| pthread_mutex_lock(&pdata->shared_locks[INIT_SIM]));
+			|| pthread_mutex_lock(&pdata->shared_locks[MASTER_LOCK]));
 	if (pdata->exit_status)
 	{
 		while (++i < NUMBER_OF_LOCKS)
@@ -139,7 +139,7 @@ int	load_sim(t_data *pdata, int params, char **args)
 		pdata->exit_status = (create_locks(pdata)
 				|| create_forks_n_philos(pdata)
 				|| gettimeofday(pdata->t0, NULL)
-				|| pthread_mutex_unlock(&pdata->shared_locks[INIT_SIM]));
+				|| pthread_mutex_unlock(&pdata->shared_locks[MASTER_LOCK]));
 	}
 	return (pdata->exit_status);
 }
