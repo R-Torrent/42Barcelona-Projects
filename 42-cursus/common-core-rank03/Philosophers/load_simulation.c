@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/04 15:55:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/05 02:32:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ static void	init_data(t_data *pdata, int times_each_philo_must_eat)
 {
 	int	i;
 
-	pdata->time_to_die *= 1000U;
 	pdata->time_to_eat *= 1000U;
 	pdata->time_to_sleep *= 1000U;
 	memset(pdata->fork, 0, pdata->number_of_philos * sizeof(t_fork));
