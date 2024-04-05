@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/03 19:15:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/05 02:38:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,11 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
+// controller waiting period between evaluations, in microseconds
+# define DELAY_CONTROLLER_REPEAT 200U
+
 // minimum waiting period between fork retrials, in microseconds
-# define DELAY_FORK_RETRIAL 10U
+# define FORK_RETRIAL 50U
 
 // function return for a fork retrial
 # define RETURN_FORK_RETRIAL -4
@@ -68,9 +71,8 @@ enum e_philo_action
 
 enum e_shared_locks
 {
-	INIT_SIM,
+	MASTER_LOCK,
 	FORK_PICKING,
-	PRINT_LOG,
 	NUMBER_OF_LOCKS
 };
 
@@ -93,7 +95,8 @@ typedef struct s_philo
 	pthread_t		thread;
 }	t_philo;
 
-// NOTE: time_to_X variables stored in microseconds
+// NOTE: time_to_eat and time_to_sleep variables stored in microseconds;
+// time_to_die kept in milliseconds
 typedef struct s_data
 {
 	int				number_of_philos;
@@ -108,13 +111,15 @@ typedef struct s_data
 }	t_data;
 
 // philosopher actions
-typedef int	(*t_philo_func)(t_philo *, const struct timeval *);
+typedef int	(*t_philo_func)(struct s_philo *, struct timeval **);
 
 void	destroy_locks(t_data *pdata, t_fork *fork, int error);
 int		load_sim(t_data *pdata, int params, char **args);
-int		print_stamp(unsigned int *dst, const struct timeval *t0, t_philo *philo,
+int		print_stamp(unsigned int *dst, struct timeval **t, t_philo *philo,
 			const char *str);
+void	*run_controller(t_data *pdata);
 void	*run_philo(t_philo *philo);
+void	terminate_dead(unsigned int elapsed, t_philo *philo);
 
 /* ************************************************************************** */
 
