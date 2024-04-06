@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/05 00:12:39 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 12:39:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	*run_philo(t_philo *philo)
 	act = THINK;
 	ret = (pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
 			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK));
-	while (!ret)
+	while (!ret || ret == RETURN_FORK_RETRIAL)
 	{
 		if (pthread_mutex_lock(&philo->access))
 			break ;
@@ -108,9 +108,8 @@ void	*run_philo(t_philo *philo)
 		if (ret)
 			return (NULL);
 		ret = pfunc[act](philo, (struct timeval *[]){philo->pdata->t0, NULL});
-		if (ret == RETURN_FORK_RETRIAL)
-			continue ;
-		act = (act + 1) % NUMBER_OF_ACTIONS;
+		if (ret != RETURN_FORK_RETRIAL)
+			act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
 	pthread_mutex_lock(&philo->access);
 	philo->flags |= PHILO_ERR;
