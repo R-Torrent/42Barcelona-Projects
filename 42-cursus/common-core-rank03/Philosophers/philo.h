@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 02:05:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 05:02:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 /* ************************************************************************** */
 
 // controller waiting period between evaluations, in microseconds
-# define DELAY_CONTROLLER_REPEAT 200U
+# define DELAY_CONTROLLER_REPEAT 500U
 
 // minimum waiting period between fork retrials, in microseconds
 # define FORK_RETRIAL 50U
@@ -95,6 +95,12 @@ typedef struct s_philo
 	pthread_t		thread;
 }	t_philo;
 
+typedef struct s_contrl
+{
+	int			exit;
+	pthread_t	thread;
+}	t_contrl;
+
 // NOTE: time_to_eat and time_to_sleep variables stored in microseconds;
 // time_to_die kept in milliseconds
 typedef struct s_data
@@ -108,6 +114,7 @@ typedef struct s_data
 	pthread_mutex_t	*shared_locks;
 	struct s_fork	*fork;
 	struct s_philo	*philo;
+	struct s_contrl	*contrl;
 }	t_data;
 
 // philosopher actions
