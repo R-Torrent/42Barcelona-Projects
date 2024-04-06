@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 05:22:03 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 05:37:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,11 @@ typedef struct s_philo
 	pthread_t		thread;
 }	t_philo;
 
-typedef struct s_contrl
+struct s_contrl
 {
 	int			exit;
 	pthread_t	thread;
-}	t_contrl;
+};
 
 // NOTE: time_to_eat and time_to_sleep variables stored in microseconds;
 // time_to_die kept in milliseconds
