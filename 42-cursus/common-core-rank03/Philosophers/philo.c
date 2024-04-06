@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 00:13:09 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 01:57:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	place_digit(unsigned int n, char **pstr)
 }
 
 // elapsed simulation time, in milliseconds
-static unsigned int	tstamp(char *timestamp, struct timeval **t)
+unsigned int	tstamp(char *timestamp, struct timeval **t)
 {
 	const unsigned int	elapsed = (unsigned int)
 		((t[1]->tv_sec - t[0]->tv_sec) * 1000
