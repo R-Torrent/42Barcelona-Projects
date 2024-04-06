@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 05:02:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 05:22:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void			destroy_locks(t_data *pdata, t_fork *fork, int error);
 int				load_sim(t_data *pdata, int params, char **args);
 int				print_stamp(unsigned int *dst, struct timeval **t,
 					t_philo *philo, const char *str);
-void			*run_controller(t_data *pdata);
+void			*run_contrl(t_data *pdata);
 void			*run_philo(t_philo *philo);
 unsigned int	tstamp(char *timestamp, struct timeval **t);
 

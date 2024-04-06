@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/05 02:32:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 05:25:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	create_forks_n_philos(t_data *pdata)
+static int	create_forks_philos(t_data *pdata)
 {
 	struct s_fork	*fork;
 	struct s_philo	*philo;
@@ -84,6 +84,7 @@ static void	init_data(t_data *pdata, int times_each_philo_must_eat)
 		pdata->philo[i].pdata = pdata;
 		i++;
 	}
+	pdata->contrl->exit = 0;
 }
 
 // variation on the atoi lib function, it returns an error flag,
@@ -135,8 +136,9 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (!pdata->exit_status)
 	{
 		init_data(pdata, times_each_philo_must_eat);
-		pdata->exit_status = (create_locks(pdata)
-				|| create_forks_n_philos(pdata)
+		pdata->exit_status = (create_locks(pdata) || create_forks_philos(pdata)
+				|| pthread_create(&pdata->contrl->thread, NULL,
+					(void *(*)(void *))run_contrl, pdata)
 				|| gettimeofday(pdata->t0, NULL)
 				|| pthread_mutex_unlock(&pdata->shared_locks[MASTER_LOCK]));
 	}

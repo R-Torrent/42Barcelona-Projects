@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 02:42:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 05:34:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,17 +90,19 @@ int	main(int argc, char *argv[])
 {
 	struct s_data	data;
 	struct timeval	t0;
+	struct s_contrl	contrl;
 	struct s_philo	*philo;
 
 	data.t0 = &t0;
-	if (load_sim(&data, --argc, ++argv))
+	data.contrl = &contrl;
+	if (!load_sim(&data, --argc, ++argv))
 	{
+		data.exit_status = (pthread_join(data.contrl->thread, NULL)
+				|| data.contrl->exit);
 		philo = data.philo + data.number_of_philos;
 		while (philo-- > data.philo)
-		{
-			pthread_join(philo->thread, NULL);
-			data.exit_status = (data.exit_status || (philo->flags & PHILO_ERR));
-		}
+			data.exit_status = (pthread_join(philo->thread, NULL)
+					|| data.exit_status || (philo->flags & PHILO_ERR));
 		destroy_locks(&data, data.fork, 0);
 	}
 	free(data.shared_locks);
