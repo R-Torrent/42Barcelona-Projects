@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 01:57:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/06 02:42:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	print_stamp(unsigned int *dst, struct timeval **t, t_philo *philo,
 	err = pthread_mutex_lock(&philo->access);
 	if (!err)
 	{
-		if (elapsed - philo->last_meal > philo->pdata->time_to_die)
+		if (elapsed - philo->last_meal >= philo->pdata->time_to_die)
 			philo->flags |= TERMINATE;
 		if (dst)
 			*dst = elapsed;
