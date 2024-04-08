@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/08 03:15:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/08 13:10:51 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ unsigned int	tstamp(char *timestamp, struct timeval **t)
 		place_digit(elapsed, &timestamp);
 		*timestamp = '\0';
 	}
+	t[1] = NULL;
 	return (elapsed);
 }
 
