@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 05:48:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/08 03:15:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,15 +98,10 @@ int	main(int argc, char *argv[])
 	if (!load_sim(&data, --argc, ++argv))
 	{
 		data.exit_status = (pthread_join(data.contrl->thread, NULL)
-				|| data.contrl->exit);
+				|| data.contrl->flags & PHILO_ERR);
 		philo = data.philo + data.number_of_philos;
-		if (!data.exit_status)
-			while (philo-- > data.philo)
-				data.exit_status = (pthread_join(philo->thread, NULL)
-						|| data.exit_status || (philo->flags & PHILO_ERR));
-		else
-			while (philo-- > data.philo)
-				pthread_detach(philo->thread);
+		while (philo-- > data.philo)
+			pthread_detach(philo->thread);
 		destroy_locks(&data, data.fork, 0);
 	}
 	free(data.shared_locks);

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 05:37:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/08 02:57:32 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,6 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 // controller waiting period between evaluations, in microseconds
 # define DELAY_CONTROLLER_REPEAT 500U
 
-// minimum waiting period between fork retrials, in microseconds
-# define FORK_RETRIAL 50U
-
-// function return for a fork retrial
-# define RETURN_FORK_RETRIAL -4
-
 enum e_hand
 {
 	LEFT,
@@ -72,14 +66,12 @@ enum e_philo_action
 enum e_shared_locks
 {
 	MASTER_LOCK,
-	FORK_PICKING,
 	NUMBER_OF_LOCKS
 };
 
 typedef struct s_fork
 {
 	int				n;
-	int				held;
 	pthread_mutex_t	lock;
 }	t_fork;
 
@@ -97,7 +89,7 @@ typedef struct s_philo
 
 struct s_contrl
 {
-	int			exit;
+	int			flags;
 	pthread_t	thread;
 };
 

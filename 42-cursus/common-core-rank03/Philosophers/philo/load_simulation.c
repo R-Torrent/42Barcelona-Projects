@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 05:25:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/08 02:58:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static void	init_data(t_data *pdata, int times_each_philo_must_eat)
 		pdata->philo[i].pdata = pdata;
 		i++;
 	}
-	pdata->contrl->exit = 0;
+	pdata->contrl->flags = 0;
 }
 
 // variation on the atoi lib function, it returns an error flag,

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/06 12:39:57 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/08 04:05:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,59 +24,47 @@ static int	philo_sleep(t_philo *philo, struct timeval **t0)
 
 static int	eat(t_philo *philo, struct timeval **t0)
 {
-	pthread_mutex_t *const	sl = philo->pdata->shared_locks;
-	int						err[2];
+	int	err;
 
-	if (pthread_mutex_lock(sl + MASTER_LOCK)
+	if (pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
 		|| print_stamp(&philo->last_meal, t0, philo, "is eating")
-		|| pthread_mutex_unlock(sl + MASTER_LOCK)
+		|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK)
 		|| usleep(philo->pdata->time_to_eat))
 		return (1);
-	*err = 0;
-	if (!philo->meals_left--)
+	err = 0;
+	if (!--philo->meals_left)
 	{
-		*err = pthread_mutex_lock(&philo->access);
-		if (!*err)
+		err = pthread_mutex_lock(&philo->access);
+		if (!err)
 		{
 			philo->flags |= MEALS__OK;
-			*err = pthread_mutex_unlock(&philo->access);
+			err = pthread_mutex_unlock(&philo->access);
 		}
 	}
-	if (*err || pthread_mutex_lock(sl + FORK_PICKING))
-		return (1);
-	err[LEFT] = pthread_mutex_unlock(&philo->fork[LEFT]->lock);
-	philo->fork[LEFT]->held = 0;
-	err[RIGHT] = pthread_mutex_unlock(&philo->fork[RIGHT]->lock);
-	philo->fork[RIGHT]->held = 0;
-	return (pthread_mutex_unlock(sl + FORK_PICKING) || err[LEFT] || err[RIGHT]);
+	err = (pthread_mutex_unlock(&philo->fork[LEFT]->lock) || err);
+	err = (pthread_mutex_unlock(&philo->fork[RIGHT]->lock) || err);
+	return (err);
 }
 
+// even-numbered philosophers pick the left fork first
+// odd-numbered philosophers pick the right fork first
 static int	pick_forks(t_philo *philo, struct timeval **t0)
 {
-	pthread_mutex_t *const	sl = philo->pdata->shared_locks;
-	const int				f = philo->fork[LEFT] == philo->fork[RIGHT];
-	int						err[2];
+	const int	first = philo->n % 2;
+	const int	second = first ^ 1;
 
-	if (pthread_mutex_lock(sl + FORK_PICKING))
-		return (1);
-	if (f || philo->fork[LEFT]->held || philo->fork[RIGHT]->held)
-	{
-		if (pthread_mutex_unlock(sl + FORK_PICKING) || usleep(FORK_RETRIAL))
-			return (1);
-		return (RETURN_FORK_RETRIAL);
-	}
-	err[LEFT] = (pthread_mutex_lock(sl + MASTER_LOCK)
-			|| pthread_mutex_lock(&philo->fork[LEFT]->lock)
-			|| print_stamp(NULL, t0, philo, "has taken a fork"));
-	philo->fork[LEFT]->held = 1;
-	philo->fork[RIGHT]->held = 1;
-	err[RIGHT] = (pthread_mutex_lock(&philo->fork[RIGHT]->lock)
+	if (!(pthread_mutex_lock(&philo->fork[first]->lock)
+			|| pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
 			|| print_stamp(NULL, t0, philo, "has taken a fork")
-			|| pthread_mutex_unlock(sl + MASTER_LOCK));
-	if (!pthread_mutex_unlock(sl + FORK_PICKING) && !err[LEFT] && !err[RIGHT])
+			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK)
+			|| pthread_mutex_lock(&philo->fork[second]->lock)
+			|| pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
+			|| print_stamp(NULL, t0, philo, "has taken a fork")
+			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK)))
 		return (0);
 	pthread_mutex_unlock(&philo->fork[LEFT]->lock);
 	pthread_mutex_unlock(&philo->fork[RIGHT]->lock);
+	pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK);
 	return (1);
 }
 
@@ -98,7 +86,7 @@ void	*run_philo(t_philo *philo)
 	act = THINK;
 	ret = (pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
 			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK));
-	while (!ret || ret == RETURN_FORK_RETRIAL)
+	while (!ret)
 	{
 		if (pthread_mutex_lock(&philo->access))
 			break ;
@@ -108,8 +96,7 @@ void	*run_philo(t_philo *philo)
 		if (ret)
 			return (NULL);
 		ret = pfunc[act](philo, (struct timeval *[]){philo->pdata->t0, NULL});
-		if (ret != RETURN_FORK_RETRIAL)
-			act = (act + 1) % NUMBER_OF_ACTIONS;
+		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
 	pthread_mutex_lock(&philo->access);
 	philo->flags |= PHILO_ERR;
