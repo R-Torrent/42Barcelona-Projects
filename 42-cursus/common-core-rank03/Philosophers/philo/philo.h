@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/08 02:57:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/11 21:21:47 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 
 // controller waiting period between evaluations, in microseconds
 # define DELAY_CONTROLLER_REPEAT 500U
+
+// delay to stop waking philos from jumping the queue, in microseconds
+# define SLEEP_N_THINK 200U
 
 enum e_hand
 {
@@ -101,6 +104,7 @@ typedef struct s_data
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
+	unsigned int	time_to_think;
 	int				exit_status;
 	struct timeval	*t0;
 	pthread_mutex_t	*shared_locks;
