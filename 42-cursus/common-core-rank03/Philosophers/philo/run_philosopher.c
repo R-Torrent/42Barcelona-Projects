@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/08 04:05:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/11 20:16:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ static int	think(t_philo *philo, struct timeval **t0)
 
 	return (pthread_mutex_lock(mlock)
 		|| print_stamp(NULL, t0, philo, "is thinking")
-		|| pthread_mutex_unlock(mlock));
+		|| pthread_mutex_unlock(mlock)
+		|| usleep(philo->pdata->time_to_think));
 }
 
 void	*run_philo(t_philo *philo)
