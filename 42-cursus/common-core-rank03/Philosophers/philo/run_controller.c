@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 02:29:22 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/22 02:31:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:29:40 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,17 @@ static void	place_digit(unsigned int n, char **pstr)
 int	tstamp(t_contrl *contrl, struct timeval *t, pthread_mutex_t *lock)
 {
 	char			*timestamp;
-	unsigned int	diff_time;
+	unsigned int	wait_usec;
 	int				err;
 
-	t[1] = t[2];
-	err = (pthread_mutex_lock(lock) || gettimeofday(t + 2, NULL));
-	contrl->elapsed = 1000 * (int)(t[2].tv_sec - t[0].tv_sec)
-		+ ((int)t[2].tv_usec - (int)t[0].tv_usec) / 1000;
+	err = (pthread_mutex_lock(lock) || gettimeofday(t + 1, NULL));
+	contrl->elapsed = 1000 * (int)(t[1].tv_sec - t[0].tv_sec)
+		+ ((int)t[1].tv_usec - (int)t[0].tv_usec) / 1000;
 	timestamp = contrl->timestamp;
 	place_digit(contrl->elapsed, &timestamp);
 	*timestamp = '\0';
-	err = (pthread_mutex_unlock(lock) || err);
-	diff_time = 1000000 * (int)(t[2].tv_sec - t[1].tv_sec)
-		+ ((int)t[2].tv_usec - (int)t[1].tv_usec);
-	if (!err && diff_time < 1000)
-		return (usleep(1000 - diff_time));
-	return (err);
+	wait_usec = 1000 - (t[1].tv_usec % 1000 - t[0].tv_usec % 1000);
+	return (pthread_mutex_unlock(lock) || err || usleep(wait_usec));
 }
 
 static int	print_obituaries(t_philo *philo, t_contrl *contrl,
@@ -73,14 +68,13 @@ static int	print_obituaries(t_philo *philo, t_contrl *contrl,
 
 void	*run_contrl(t_data *pdata)
 {
-	struct timeval	t[3];
+	struct timeval	t[2];
 	int				err;
 	t_philo			*philo;
 
 	err = (pthread_mutex_lock(pdata->shared_locks + MASTER_LOCK)
 			|| pthread_mutex_unlock(pdata->shared_locks + MASTER_LOCK)
 			|| gettimeofday(t, NULL));
-	t[2] = t[0];
 	while (!pdata->contrl->flags && !err)
 	{
 		err = print_obituaries(pdata->philo, pdata->contrl,
