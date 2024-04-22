@@ -6,29 +6,23 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/11 20:16:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/20 01:12:47 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	philo_sleep(t_philo *philo, struct timeval **t0)
+static int	philo_sleep(t_philo *philo)
 {
-	pthread_mutex_t *const	mlock = philo->pdata->shared_locks + MASTER_LOCK;
-
-	return (pthread_mutex_lock(mlock)
-		|| print_stamp(NULL, t0, philo, "is sleeping")
-		|| pthread_mutex_unlock(mlock)
+	return (print_stamp(NULL, philo, "is sleeping")
 		|| usleep(philo->pdata->time_to_sleep));
 }
 
-static int	eat(t_philo *philo, struct timeval **t0)
+static int	eat(t_philo *philo)
 {
 	int	err;
 
-	if (pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
-		|| print_stamp(&philo->last_meal, t0, philo, "is eating")
-		|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK)
+	if (print_stamp(&philo->last_meal, philo, "is eating")
 		|| usleep(philo->pdata->time_to_eat))
 		return (1);
 	err = 0;
@@ -48,33 +42,24 @@ static int	eat(t_philo *philo, struct timeval **t0)
 
 // even-numbered philosophers pick the left fork first
 // odd-numbered philosophers pick the right fork first
-static int	pick_forks(t_philo *philo, struct timeval **t0)
+static int	pick_forks(t_philo *philo)
 {
 	const int	first = philo->n % 2;
 	const int	second = first ^ 1;
 
 	if (!(pthread_mutex_lock(&philo->fork[first]->lock)
-			|| pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
-			|| print_stamp(NULL, t0, philo, "has taken a fork")
-			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK)
+			|| print_stamp(NULL, philo, "has taken a fork")
 			|| pthread_mutex_lock(&philo->fork[second]->lock)
-			|| pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
-			|| print_stamp(NULL, t0, philo, "has taken a fork")
-			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK)))
+			|| print_stamp(NULL, philo, "has taken a fork")))
 		return (0);
 	pthread_mutex_unlock(&philo->fork[LEFT]->lock);
 	pthread_mutex_unlock(&philo->fork[RIGHT]->lock);
-	pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK);
 	return (1);
 }
 
-static int	think(t_philo *philo, struct timeval **t0)
+static int	think(t_philo *philo)
 {
-	pthread_mutex_t *const	mlock = philo->pdata->shared_locks + MASTER_LOCK;
-
-	return (pthread_mutex_lock(mlock)
-		|| print_stamp(NULL, t0, philo, "is thinking")
-		|| pthread_mutex_unlock(mlock)
+	return (print_stamp(NULL, philo, "is thinking")
 		|| usleep(philo->pdata->time_to_think));
 }
 
@@ -96,11 +81,13 @@ void	*run_philo(t_philo *philo)
 			break ;
 		if (ret)
 			return (NULL);
-		ret = pfunc[act](philo, (struct timeval *[]){philo->pdata->t0, NULL});
+		ret = pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
 	pthread_mutex_lock(&philo->access);
 	philo->flags |= PHILO_ERR;
 	pthread_mutex_unlock(&philo->access);
+	pthread_mutex_unlock(philo->pdata->shared_locks + READ_TIME);
+	pthread_mutex_unlock(philo->pdata->shared_locks + PRINT_LOG);
 	return (NULL);
 }

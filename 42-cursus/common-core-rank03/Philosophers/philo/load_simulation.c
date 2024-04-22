@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/11 20:11:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/22 01:51:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	init_data(t_data *pdata, int times_each_philo_must_eat)
 		pdata->philo[i].pdata = pdata;
 		i++;
 	}
-	pdata->contrl->flags = 0;
+	memset(pdata->contrl, 0, sizeof(t_contrl));
 }
 
 // variation on the atoi lib function, it returns an error flag,
@@ -140,10 +140,10 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (!pdata->exit_status)
 	{
 		init_data(pdata, times_each_philo_must_eat);
+		*pdata->contrl->timestamp = '0';
 		pdata->exit_status = (create_locks(pdata) || create_forks_philos(pdata)
 				|| pthread_create(&pdata->contrl->thread, NULL,
 					(void *(*)(void *))run_contrl, pdata)
-				|| gettimeofday(pdata->t0, NULL)
 				|| pthread_mutex_unlock(&pdata->shared_locks[MASTER_LOCK]));
 	}
 	return (pdata->exit_status);

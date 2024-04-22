@@ -6,67 +6,50 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/08 13:10:51 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/22 01:45:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	place_digit(unsigned int n, char **pstr)
+static char	*ft_strcpy(char *dest, char *src)
 {
-	long	x;
+	char	*dst0;
 
-	x = n / 10L;
-	if (x)
-		place_digit(x, pstr);
-	x = '0' + n % 10L;
-	*(*pstr)++ = x;
+	dst0 = dest;
+	while (*src)
+		*dest++ = *src++;
+	*dest = '\0';
+	return (dst0);
 }
 
-// elapsed simulation time, in milliseconds
-unsigned int	tstamp(char *timestamp, struct timeval **t)
+int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
-	const unsigned int	elapsed = (unsigned int)
-		((t[1]->tv_sec - t[0]->tv_sec) * 1000
-			+ (t[1]->tv_usec - t[0]->tv_usec) / 1000);
+	char	timestamp[12];
 
-	if (timestamp)
+	if (pthread_mutex_lock(&philo->access)
+		|| pthread_mutex_lock(philo->pdata->shared_locks + READ_TIME))
+		return (1);
+	if (philo->pdata->contrl->elapsed - philo->last_meal
+		>= philo->pdata->time_to_die)
+		philo->flags |= TERMINATE;
+	if (!(philo->flags & TERMINATE))
 	{
-		place_digit(elapsed, &timestamp);
-		*timestamp = '\0';
-	}
-	t[1] = NULL;
-	return (elapsed);
-}
-
-int	print_stamp(unsigned int *dst, struct timeval **t, t_philo *philo,
-		const char *str)
-{
-	struct timeval	t1;
-	unsigned int	elapsed;
-	int				err;
-	char			timestamp[12];
-
-	if (!t[1])
-	{
-		if (gettimeofday(&t1, NULL))
-			return (1);
-		t[1] = &t1;
-	}
-	elapsed = tstamp(timestamp, t);
-	err = pthread_mutex_lock(&philo->access);
-	if (!err)
-	{
-		if (elapsed - philo->last_meal >= philo->pdata->time_to_die)
-			philo->flags |= TERMINATE;
 		if (dst)
-			*dst = elapsed;
-		elapsed = philo->flags & TERMINATE;
-		err = pthread_mutex_unlock(&philo->access);
+			*dst = philo->pdata->contrl->elapsed;
+		(void)ft_strcpy(timestamp, philo->pdata->contrl->timestamp);
 	}
-	if (!err && !elapsed)
+	if (pthread_mutex_unlock(philo->pdata->shared_locks + READ_TIME)
+		|| pthread_mutex_unlock(&philo->access))
+		return (1);
+	if (!(philo->flags & TERMINATE))
+	{
+		if (pthread_mutex_lock(philo->pdata->shared_locks + PRINT_LOG))
+			return (1);
 		printf("%s %i %s\n", timestamp, philo->n, str);
-	return (err);
+		return (pthread_mutex_unlock(philo->pdata->shared_locks + PRINT_LOG));
+	}
+	return (0);
 }
 
 void	destroy_locks(t_data *pdata, t_fork *fork, int error)
@@ -90,11 +73,9 @@ void	destroy_locks(t_data *pdata, t_fork *fork, int error)
 int	main(int argc, char *argv[])
 {
 	struct s_data	data;
-	struct timeval	t0;
 	struct s_contrl	contrl;
 	struct s_philo	*philo;
 
-	data.t0 = &t0;
 	data.contrl = &contrl;
 	if (!load_sim(&data, --argc, ++argv))
 	{

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/11 21:21:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/22 02:12:54 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,8 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
-// controller waiting period between evaluations, in microseconds
-# define DELAY_CONTROLLER_REPEAT 500U
-
 // delay to stop waking philos from jumping the queue, in microseconds
-# define SLEEP_N_THINK 200U
+# define SLEEP_N_THINK 400U
 
 enum e_hand
 {
@@ -69,6 +66,8 @@ enum e_philo_action
 enum e_shared_locks
 {
 	MASTER_LOCK,
+	READ_TIME,
+	PRINT_LOG,
 	NUMBER_OF_LOCKS
 };
 
@@ -90,11 +89,13 @@ typedef struct s_philo
 	pthread_t		thread;
 }	t_philo;
 
-struct s_contrl
+typedef struct s_contrl
 {
-	int			flags;
-	pthread_t	thread;
-};
+	char			timestamp[12];
+	unsigned int	elapsed;
+	int				flags;
+	pthread_t		thread;
+}	t_contrl;
 
 // NOTE: time_to_eat and time_to_sleep variables stored in microseconds;
 // time_to_die kept in milliseconds
@@ -106,7 +107,6 @@ typedef struct s_data
 	unsigned int	time_to_sleep;
 	unsigned int	time_to_think;
 	int				exit_status;
-	struct timeval	*t0;
 	pthread_mutex_t	*shared_locks;
 	struct s_fork	*fork;
 	struct s_philo	*philo;
@@ -114,15 +114,13 @@ typedef struct s_data
 }	t_data;
 
 // philosopher actions
-typedef int	(*t_philo_func)(struct s_philo *, struct timeval **);
+typedef int	(*t_philo_func)(struct s_philo *);
 
 void			destroy_locks(t_data *pdata, t_fork *fork, int error);
 int				load_sim(t_data *pdata, int params, char **args);
-int				print_stamp(unsigned int *dst, struct timeval **t,
-					t_philo *philo, const char *str);
+int				print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void			*run_contrl(t_data *pdata);
 void			*run_philo(t_philo *philo);
-unsigned int	tstamp(char *timestamp, struct timeval **t);
 
 /* ************************************************************************** */
 
