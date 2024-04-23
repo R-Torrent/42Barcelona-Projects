@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/22 17:01:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/24 01:04:29 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ ssize_t			write(int fildes, const void *buf, size_t nbyte);
 /* ************************************************************************** */
 
 // delay to stop waking philos from jumping the queue, in microseconds
-# define SLEEP_N_THINK 400U
+# define SLEEP_N_THINK 800U
 
 enum e_hand
 {
@@ -94,11 +94,12 @@ typedef struct s_contrl
 	char			timestamp[12];
 	unsigned int	elapsed;
 	int				flags;
+	struct timeval	*t;
+	struct s_data	*pdata;
 	pthread_t		thread;
 }	t_contrl;
 
-// NOTE: time_to_eat and time_to_sleep variables stored in microseconds;
-// time_to_die kept in milliseconds
+// NOTE: all times stored in microseconds
 typedef struct s_data
 {
 	int				number_of_philos;
@@ -121,6 +122,8 @@ int				load_sim(t_data *pdata, int params, char **args);
 int				print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void			*run_contrl(t_data *pdata);
 void			*run_philo(t_philo *philo);
+int				tstamp(t_contrl *contrl);
+int				wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
 
 /* ************************************************************************** */
 

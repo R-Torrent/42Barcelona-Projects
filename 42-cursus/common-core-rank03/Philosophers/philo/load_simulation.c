@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/22 01:51:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/23 18:06:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,11 @@ static void	init_data(t_data *pdata, int times_each_philo_must_eat)
 {
 	int	i;
 
-	pdata->time_to_eat *= 1000U;
-	pdata->time_to_sleep *= 1000U;
 	i = SLEEP_N_THINK + (int)pdata->time_to_eat - (int)pdata->time_to_sleep;
-	pdata->time_to_think = 0;
 	if (i > 0)
 		pdata->time_to_think = (unsigned int)i;
+	else
+		pdata->time_to_think = 0;
 	memset(pdata->fork, 0, pdata->number_of_philos * sizeof(t_fork));
 	memset(pdata->philo, 0, pdata->number_of_philos * sizeof(t_philo));
 	i = 0;
@@ -85,15 +84,16 @@ static void	init_data(t_data *pdata, int times_each_philo_must_eat)
 		pdata->philo[i].fork[LEFT] = pdata->fork + i;
 		pdata->philo[i].fork[RIGHT] = pdata->fork
 			+ (i + 1) % pdata->number_of_philos;
-		pdata->philo[i].pdata = pdata;
-		i++;
+		pdata->philo[i++].pdata = pdata;
 	}
 	memset(pdata->contrl, 0, sizeof(t_contrl));
+	*pdata->contrl->timestamp = '0';
+	pdata->contrl->pdata = pdata;
 }
 
-// variation on the atoi lib function, it returns an error flag,
-// with extra argument 'minimum' valid input
-static int	atoi3(const char *str, int *n, int min)
+// variation on the atoi lib function, it returns an error flag, with two extra
+// arguments: 'min' minimum valid input, 'scale' to multiply answer by
+static int	atoi4(const char *str, int *n, int min, int scale)
 {
 	int	i;
 	int	sg;
@@ -117,6 +117,7 @@ static int	atoi3(const char *str, int *n, int min)
 	}
 	if (*str || *n < min)
 		return (1);
+	*n *= scale;
 	return (0);
 }
 
@@ -124,11 +125,11 @@ int	load_sim(t_data *pdata, int params, char **args)
 {
 	int			times_each_philo_must_eat;
 	const int	check_args = params < 4 || params > 5
-		|| atoi3(*args++, &pdata->number_of_philos, 1)
-		|| atoi3(*args++, (int *)&pdata->time_to_die, 0)
-		|| atoi3(*args++, (int *)&pdata->time_to_eat, 0)
-		|| atoi3(*args++, (int *)&pdata->time_to_sleep, 0)
-		|| (params == 5 && atoi3(*args, &times_each_philo_must_eat, 0));
+		|| atoi4(*args++, &pdata->number_of_philos, 1, 1)
+		|| atoi4(*args++, (int *)&pdata->time_to_die, 0, 1000)
+		|| atoi4(*args++, (int *)&pdata->time_to_eat, 0, 1000)
+		|| atoi4(*args++, (int *)&pdata->time_to_sleep, 0, 1000)
+		|| (params == 5 && atoi4(*args, &times_each_philo_must_eat, 0, 1));
 
 	if (params != 5)
 		times_each_philo_must_eat = -1;
@@ -140,7 +141,6 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (!pdata->exit_status)
 	{
 		init_data(pdata, times_each_philo_must_eat);
-		*pdata->contrl->timestamp = '0';
 		pdata->exit_status = (create_locks(pdata) || create_forks_philos(pdata)
 				|| pthread_create(&pdata->contrl->thread, NULL,
 					(void *(*)(void *))run_contrl, pdata)

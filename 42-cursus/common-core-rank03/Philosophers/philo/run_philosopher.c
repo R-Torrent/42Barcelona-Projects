@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/20 01:12:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:15:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	philo_sleep(t_philo *philo)
 {
 	return (print_stamp(NULL, philo, "is sleeping")
-		|| usleep(philo->pdata->time_to_sleep));
+		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_sleep, 0));
 }
 
 static int	eat(t_philo *philo)
@@ -23,10 +23,11 @@ static int	eat(t_philo *philo)
 	int	err;
 
 	if (print_stamp(&philo->last_meal, philo, "is eating")
-		|| usleep(philo->pdata->time_to_eat))
+		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_eat, 0))
 		return (1);
-	err = 0;
-	if (!--philo->meals_left)
+	err = pthread_mutex_unlock(&philo->fork[LEFT]->lock);
+	err = (pthread_mutex_unlock(&philo->fork[RIGHT]->lock) || err);
+	if (!err && !--philo->meals_left)
 	{
 		err = pthread_mutex_lock(&philo->access);
 		if (!err)
@@ -35,8 +36,6 @@ static int	eat(t_philo *philo)
 			err = pthread_mutex_unlock(&philo->access);
 		}
 	}
-	err = (pthread_mutex_unlock(&philo->fork[LEFT]->lock) || err);
-	err = (pthread_mutex_unlock(&philo->fork[RIGHT]->lock) || err);
 	return (err);
 }
 
@@ -60,7 +59,7 @@ static int	pick_forks(t_philo *philo)
 static int	think(t_philo *philo)
 {
 	return (print_stamp(NULL, philo, "is thinking")
-		|| usleep(philo->pdata->time_to_think));
+		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_think, 0));
 }
 
 void	*run_philo(t_philo *philo)
@@ -70,7 +69,8 @@ void	*run_philo(t_philo *philo)
 	int					ret;
 
 	act = THINK;
-	ret = (pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
+	ret = (pthread_detach(philo->thread)
+			|| pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
 			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK));
 	while (!ret)
 	{
@@ -87,7 +87,5 @@ void	*run_philo(t_philo *philo)
 	pthread_mutex_lock(&philo->access);
 	philo->flags |= PHILO_ERR;
 	pthread_mutex_unlock(&philo->access);
-	pthread_mutex_unlock(philo->pdata->shared_locks + READ_TIME);
-	pthread_mutex_unlock(philo->pdata->shared_locks + PRINT_LOG);
 	return (NULL);
 }
