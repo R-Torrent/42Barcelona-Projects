@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/24 01:04:29 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/29 12:05:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,22 @@
 # include <unistd.h>
 
 // external declarations from the libc (AKA 'authorized functions')
-void			free(void *ptr);
-int				gettimeofday(struct timeval *tv, void *tz);
-void			*malloc(size_t size);
-void			*memset(void *s, int c, size_t n);
-int				printf(const char *format, ...);
-int				pthread_create(pthread_t *thread, const pthread_attr_t *attr,
-					void *(*start_routine) (void *), void *arg);
-int				pthread_detach(pthread_t thread);
-int				pthread_join(pthread_t thread, void **retval);
-int				pthread_mutex_destroy(pthread_mutex_t *mutex);
-int				pthread_mutex_init(pthread_mutex_t *restrict mutex,
-					const pthread_mutexattr_t *restrict attr);
-int				pthread_mutex_lock(pthread_mutex_t *mutex);
-int				pthread_mutex_unlock(pthread_mutex_t *mutex);
-int				usleep(useconds_t usec);
-ssize_t			write(int fildes, const void *buf, size_t nbyte);
+void	free(void *ptr);
+int		gettimeofday(struct timeval *tv, void *tz);
+void	*malloc(size_t size);
+void	*memset(void *s, int c, size_t n);
+int		printf(const char *format, ...);
+int		pthread_create(pthread_t *thread, const pthread_attr_t *attr,
+			void *(*start_routine) (void *), void *arg);
+int		pthread_detach(pthread_t thread);
+int		pthread_join(pthread_t thread, void **retval);
+int		pthread_mutex_destroy(pthread_mutex_t *mutex);
+int		pthread_mutex_init(pthread_mutex_t *restrict mutex,
+			const pthread_mutexattr_t *restrict attr);
+int		pthread_mutex_lock(pthread_mutex_t *mutex);
+int		pthread_mutex_unlock(pthread_mutex_t *mutex);
+int		usleep(useconds_t usec);
+ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
@@ -117,13 +117,13 @@ typedef struct s_data
 // philosopher actions
 typedef int	(*t_philo_func)(struct s_philo *);
 
-void			destroy_locks(t_data *pdata, t_fork *fork, int error);
-int				load_sim(t_data *pdata, int params, char **args);
-int				print_stamp(unsigned int *dst, t_philo *philo, const char *str);
-void			*run_contrl(t_data *pdata);
-void			*run_philo(t_philo *philo);
-int				tstamp(t_contrl *contrl);
-int				wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
+void	destroy_locks(t_data *pdata, t_fork *fork, int error);
+int		load_sim(t_data *pdata, int params, char **args);
+int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
+void	*run_contrl(t_data *pdata);
+void	*run_philo(t_philo *philo);
+int		tstamp(t_contrl *contrl);
+int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
 
 /* ************************************************************************** */
 
