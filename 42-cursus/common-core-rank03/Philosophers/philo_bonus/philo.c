@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/29 11:12:41 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/04/30 12:37:32 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ int	main(int argc, char *argv[])
 				|| contrl.flags & PHILO_ERR);
 		destroy_locks(&data, data.fork, 0);
 	}
-	free(data.shared_locks);
-	free(data.fork);
+	free(data.sem);
 	free(data.philo);
 	return (data.exit_status);
 }
