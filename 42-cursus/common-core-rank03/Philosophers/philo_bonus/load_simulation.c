@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:33:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/06/30 23:16:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/06/30 23:51:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,6 @@ int	load_sim(t_data *pdata, int params, char **args)
 	{
 		init_data(pdata, times_each_philo_must_eat);
 		pdata->exit_status = (create_sems_philos(pdata)
-				|| pthread_create(&pdata->contrl->thread, NULL,
-					(void *(*)(void *))run_contrl, pdata)
 				|| sem_post(pdata->sem[MASTR]));
 	}
 	return (pdata->exit_status);

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/06/30 22:59:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/06/30 23:39:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,9 @@ typedef struct s_philo
 	int				meals_left;
 	unsigned int	last_meal;
 	int				flags;
-	struct s_data	*pdata;
 	pid_t			pid;
+	struct s_contrl	*contrl;
+	struct s_data	*pdata;
 }	t_philo;
 
 typedef struct s_contrl
@@ -107,7 +108,6 @@ typedef struct s_data
 	int				exit_status;
 	sem_t			**sem;
 	struct s_philo	*philo;
-	struct s_contrl	*contrl;
 }	t_data;
 
 // philosopher actions
