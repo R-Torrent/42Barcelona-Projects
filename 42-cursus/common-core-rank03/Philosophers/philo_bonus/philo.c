@@ -6,27 +6,26 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/30 12:37:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/06/30 23:15:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	destroy_locks(t_data *pdata, t_fork *fork, int error)
+void	destroy_sems_philos(t_data *pdata, t_philo *philo, int error)
 {
-	t_fork *const	lastf = pdata->fork + pdata->number_of_philos;
 	t_philo *const	lastp = pdata->philo + pdata->number_of_philos;
-	t_philo			*philo;
-	int				i;
 
-	i = 0;
-	while (i < NUMBER_OF_LOCKS)
-		error = (pthread_mutex_destroy(pdata->shared_locks + i++) || error);
-	while (fork < lastf)
-		error = (pthread_mutex_destroy(&fork++->lock) || error);
-	philo = pdata->philo;
+	if (pdata->sem[MASTR] != SEM_FAILED) {
+		error = (sem_close(pdata->sem[MASTR]) || error);
+		error = (sem_unlink(SEM_MASTR) || error);
+	}
+	if (pdata->sem[FORKS] != SEM_FAILED) {
+		error = (sem_close(pdata->sem[FORKS]) || error);
+		error = (sem_unlink(SEM_FORKS) || error);
+	}
 	while (philo < lastp)
-		error = (pthread_mutex_destroy(&philo++->access) || error);
+		error = (kill(philo++->pid, SIGTERM) || error);
 	pdata->exit_status = (pdata->exit_status || error);
 }
 

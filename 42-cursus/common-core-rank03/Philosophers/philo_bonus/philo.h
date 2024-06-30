@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/30 17:06:29 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/06/30 22:59:59 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ enum e_philo_action
 	NUMBER_OF_ACTIONS
 };
 
-// philosopher flags
+// philosopher exit conditiions
 # define PHILO_ERR 01
 # define MEALS__OK 02
 # define TERMINATE 04
@@ -113,11 +113,11 @@ typedef struct s_data
 // philosopher actions
 typedef int	(*t_philo_func)(struct s_philo *);
 
-void	destroy_all(t_data *pdata, t_philo *philo, int error);
+void	destroy_sems_philos(t_data *pdata, t_philo *philo, int error);
 int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void	*run_contrl(t_data *pdata);
-void	*run_philo(t_philo *philo);
+void	run_philo(t_philo *philo);
 int		tstamp(t_contrl *contrl);
 int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
 

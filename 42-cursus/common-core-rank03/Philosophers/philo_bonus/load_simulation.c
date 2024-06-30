@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:33:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/30 17:03:27 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/06/30 23:16:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ static int	create_sems_philos(t_data *pdata)
 			philo->pid = child_pid;
 		}
 	}
-	if (philo >= pdata->philo)
-		destroy_all(pdata, ++philo, 1);
+	if (++philo > pdata->philo)
+		destroy_sems_philos(pdata, philo, 1);
 	return (pdata->exit_status);
 }
 
