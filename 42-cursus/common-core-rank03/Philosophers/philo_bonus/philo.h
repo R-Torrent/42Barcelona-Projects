@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/06/30 23:39:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/01 23:28:51 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	free(void *ptr);
 int		gettimeofday(struct timeval *tv, struct timezone *tz);
 int		kill(pid_t pid, int sig);
 void	*malloc(size_t size);
-void	*memset(void *s, int c, size_t n);
 int		printf(const char *format, ...);
 int		pthread_create(pthread_t *thread, const pthread_attr_t *attr,
 			void *(*start_routine) (void *), void *arg);
@@ -62,6 +61,7 @@ enum e_philo_action
 };
 
 // philosopher exit conditiions
+# define PHILO__OK 00
 # define PHILO_ERR 01
 # define MEALS__OK 02
 # define TERMINATE 04
@@ -82,16 +82,13 @@ typedef struct s_philo
 	int				meals_left;
 	unsigned int	last_meal;
 	int				flags;
-	pid_t			pid;
 	struct s_contrl	*contrl;
-	struct s_data	*pdata;
 }	t_philo;
 
 typedef struct s_contrl
 {
 	char			timestamp[12];
 	unsigned int	elapsed;
-	int				flags;
 	struct timeval	*t;
 	struct s_data	*pdata;
 	pthread_t		thread;
@@ -108,13 +105,12 @@ typedef struct s_data
 	int				exit_status;
 	sem_t			**sem;
 	struct s_philo	*philo;
+	pid_t			*pid;
 }	t_data;
 
 // philosopher actions
 typedef int	(*t_philo_func)(struct s_philo *);
 
-void	destroy_sems_philos(t_data *pdata, t_philo *philo, int error);
-int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void	*run_contrl(t_data *pdata);
 void	run_philo(t_philo *philo);
