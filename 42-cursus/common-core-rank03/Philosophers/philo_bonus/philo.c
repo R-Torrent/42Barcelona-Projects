@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 16:28:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/05 21:16:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@ void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int error)
 	while (pid < pid_last)
 		error = (kill(*pid++, SIGTERM) || error);
 	pdata->exit_status = (pdata->exit_status || error);
+}
+
+void	*run_terminator(t_data *pdata)
+{
+	pdata->exit_status = sem_wait(pdata->sem[MLSOK])
+		|| sem_post(pdata->sem[TERMN]);
+	return (NULL);
 }
 
 int	main(int argc, char *argv[])
@@ -54,8 +61,11 @@ int	main(int argc, char *argv[])
 				run_philo(data.philo);
 			data.pid[i++] = child_pid;
 		}
-		if (i == data.number_of_philos)
-			sem_post(data.sem[MASTR]);
+		data.exit_status = i != data.number_of_philos
+			|| pthread_create(&data.terminator, NULL,
+				(void *(*)(void *))run_terminator, &data)
+			|| pthread_detach(data.terminator) || sem_post(data.sem[MASTR])
+			|| sem_wait(data.sem[TERMN]);
 	}
 	destroy_sems_philos(&data, data.pid + i, i < data.number_of_philos);
 	free(data.sem);

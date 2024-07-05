@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 15:57:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/05 19:43:52 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ typedef struct s_contrl
 {
 	char			timestamp[12];
 	unsigned int	elapsed;
+	pthread_t		thread;
 	struct timeval	*t;
 	struct s_data	*pdata;
-	pthread_t		thread;
 }	t_contrl;
 
 // NOTE: all times stored in microseconds
@@ -107,6 +107,7 @@ typedef struct s_data
 	unsigned int	time_to_sleep;
 	unsigned int	time_to_think;
 	int				exit_status;
+	pthread_t		terminator;
 	sem_t			**sem;
 	struct s_philo	*philo;
 	pid_t			*pid;
