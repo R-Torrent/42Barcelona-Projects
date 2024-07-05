@@ -6,50 +6,26 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/03 20:00:20 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:05:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static char	*ft_strcpy(char *dest, char *src)
-{
-	char	*dst0;
-
-	dst0 = dest;
-	while (*src)
-		*dest++ = *src++;
-	*dest = '\0';
-	return (dst0);
-}
-
 int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
-	char	timestamp[12];
-	int		terminate;
+	t_contrl *const	contrl = philo->contrl;
+	char			timestamp[12];
 
-	if (pthread_mutex_lock(&philo->access)
-		|| pthread_mutex_lock(philo->pdata->shared_locks + READ_TIME))
+	if (philo->contrl->elapsed - philo->last_meal
+		>= philo->contrl->pdata->time_to_die)
 		return (1);
-	if (philo->pdata->contrl->elapsed - philo->last_meal
-		>= philo->pdata->time_to_die)
-		philo->flags |= TERMINATE;
-	terminate = philo->flags & TERMINATE;
-	if (!terminate)
-	{
-		if (dst)
-			*dst = philo->pdata->contrl->elapsed;
-		(void)ft_strcpy(timestamp, philo->pdata->contrl->timestamp);
-	}
-	if (pthread_mutex_unlock(philo->pdata->shared_locks + READ_TIME)
-		|| pthread_mutex_unlock(&philo->access))
-		return (1);
-	if (terminate)
-		return (0);
-	if (pthread_mutex_lock(philo->pdata->shared_locks + PRINT_LOG))
+	if (dst)
+		*dst = philo->contrl->elapsed;
+	if (sem_wait(contrl->pdata->sem[PRINT]))
 		return (1);
 	printf("%s %i %s\n", timestamp, philo->n, str);
-	return (pthread_mutex_unlock(philo->pdata->shared_locks + PRINT_LOG));
+	return (sem_post(contrl->pdata->sem[PRINT]));
 }
 
 static void	place_digit(unsigned int n, char **pstr)
@@ -87,22 +63,18 @@ int	tstamp(t_contrl *contrl)
 // desired intermission, 'lapse' in microseconds, is followed through
 int	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 {
-	unsigned int			reveille;
-	pthread_mutex_t *const	time_lock = contrl->pdata->shared_locks + READ_TIME;
-	int						err;
+	unsigned int	reveille;
+	int				err;
 
-	err = pthread_mutex_lock(time_lock);
 	reveille = contrl->elapsed + lapse;
+	err = 0;
 	while (!err)
 	{
 		if (is_contrl)
 			err = tstamp(contrl);
-		lapse = contrl->elapsed;
-		err = pthread_mutex_unlock(time_lock);
-		if (err || lapse >= reveille)
+		if (err || contrl->elapsed >= reveille)
 			break ;
 		usleep(100U);
-		err = pthread_mutex_lock(time_lock);
 	}
 	return (err);
 }

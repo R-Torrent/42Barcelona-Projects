@@ -6,9 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 02:22:02 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:25:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "philo.h"
 
 static int	create_sems(t_data *pdata)
 {
@@ -17,20 +19,27 @@ static int	create_sems(t_data *pdata)
 	const int		oflag = O_CREAT | O_RDWR;
 	const mode_t	mode = S_IRUSR | S_IWUSR;
 	int				i;
+	int				j;
 
 	pdata->sem[MASTR] = sem_open(locations[MASTR], oflag, mode, 0);
-	pdata->sem[MASTR] = sem_open(locations[PRINT], oflag, mode, 1);
+	pdata->sem[PRINT] = sem_open(locations[PRINT], oflag, mode, 1);
 	pdata->sem[FORKS] = sem_open(locations[FORKS], oflag, mode,
 			pdata->number_of_philos);
-	pdata->sem[FORKS] = sem_open(locations[MLSOK], oflag, mode,
+	pdata->sem[MLSOK] = sem_open(locations[MLSOK], oflag, mode,
 			1 - pdata->number_of_philos);
 	pdata->sem[TERMN] = sem_open(locations[TERMN], oflag, mode, 0);
 	i = 0;
+	j = 0;
 	while (i < NUMBS)
 	{
-		if (pdata->sem[i++] == SEM_FAILED)
-			return (1);
+		if (pdata->sem[i] != SEM_FAILED)
+		{
+			sem_unlink(locations[i]);
+			j++;
+		}
+		i++;
 	}
+	return (j < NUMBS);
 }
 
 // variation on the atoi lib function, it returns an error flag, with two extra
@@ -77,14 +86,13 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (params != 5)
 		pdata->philo->meals_left = -1;
 	pdata->philo->last_meal = 0;
-	pdata->philo->flags = PHILO__OK;
 	if (!pdata->philo->meals_left)
-		pdata->philo->flags |= MEALS__OK;
+		sem_post(pdata->sem[MLSOK]);
 	pdata->time_to_think = 0;
 	if (tthink > 0)
 		pdata->time_to_think = (unsigned int)tthink;
-	pdata->contrl->timestamp[0] = '0';
-	pdata->contrl->elapsed = 0;
+	pdata->philo->contrl->timestamp[0] = '0';
+	pdata->philo->contrl->elapsed = 0;
 	pdata->sem = malloc(NUMBS * sizeof(sem_t *));
 	pdata->pid = malloc(pdata->number_of_philos * sizeof(pid_t));
 	pdata->exit_status = (check_args || !pdata->sem || !pdata->pid

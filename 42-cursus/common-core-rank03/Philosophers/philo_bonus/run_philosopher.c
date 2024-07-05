@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 01:24:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:03:39 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@ static int	philo_sleep(t_philo *philo)
 
 static int	eat(t_philo *philo)
 {
-	int	err;
+	t_data *const	pdata = philo->contrl->pdata;
+	int				err;
 
 	if (print_stamp(&philo->last_meal, philo, "is eating")
-		|| wait_usec(philo->contrl, philo->contrl->pdata->time_to_eat, 0))
+		|| wait_usec(philo->contrl, pdata->time_to_eat, 0))
 		return (1);
 	err = (sem_post(pdata->sem[FORKS]) || sem_post(pdata->sem[FORKS]));
 	if (!err && !--philo->meals_left)
@@ -33,6 +34,8 @@ static int	eat(t_philo *philo)
 
 static int	pick_forks(t_philo *philo)
 {
+	t_data *const	pdata = philo->contrl->pdata;
+
 	return (sem_wait(pdata->sem[FORKS])
 		|| print_stamp(NULL, philo, "has taken a fork")
 		|| sem_wait(pdata->sem[FORKS])
@@ -54,7 +57,7 @@ void	run_philo(t_philo *philo)
 
 	act = THINK;
 	ret = (sem_wait(contrl->pdata->sem[MASTR])
-			|| sem_post(control->pdata->sem[MASTR])
+			|| sem_post(contrl->pdata->sem[MASTR])
 			|| pthread_create(&contrl->thread, NULL,
 				(void *(*)(void *))run_contrl, contrl)
 			|| pthread_detach(contrl->thread));
@@ -63,6 +66,6 @@ void	run_philo(t_philo *philo)
 		ret = pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
-	sem_post(control->pdata->sem[TERMN]);
+	sem_post(contrl->pdata->sem[TERMN]);
 	exit(ret);
 }

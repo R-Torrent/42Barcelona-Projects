@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 01:24:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/05 15:57:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ int		pthread_create(pthread_t *thread, const pthread_attr_t *attr,
 int		pthread_detach(pthread_t thread);
 int		pthread_join(pthread_t thread, void **retval);
 int		sem_close(sem_t *sem);
-sem_t	*sem_open(const char *name, int oflag, mode_t mode,
-			unsigned int value);
+sem_t	*sem_open(const char *name, int oflag, ...);
 int		sem_post(sem_t *sem);
 int		sem_unlink(const char *name);
 int		sem_wait(sem_t *sem);
