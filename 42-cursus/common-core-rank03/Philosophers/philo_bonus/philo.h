@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/01 23:28:51 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/05 01:24:49 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,28 +60,33 @@ enum e_philo_action
 	NUMBER_OF_ACTIONS
 };
 
-// philosopher exit conditiions
-# define PHILO__OK 00
-# define PHILO_ERR 01
-# define MEALS__OK 02
-# define TERMINATE 04
+/* semaphore uses:
+ * MASTR: synchronize all philosophers and their controllers
+ * PRINT: print each log
+ * FORKS: as per instructions, a semaphore for the pile of forks
+ * MLSOK: optional argument 'number_of_times_each_philosopher_must_eat'
+ * TERMN: simulation terminates, from deathi, MLSOK, or program error
+ * NUMBS (keep last): as last element in enumeration, will store the amount
+*/
 
 enum e_semaphores
 {
 	MASTR,
-	FORKS
+	PRINT,
+	FORKS,
+	MLSOK,
+	TERMN,
+	NUMBS
 };
 
 // temporary location for the project's semaphores
-# define SEM_MASTR "/tmp/sem_master"
-# define SEM_FORKS "/tmp/sem_forks"
+# define TMP "/tmp/sem_"
 
 typedef struct s_philo
 {
 	int				n;
 	int				meals_left;
 	unsigned int	last_meal;
-	int				flags;
 	struct s_contrl	*contrl;
 }	t_philo;
 
@@ -111,8 +116,10 @@ typedef struct s_data
 // philosopher actions
 typedef int	(*t_philo_func)(struct s_philo *);
 
+void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int error);
+int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
-void	*run_contrl(t_data *pdata);
+void	*run_contrl(t_contrl *contrl);
 void	run_philo(t_philo *philo);
 int		tstamp(t_contrl *contrl);
 int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
