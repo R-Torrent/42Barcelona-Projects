@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/08 14:32:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/07/08 14:43:00 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/07/08 15:03:40 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ RM_NT_DEBUG = find . -type f -name "*.o" -newer $(DEBUG) -delete
 
 # Filenames:
 
-NAME    := philo
+NAME    := philo_bonus
 
 HEADER  := philo.h
 
