@@ -6,11 +6,11 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 16:05:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/09 00:39:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
