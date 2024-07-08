@@ -6,34 +6,46 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 21:16:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/08 02:04:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int error)
+void	*run_cleaner(t_data *pdata)
 {
-	int		i;
-	pid_t	*pid;
+	int			i;
+	int *const	err = &pdata->exit_status;
 
 	i = 0;
+	*err = (sem_wait(pdata->sem[TERMN]) || *err);
+	*err = (sem_post(pdata->sem[TERMN]) || *err);
 	while (i < NUMBS)
 	{
-		if (pdata->sem[i] != SEM_FAILED)
-			error = (sem_close(pdata->sem[i]) || error);
+		*err = ((pdata->sem[i] != SEM_FAILED && sem_close(pdata->sem[i]))
+				|| *err);
 		i++;
 	}
+	free(pdata->sem);
+	return (NULL);
+}
+
+void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int error)
+{
+	pid_t	*pid;
+
+	run_cleaner(pdata);
 	pid = pdata->pid;
 	while (pid < pid_last)
 		error = (kill(*pid++, SIGTERM) || error);
+	free(pdata->pid);
 	pdata->exit_status = (pdata->exit_status || error);
 }
 
 void	*run_terminator(t_data *pdata)
 {
-	pdata->exit_status = sem_wait(pdata->sem[MLSOK])
-		|| sem_post(pdata->sem[TERMN]);
+	pdata->exit_status = (sem_wait(pdata->sem[MLSOK])
+			|| sem_post(pdata->sem[TERMN]));
 	return (NULL);
 }
 
@@ -61,14 +73,12 @@ int	main(int argc, char *argv[])
 				run_philo(data.philo);
 			data.pid[i++] = child_pid;
 		}
-		data.exit_status = i != data.number_of_philos
-			|| pthread_create(&data.terminator, NULL,
-				(void *(*)(void *))run_terminator, &data)
-			|| pthread_detach(data.terminator) || sem_post(data.sem[MASTR])
-			|| sem_wait(data.sem[TERMN]);
+		data.exit_status = (i != data.number_of_philos
+				|| pthread_create(&data.terminator, NULL,
+					(void *(*)(void *))run_terminator, &data)
+				|| pthread_detach(data.terminator)
+				|| sem_post(data.sem[MASTR]));
 	}
 	destroy_sems_philos(&data, data.pid + i, i < data.number_of_philos);
-	free(data.sem);
-	free(data.pid);
 	return (data.exit_status);
 }

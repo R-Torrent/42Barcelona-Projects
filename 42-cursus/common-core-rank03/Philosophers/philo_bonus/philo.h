@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 19:43:52 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/08 01:49:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ enum e_philo_action
  * PRINT: print each log
  * FORKS: as per instructions, a semaphore for the pile of forks
  * MLSOK: optional argument 'number_of_times_each_philosopher_must_eat'
- * TERMN: simulation terminates, from deathi, MLSOK, or program error
+ * TERMN: simulation terminates, from death, MLSOK, or program error
  * NUMBS (keep last): as last element in enumeration, will store the amount
 */
 
@@ -93,7 +93,8 @@ typedef struct s_contrl
 {
 	char			timestamp[12];
 	unsigned int	elapsed;
-	pthread_t		thread;
+	pthread_t		thread_controller;
+	pthread_t		thread_cleaner;
 	struct timeval	*t;
 	struct s_data	*pdata;
 }	t_contrl;
@@ -119,6 +120,7 @@ typedef int	(*t_philo_func)(struct s_philo *);
 void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int error);
 int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
+void	*run_cleaner(t_data *pdata);
 void	*run_contrl(t_contrl *contrl);
 void	run_philo(t_philo *philo);
 int		tstamp(t_contrl *contrl);
