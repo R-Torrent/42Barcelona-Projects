@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/08 14:32:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/07/08 20:23:47 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/07/09 00:44:12 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,10 @@ RM_NT_DEBUG = find . -type f -name "*.o" -newer $(DEBUG) -delete
 
 NAME    := philo_bonus
 
-HEADER  := philo.h
+HEADER  := philo_bonus.h
 
 SRC     := load_simulation.c\
-	philo.c\
+	philo_bonus.c\
 	run_controller.c\
 	run_philosopher.c\
 	timekeeping.c
@@ -55,10 +55,9 @@ $(DEBUG)::
 	@if [ -f "$@" ]; then $(RM_NT_DEBUG); else $(MAKE) -s fclean; fi
 
 $(NAME):: $(OBJ)
-	$(CC) $^ -o $(NAME)
 
 $(DEBUG):: $(OBJ)
-	$(CC) $^ -o $(NAME)
+	$(CC) $(LDFLAGS) $^ -o $(NAME)
 	@$(TC) $(DEBUG)
 
 clean:

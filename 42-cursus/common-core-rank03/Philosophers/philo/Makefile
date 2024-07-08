@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/23 18:32:36 by rtorrent          #+#    #+#              #
-#    Updated: 2024/04/23 19:58:00 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/07/09 00:28:22 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ $(DEBUG)::
 $(NAME):: $(OBJ)
 
 $(DEBUG):: $(OBJ)
-	$(CC) $^ -o $(NAME)
+	$(CC) $(LDFLAGS) $^ -o $(NAME)
 	@$(TC) $(DEBUG)
 
 clean:
