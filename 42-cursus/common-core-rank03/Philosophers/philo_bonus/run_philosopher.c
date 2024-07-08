@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/08 02:37:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/08 14:12:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,18 @@ void	run_philo(t_philo *philo)
 	t_contrl *const		contrl = philo->contrl;
 	const t_philo_func	pfunc[] = {think, pick_forks, eat, philo_sleep};
 	enum e_philo_action	act;
-	int					ret;
 
-	free(contrl->pdata->pid);
 	act = THINK;
-	ret = (pthread_create(&contrl->thread_controller, NULL,
-				(void *(*)(void *))run_contrl, contrl)
+	contrl->ret = (contrl->ret || pthread_create(&contrl->thread_controller,
+				NULL, (void *(*)(void *))run_contrl, contrl)
 			|| pthread_create(&contrl->thread_cleaner, NULL,
 				(void *(*)(void *))run_cleaner, contrl->pdata)
 			|| pthread_detach(contrl->thread_controller)
 			|| sem_wait(contrl->pdata->sem[MASTR])
 			|| sem_post(contrl->pdata->sem[MASTR]));
-	while (!ret)
+	while (!contrl->ret)
 	{
-		ret = pfunc[act](philo);
+		contrl->ret = pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
 	sem_post(contrl->pdata->sem[TERMN]);

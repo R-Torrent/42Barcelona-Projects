@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 16:04:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:51:20 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,15 @@ void	*run_contrl(t_contrl *contrl)
 {
 	struct timeval	t[2];
 	t_data *const	pdata = contrl->pdata;
-	int				ret;
 
 	contrl->t = t;
-	ret = (sem_wait(pdata->sem[MASTR])
-			|| sem_post(pdata->sem[MASTR])
-			|| gettimeofday(t, NULL));
-	while (!ret)
-		ret = (print_obituary(contrl, pdata->philo)
+	contrl->ret = (contrl->ret || sem_wait(pdata->sem[MASTR])
+			|| sem_post(pdata->sem[MASTR]) || gettimeofday(t, NULL));
+	while (!contrl->ret)
+		contrl->ret = (print_obituary(contrl, pdata->philo)
 				|| tstamp(contrl) || wait_usec(contrl, 1000
-					- (t[1].tv_usec % 1000 - t[0].tv_usec % 1000), 1));
+					- (t[1].tv_usec % 1000 - t[0].tv_usec % 1000), 1)
+				|| contrl->ret);
 	sem_post(pdata->sem[TERMN]);
 	return (NULL);
 }

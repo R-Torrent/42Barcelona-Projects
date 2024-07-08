@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/05 16:25:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/08 14:06:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,8 @@ static int	create_sems(t_data *pdata)
 	j = 0;
 	while (i < NUMBS)
 	{
-		if (pdata->sem[i] != SEM_FAILED)
-		{
-			sem_unlink(locations[i]);
+		if (pdata->sem[i] != SEM_FAILED && !sem_unlink(locations[i]))
 			j++;
-		}
 		i++;
 	}
 	return (j < NUMBS);
@@ -93,6 +90,7 @@ int	load_sim(t_data *pdata, int params, char **args)
 		pdata->time_to_think = (unsigned int)tthink;
 	pdata->philo->contrl->timestamp[0] = '0';
 	pdata->philo->contrl->elapsed = 0;
+	pdata->philo->contrl->ret = 0;
 	pdata->sem = malloc(NUMBS * sizeof(sem_t *));
 	pdata->pid = malloc(pdata->number_of_philos * sizeof(pid_t));
 	pdata->exit_status = (check_args || !pdata->sem || !pdata->pid
