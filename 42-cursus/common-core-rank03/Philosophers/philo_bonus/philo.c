@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/08 14:15:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/08 20:17:16 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,13 @@ void	*run_terminator(t_data *pdata)
 	return (NULL);
 }
 
-int	spawn_philos(t_data *pdata)
+void	spawn_philos(t_data *pdata, int *i)
 {
-	int		i;
 	pid_t	child_pid;
 
-	i = 0;
-	while (i < pdata->number_of_philos)
+	while (*i < pdata->number_of_philos)
 	{
-		pdata->philo->n = i + 1;
+		pdata->philo->n = *i + 1;
 		child_pid = fork();
 		if (child_pid == -1)
 			break ;
@@ -66,7 +64,7 @@ int	spawn_philos(t_data *pdata)
 			free(pdata->pid);
 			run_philo(pdata->philo);
 		}
-		pdata->pid[i++] = child_pid;
+		pdata->pid[(*i)++] = child_pid;
 	}
 	return (i);
 }
@@ -81,9 +79,10 @@ int	main(int argc, char *argv[])
 	data.philo = &philo;
 	philo.contrl = &contrl;
 	contrl.pdata = &data;
+	i = 0;
 	if (!load_sim(&data, --argc, ++argv))
 	{
-		i = spawn_philos(&data);
+		spawn_philos(&data, &i);
 		data.exit_status = (i != data.number_of_philos
 				|| pthread_create(&data.terminator, NULL,
 					(void *(*)(void *))run_terminator, &data)
