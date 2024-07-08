@@ -6,7 +6,7 @@
 #    By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/08 14:32:05 by rtorrent          #+#    #+#              #
-#    Updated: 2024/07/08 15:03:40 by rtorrent         ###   ########.fr        #
+#    Updated: 2024/07/08 20:23:47 by rtorrent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,7 @@ $(DEBUG)::
 	@if [ -f "$@" ]; then $(RM_NT_DEBUG); else $(MAKE) -s fclean; fi
 
 $(NAME):: $(OBJ)
+	$(CC) $^ -o $(NAME)
 
 $(DEBUG):: $(OBJ)
 	$(CC) $^ -o $(NAME)
