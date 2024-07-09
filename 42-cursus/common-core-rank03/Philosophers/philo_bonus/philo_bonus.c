@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 00:38:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/09 20:27:00 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void	*run_cleaner(t_data *pdata)
 	int *const	err = &pdata->exit_status;
 
 	sem = *pdata->sem;
-	*err = (sem_wait(pdata->sem[TERMN]) || *err);
-	*err = (sem_post(pdata->sem[TERMN]) || *err);
+	*err = (*err || sem_wait(pdata->sem[TERMN]) || sem_post(pdata->sem[TERMN]));
 	while (sem - *pdata->sem < NUMBS)
 	{
 		*err = ((sem != SEM_FAILED && sem_close(sem)) || *err);
 		sem++;
 	}
-	free(pdata->sem);
+	if (pdata->sem)
+		free(pdata->sem);
 	return (NULL);
 }
 
@@ -33,13 +33,14 @@ void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 {
 	pid_t	*pid;
 
-	if (*err)
+	if (pdata->sem[TERMN] != SEM_FAILED)
 		sem_post(pdata->sem[TERMN]);
 	run_cleaner(pdata);
 	pid = pdata->pid;
 	while (pid < pid_last)
 		*err = (waitpid(*pid++, NULL, 0) == -1 || *err);
-	free(pdata->pid);
+	if (pdata->pid)
+		free(pdata->pid);
 }
 
 void	*run_terminator(t_data *pdata)
@@ -86,7 +87,8 @@ int	main(int argc, char *argv[])
 				|| pthread_create(&data.terminator, NULL,
 					(void *(*)(void *))run_terminator, &data)
 				|| pthread_detach(data.terminator)
-				|| sem_post(data.sem[MASTR]));
+				|| sem_post(data.sem[MASTR])
+				|| sem_wait(data.sem[TERMN]));
 	}
 	destroy_sems_philos(&data, data.pid + i, &data.exit_status);
 	return (data.exit_status);
