@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 00:36:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/09 12:16:09 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,6 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (params != 5)
 		pdata->philo->meals_left = -1;
 	pdata->philo->last_meal = 0;
-	if (!pdata->philo->meals_left)
-		sem_post(pdata->sem[MLSOK]);
 	pdata->time_to_think = 0;
 	if (tthink > 0)
 		pdata->time_to_think = (unsigned int)tthink;

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 00:36:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/09 12:19:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,23 +51,26 @@ static int	think(t_philo *philo)
 void	run_philo(t_philo *philo)
 {
 	t_contrl *const		contrl = philo->contrl;
+	t_data *const		pdata = contrl->pdata;
 	const t_philo_func	pfunc[] = {think, pick_forks, eat, philo_sleep};
 	enum e_philo_action	act;
 
 	act = THINK;
+	if (!pdata->philo->meals_left)
+		sem_post(pdata->sem[MLSOK]);
 	contrl->ret = (contrl->ret || pthread_create(&contrl->thread_controller,
 				NULL, (void *(*)(void *))run_contrl, contrl)
 			|| pthread_create(&contrl->thread_cleaner, NULL,
-				(void *(*)(void *))run_cleaner, contrl->pdata)
+				(void *(*)(void *))run_cleaner, pdata)
 			|| pthread_detach(contrl->thread_controller)
-			|| sem_wait(contrl->pdata->sem[MASTR])
-			|| sem_post(contrl->pdata->sem[MASTR]));
+			|| sem_wait(pdata->sem[MASTR])
+			|| sem_post(pdata->sem[MASTR]));
 	while (!contrl->ret)
 	{
 		contrl->ret = pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
-	sem_post(contrl->pdata->sem[TERMN]);
+	sem_post(pdata->sem[TERMN]);
 	pthread_join(contrl->thread_cleaner, NULL);
 	exit(0);
 }
