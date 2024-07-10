@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 12:16:09 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/10 20:27:36 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	create_sems(t_data *pdata)
 	pdata->sem[FORKS] = sem_open(locations[FORKS], oflag, mode,
 			pdata->number_of_philos);
 	pdata->sem[MLSOK] = sem_open(locations[MLSOK], oflag, mode,
-			1 - pdata->number_of_philos);
+			pdata->number_of_philos);
 	pdata->sem[TERMN] = sem_open(locations[TERMN], oflag, mode, 0);
 	i = 0;
 	j = 0;
