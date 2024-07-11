@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 14:19:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 18:31:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/11 22:53:33 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,8 @@ typedef int	(*t_philo_func)(struct s_philo *);
 void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err);
 int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
-void	*run_cleaner(t_data *pdata);
-void	*run_contrl(t_contrl *contrl);
+void	run_cleaner(t_data *pdata);
+void	run_contrl(t_contrl *contrl);
 void	run_philo(t_philo *philo);
 int		tstamp(t_contrl *contrl);
 int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);

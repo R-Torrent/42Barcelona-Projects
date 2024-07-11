@@ -6,13 +6,13 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/10 20:46:26 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/11 22:58:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	*run_cleaner(t_data *pdata)
+void	run_cleaner(t_data *pdata)
 {
 	sem_t		*sem;
 	int *const	err = &pdata->exit_status;
@@ -26,7 +26,6 @@ void	*run_cleaner(t_data *pdata)
 	}
 	if (pdata->sem)
 		free(pdata->sem);
-	return (NULL);
 }
 
 void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
@@ -43,7 +42,7 @@ void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 		free(pdata->pid);
 }
 
-void	*run_terminator(t_data *pdata)
+void	run_terminator(t_data *pdata)
 {
 	int	meals_ok;
 
@@ -51,7 +50,6 @@ void	*run_terminator(t_data *pdata)
 	while (meals_ok-- && !pdata->exit_status)
 		pdata->exit_status = sem_wait(pdata->sem[MLSOK]);
 	pdata->exit_status = (sem_post(pdata->sem[TERMN]) || pdata->exit_status);
-	return (NULL);
 }
 
 void	spawn_philos(t_data *pdata, int *i)
@@ -89,7 +87,7 @@ int	main(int argc, char *argv[])
 		spawn_philos(&data, &i);
 		data.exit_status = (i != data.number_of_philos
 				|| pthread_create(&data.terminator, NULL,
-					(void *(*)(void *))run_terminator, &data)
+					(void *)run_terminator, &data)
 				|| pthread_detach(data.terminator)
 				|| sem_post(data.sem[MASTR])
 				|| sem_wait(data.sem[TERMN]));

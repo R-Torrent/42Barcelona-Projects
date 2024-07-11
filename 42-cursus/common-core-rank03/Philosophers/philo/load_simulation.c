@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 20:48:44 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/23 18:06:42 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/11 22:49:21 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	create_forks_philos(t_data *pdata)
 		if (pthread_mutex_init(&fork->lock, NULL))
 			break ;
 		else if (pthread_create(&philo->thread, NULL,
-				(void *(*)(void *))run_philo, philo))
+				(void *)run_philo, philo))
 		{
 			while (++philo < pdata->philo + pdata->number_of_philos)
 				pthread_detach(philo->thread);
@@ -143,7 +143,7 @@ int	load_sim(t_data *pdata, int params, char **args)
 		init_data(pdata, times_each_philo_must_eat);
 		pdata->exit_status = (create_locks(pdata) || create_forks_philos(pdata)
 				|| pthread_create(&pdata->contrl->thread, NULL,
-					(void *(*)(void *))run_contrl, pdata)
+					(void *)run_contrl, pdata)
 				|| pthread_mutex_unlock(&pdata->shared_locks[MASTER_LOCK]));
 	}
 	return (pdata->exit_status);

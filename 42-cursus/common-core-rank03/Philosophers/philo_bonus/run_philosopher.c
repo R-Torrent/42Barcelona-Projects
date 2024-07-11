@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 12:19:26 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/11 22:59:23 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ void	run_philo(t_philo *philo)
 	if (!pdata->philo->meals_left)
 		sem_post(pdata->sem[MLSOK]);
 	contrl->ret = (contrl->ret || pthread_create(&contrl->thread_controller,
-				NULL, (void *(*)(void *))run_contrl, contrl)
+				NULL, (void *)run_contrl, contrl)
 			|| pthread_create(&contrl->thread_cleaner, NULL,
-				(void *(*)(void *))run_cleaner, pdata)
+				(void *)run_cleaner, pdata)
 			|| pthread_detach(contrl->thread_controller)
 			|| sem_wait(pdata->sem[MASTR])
 			|| sem_post(pdata->sem[MASTR]));

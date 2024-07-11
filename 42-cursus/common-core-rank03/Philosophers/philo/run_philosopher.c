@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/24 00:15:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/11 22:36:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static int	think(t_philo *philo)
 		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_think, 0));
 }
 
-void	*run_philo(t_philo *philo)
+void	run_philo(t_philo *philo)
 {
 	const t_philo_func	pfunc[] = {think, pick_forks, eat, philo_sleep};
 	enum e_philo_action	act;
@@ -80,12 +80,11 @@ void	*run_philo(t_philo *philo)
 		if (pthread_mutex_unlock(&philo->access))
 			break ;
 		if (ret)
-			return (NULL);
+			return ;
 		ret = pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
 	pthread_mutex_lock(&philo->access);
 	philo->flags |= PHILO_ERR;
 	pthread_mutex_unlock(&philo->access);
-	return (NULL);
 }

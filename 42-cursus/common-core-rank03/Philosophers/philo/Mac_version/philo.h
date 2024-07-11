@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/29 12:05:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/11 22:52:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,8 @@ typedef int	(*t_philo_func)(struct s_philo *);
 void	destroy_locks(t_data *pdata, t_fork *fork, int error);
 int		load_sim(t_data *pdata, int params, char **args);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
-void	*run_contrl(t_data *pdata);
-void	*run_philo(t_philo *philo);
+void	run_contrl(t_data *pdata);
+void	run_philo(t_philo *philo);
 int		tstamp(t_contrl *contrl);
 int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
 

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 00:36:37 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/11 22:54:00 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	print_obituary(t_contrl *contrl, t_philo *philo)
 }
 
 // main loop runs once every millisecond
-void	*run_contrl(t_contrl *contrl)
+void	run_contrl(t_contrl *contrl)
 {
 	struct timeval	t[2];
 	t_data *const	pdata = contrl->pdata;
@@ -42,5 +42,4 @@ void	*run_contrl(t_contrl *contrl)
 					- (t[1].tv_usec % 1000 - t[0].tv_usec % 1000), 1)
 				|| contrl->ret);
 	sem_post(pdata->sem[TERMN]);
-	return (NULL);
 }
