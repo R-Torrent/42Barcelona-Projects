@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/11 22:54:00 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 00:24:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static int	print_obituary(t_contrl *contrl, t_philo *philo)
 		err = sem_wait(pdata->sem[PRINT]);
 		printf("%s %i died\n", contrl->timestamp, philo->n);
 		err = (sem_post(pdata->sem[PRINT]) || err);
+		contrl->ret = 1;
 	}
 	return (err);
 }
