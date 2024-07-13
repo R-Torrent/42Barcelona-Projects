@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/11 22:53:17 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 00:17:42 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,6 @@ enum e_semaphores
 	TERMN,
 	NUMBS
 };
-
-// temporary location for the project's semaphores
-# define TMP "/tmp/sem_"
 
 typedef struct s_philo
 {
