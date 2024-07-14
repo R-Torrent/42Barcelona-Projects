@@ -6,11 +6,22 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/09 00:39:19 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 02:11:32 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+static char	*ft_strcpy(char *dest, char *src)
+{
+	char	*dst0;
+
+	dst0 = dest;
+	while (*src)
+		*dest++ = *src++;
+	*dest = '\0';
+	return (dst0);
+}
 
 int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
@@ -22,6 +33,7 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 		return (1);
 	if (dst)
 		*dst = philo->contrl->elapsed;
+	(void)ft_strcpy(timestamp, contrl->timestamp);
 	if (sem_wait(contrl->pdata->sem[PRINT]))
 		return (1);
 	printf("%s %i %s\n", timestamp, philo->n, str);

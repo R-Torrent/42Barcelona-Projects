@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 00:17:25 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 02:13:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (tthink > 0)
 		pdata->time_to_think = (unsigned int)tthink;
 	pdata->philo->contrl->timestamp[0] = '0';
+	pdata->philo->contrl->timestamp[1] = '\0';
 	pdata->philo->contrl->elapsed = 0;
 	pdata->philo->contrl->ret = 0;
 	pdata->sem = malloc(NUMBS * sizeof(sem_t *));
