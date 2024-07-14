@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 17:51:57 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 19:49:17 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	create_sems(t_data *pdata)
 {
 	const char		*locations[] = {"/MASTR", "/PRINT", "/FORKS", "/MLSOK",
-		"TERMN"};
+		"/TERMN"};
 	int				i;
 	int				j;
 
