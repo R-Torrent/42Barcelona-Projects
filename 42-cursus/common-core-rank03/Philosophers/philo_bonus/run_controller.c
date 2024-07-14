@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 17:36:50 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 20:28:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,15 @@
 static int	print_obituary(t_contrl *contrl, t_philo *philo)
 {
 	t_data *const	pdata = contrl->pdata;
-	int				err;
 
-	err = 0;
 	if (contrl->elapsed - philo->last_meal >= pdata->time_to_die)
 	{
-		err = sem_wait(pdata->shared_sems[PRINT]);
+		sem_wait(pdata->shared_sems[PRINT]);
 		printf("%s %i died\n", contrl->timestamp, philo->n);
-		err = (sem_post(pdata->shared_sems[PRINT]) || err);
-		contrl->ret = 1;
+		sem_post(pdata->shared_sems[PRINT]);
+		return (1);
 	}
-	return (err);
+	return (0);
 }
 
 // main loop runs once every millisecond
