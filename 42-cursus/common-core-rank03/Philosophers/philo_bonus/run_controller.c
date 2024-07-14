@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 00:24:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 14:51:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,7 @@ void	run_contrl(t_contrl *contrl)
 			|| sem_post(pdata->sem[MASTR]) || gettimeofday(t, NULL));
 	while (!contrl->ret)
 		contrl->ret = (print_obituary(contrl, pdata->philo)
-				|| tstamp(contrl) || wait_usec(contrl, 1000
-					- (t[1].tv_usec % 1000 - t[0].tv_usec % 1000), 1)
+				|| tstamp(contrl) || wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1)
 				|| contrl->ret);
 	sem_post(pdata->sem[TERMN]);
 }
