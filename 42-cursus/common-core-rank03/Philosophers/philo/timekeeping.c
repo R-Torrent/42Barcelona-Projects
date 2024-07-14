@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 13:11:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 15:26:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	tstamp(t_contrl *contrl)
 	return (err);
 }
 
-// this function runs a loop that executes usleep every 100 us until the
+// this function runs a loop that executes usleep every 50 us until the
 // desired intermission, 'lapse' in microseconds, is followed through
 int	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 {
@@ -103,7 +103,7 @@ int	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 		err = pthread_mutex_unlock(time_lock);
 		if (err || lapse >= reveille)
 			break ;
-		usleep(100U);
+		usleep(50U);
 		err = pthread_mutex_lock(time_lock);
 	}
 	return (err);
