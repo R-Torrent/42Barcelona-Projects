@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/11 22:31:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 15:34:38 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 /* ************************************************************************** */
 
 // delay to stop waking philos from jumping the queue, in microseconds
-# define SLEEP_N_THINK 800U
+# define SLEEP_N_THINK 200U
 
 enum e_hand
 {
