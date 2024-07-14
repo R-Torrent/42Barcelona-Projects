@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 17:38:20 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 20:17:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	run_cleaner(t_data *pdata)
 		free(pdata->shared_sems);
 }
 
-void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
+static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 {
 	pid_t	*pid;
 
@@ -43,7 +43,7 @@ void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 		free(pdata->pid);
 }
 
-void	run_terminator(t_data *pdata)
+static void	run_terminator(t_data *pdata)
 {
 	int	meals_ok;
 
@@ -54,7 +54,7 @@ void	run_terminator(t_data *pdata)
 			|| pdata->exit_status);
 }
 
-void	spawn_philos(t_data *pdata, int *i)
+static void	spawn_philos(t_data *pdata, int *i)
 {
 	pid_t	child_pid;
 
