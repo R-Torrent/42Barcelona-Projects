@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 14:51:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:36:50 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ static int	print_obituary(t_contrl *contrl, t_philo *philo)
 	err = 0;
 	if (contrl->elapsed - philo->last_meal >= pdata->time_to_die)
 	{
-		err = sem_wait(pdata->sem[PRINT]);
+		err = sem_wait(pdata->shared_sems[PRINT]);
 		printf("%s %i died\n", contrl->timestamp, philo->n);
-		err = (sem_post(pdata->sem[PRINT]) || err);
+		err = (sem_post(pdata->shared_sems[PRINT]) || err);
 		contrl->ret = 1;
 	}
 	return (err);
@@ -35,11 +35,12 @@ void	run_contrl(t_contrl *contrl)
 	t_data *const	pdata = contrl->pdata;
 
 	contrl->t = t;
-	contrl->ret = (contrl->ret || sem_wait(pdata->sem[MASTR])
-			|| sem_post(pdata->sem[MASTR]) || gettimeofday(t, NULL));
+	contrl->ret = (contrl->ret || sem_wait(pdata->shared_sems[MASTR])
+			|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL));
 	while (!contrl->ret)
 		contrl->ret = (print_obituary(contrl, pdata->philo)
-				|| tstamp(contrl) || wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1)
+				|| tstamp(contrl)
+				|| wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1)
 				|| contrl->ret);
-	sem_post(pdata->sem[TERMN]);
+	sem_post(pdata->shared_sems[TERMN]);
 }

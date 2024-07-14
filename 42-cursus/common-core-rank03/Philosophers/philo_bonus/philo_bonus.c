@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/11 22:58:43 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:38:20 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,24 @@ void	run_cleaner(t_data *pdata)
 	sem_t		*sem;
 	int *const	err = &pdata->exit_status;
 
-	sem = *pdata->sem;
-	*err = (*err || sem_wait(pdata->sem[TERMN]) || sem_post(pdata->sem[TERMN]));
-	while (sem - *pdata->sem < NUMBS)
+	sem = *pdata->shared_sems;
+	*err = (*err || sem_wait(pdata->shared_sems[TERMN])
+			|| sem_post(pdata->shared_sems[TERMN]));
+	while (sem - *pdata->shared_sems < NUMBS)
 	{
 		*err = ((sem != SEM_FAILED && sem_close(sem)) || *err);
 		sem++;
 	}
-	if (pdata->sem)
-		free(pdata->sem);
+	if (pdata->shared_sems)
+		free(pdata->shared_sems);
 }
 
 void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 {
 	pid_t	*pid;
 
-	if (pdata->sem[TERMN] != SEM_FAILED)
-		sem_post(pdata->sem[TERMN]);
+	if (pdata->shared_sems[TERMN] != SEM_FAILED)
+		sem_post(pdata->shared_sems[TERMN]);
 	run_cleaner(pdata);
 	pid = pdata->pid;
 	while (pid < pid_last)
@@ -48,8 +49,9 @@ void	run_terminator(t_data *pdata)
 
 	meals_ok = pdata->number_of_philos;
 	while (meals_ok-- && !pdata->exit_status)
-		pdata->exit_status = sem_wait(pdata->sem[MLSOK]);
-	pdata->exit_status = (sem_post(pdata->sem[TERMN]) || pdata->exit_status);
+		pdata->exit_status = sem_wait(pdata->shared_sems[MLSOK]);
+	pdata->exit_status = (sem_post(pdata->shared_sems[TERMN])
+			|| pdata->exit_status);
 }
 
 void	spawn_philos(t_data *pdata, int *i)
@@ -89,8 +91,8 @@ int	main(int argc, char *argv[])
 				|| pthread_create(&data.terminator, NULL,
 					(void *)run_terminator, &data)
 				|| pthread_detach(data.terminator)
-				|| sem_post(data.sem[MASTR])
-				|| sem_wait(data.sem[TERMN]));
+				|| sem_post(data.shared_sems[MASTR])
+				|| sem_wait(data.shared_sems[TERMN]));
 	}
 	destroy_sems_philos(&data, data.pid + i, &data.exit_status);
 	return (data.exit_status);

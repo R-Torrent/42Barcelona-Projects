@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/11 22:59:23 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:36:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ static int	eat(t_philo *philo)
 	if (print_stamp(&philo->last_meal, philo, "is eating")
 		|| wait_usec(philo->contrl, pdata->time_to_eat, 0))
 		return (1);
-	err = (sem_post(pdata->sem[FORKS]) || sem_post(pdata->sem[FORKS]));
+	err = (sem_post(pdata->shared_sems[FORKS])
+			|| sem_post(pdata->shared_sems[FORKS]));
 	if (!err && !--philo->meals_left)
-		err = sem_post(pdata->sem[MLSOK]);
+		err = sem_post(pdata->shared_sems[MLSOK]);
 	return (err);
 }
 
@@ -36,9 +37,9 @@ static int	pick_forks(t_philo *philo)
 {
 	t_data *const	pdata = philo->contrl->pdata;
 
-	return (sem_wait(pdata->sem[FORKS])
+	return (sem_wait(pdata->shared_sems[FORKS])
 		|| print_stamp(NULL, philo, "has taken a fork")
-		|| sem_wait(pdata->sem[FORKS])
+		|| sem_wait(pdata->shared_sems[FORKS])
 		|| print_stamp(NULL, philo, "has taken a fork"));
 }
 
@@ -57,20 +58,20 @@ void	run_philo(t_philo *philo)
 
 	act = THINK;
 	if (!pdata->philo->meals_left)
-		sem_post(pdata->sem[MLSOK]);
+		sem_post(pdata->shared_sems[MLSOK]);
 	contrl->ret = (contrl->ret || pthread_create(&contrl->thread_controller,
 				NULL, (void *)run_contrl, contrl)
 			|| pthread_create(&contrl->thread_cleaner, NULL,
 				(void *)run_cleaner, pdata)
 			|| pthread_detach(contrl->thread_controller)
-			|| sem_wait(pdata->sem[MASTR])
-			|| sem_post(pdata->sem[MASTR]));
+			|| sem_wait(pdata->shared_sems[MASTR])
+			|| sem_post(pdata->shared_sems[MASTR]));
 	while (!contrl->ret)
 	{
 		contrl->ret = pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
-	sem_post(pdata->sem[TERMN]);
+	sem_post(pdata->shared_sems[TERMN]);
 	pthread_join(contrl->thread_cleaner, NULL);
 	exit(0);
 }

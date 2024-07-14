@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 15:27:58 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:34:55 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 	if (dst)
 		*dst = philo->contrl->elapsed;
 	(void)ft_strcpy(timestamp, contrl->timestamp);
-	if (sem_wait(contrl->pdata->sem[PRINT]))
+	if (sem_wait(contrl->pdata->shared_sems[PRINT]))
 		return (1);
 	printf("%s %i %s\n", timestamp, philo->n, str);
-	return (sem_post(contrl->pdata->sem[PRINT]));
+	return (sem_post(contrl->pdata->shared_sems[PRINT]));
 }
 
 static void	place_digit(unsigned int n, char **pstr)

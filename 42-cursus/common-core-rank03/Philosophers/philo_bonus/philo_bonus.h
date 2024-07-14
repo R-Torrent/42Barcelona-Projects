@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 15:41:26 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:24:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ typedef struct s_data
 	unsigned int	time_to_think;
 	int				exit_status;
 	pthread_t		terminator;
-	sem_t			**sem;
+	sem_t			**shared_sems;
 	struct s_philo	*philo;
 	pid_t			*pid;
 }	t_data;
