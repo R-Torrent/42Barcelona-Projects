@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 17:44:14 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 20:34:10 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	run_philo(t_philo *philo)
 				NULL, (void *)run_contrl, contrl)
 			|| pthread_create(&contrl->thread_cleaner, NULL,
 				(void *)run_cleaner, pdata)
-			|| pthread_detach(contrl->thread_controller)
 			|| sem_wait(pdata->shared_sems[MASTR])
 			|| sem_post(pdata->shared_sems[MASTR]));
 	while (!contrl->ret)
@@ -72,5 +71,6 @@ void	run_philo(t_philo *philo)
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
 	sem_post(pdata->shared_sems[TERMN]);
+	pthread_join(contrl->thread_controller, NULL);
 	pthread_join(contrl->thread_cleaner, NULL);
 }
