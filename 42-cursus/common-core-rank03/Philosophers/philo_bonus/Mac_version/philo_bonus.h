@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 14:19:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 17:39:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 18:00:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 /* ************************************************************************** */
 
-# include <fcntl.h>
 # include <limits.h>
 # include <pthread.h>
 # include <semaphore.h>
@@ -58,6 +57,11 @@ enum e_philo_action
 	SLEEP,
 	NUMBER_OF_ACTIONS
 };
+
+// O_CREAT = 0100
+# define S_OFLAG 0100
+// S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH = 0644
+# define S_MODE 0644
 
 /* semaphore uses:
  * MASTR: synchronize all philosophers and their controllers

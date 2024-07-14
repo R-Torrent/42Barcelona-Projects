@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 17:30:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:51:57 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,16 @@ static int	create_sems(t_data *pdata)
 {
 	const char		*locations[] = {"/MASTR", "/PRINT", "/FORKS", "/MLSOK",
 		"TERMN"};
-	const int		oflag = O_CREAT;
-	const mode_t	mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 	int				i;
 	int				j;
 
-	pdata->shared_sems[MASTR] = sem_open(locations[MASTR], oflag, mode, 0);
-	pdata->shared_sems[PRINT] = sem_open(locations[PRINT], oflag, mode, 1);
-	pdata->shared_sems[FORKS] = sem_open(locations[FORKS], oflag, mode,
+	pdata->shared_sems[MASTR] = sem_open(locations[MASTR], S_OFLAG, S_MODE, 0);
+	pdata->shared_sems[PRINT] = sem_open(locations[PRINT], S_OFLAG, S_MODE, 1);
+	pdata->shared_sems[FORKS] = sem_open(locations[FORKS], S_OFLAG, S_MODE,
 			pdata->number_of_philos);
-	pdata->shared_sems[MLSOK] = sem_open(locations[MLSOK], oflag, mode,
+	pdata->shared_sems[MLSOK] = sem_open(locations[MLSOK], S_OFLAG, S_MODE,
 			pdata->number_of_philos);
-	pdata->shared_sems[TERMN] = sem_open(locations[TERMN], oflag, mode, 0);
+	pdata->shared_sems[TERMN] = sem_open(locations[TERMN], S_OFLAG, S_MODE, 0);
 	i = 0;
 	j = 0;
 	while (i < NUMBS)
