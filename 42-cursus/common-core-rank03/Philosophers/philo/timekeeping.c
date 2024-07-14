@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/24 01:28:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/14 13:11:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,19 +65,21 @@ static void	place_digit(unsigned int n, char **pstr)
 
 int	tstamp(t_contrl *contrl)
 {
-	unsigned int			prev_elapsed;
+	unsigned int			prev_elapsed_ms;
+	unsigned int			elapsed_ms;
 	char					*timestamp;
 	struct timeval *const	t = contrl->t;
 	int						err;
 
 	err = gettimeofday(t + 1, NULL);
-	prev_elapsed = contrl->elapsed;
+	prev_elapsed_ms = contrl->elapsed / 1000;
 	contrl->elapsed = 1000000 * (int)(t[1].tv_sec - t[0].tv_sec)
 		+ ((int)t[1].tv_usec - (int)t[0].tv_usec);
-	if (prev_elapsed != contrl->elapsed)
+	elapsed_ms = contrl->elapsed / 1000;
+	if (prev_elapsed_ms != elapsed_ms)
 	{
 		timestamp = contrl->timestamp;
-		place_digit(contrl->elapsed / 1000, &timestamp);
+		place_digit(elapsed_ms, &timestamp);
 		*timestamp = '\0';
 	}
 	return (err);
