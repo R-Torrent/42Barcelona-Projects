@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 14:08:02 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 14:44:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,29 +43,48 @@ static void	run_contrl(t_contrl *contrl)
 	sem_post(pdata->shared_sems[TERMN]);
 }
 
+static void	place_digit(int n, char **pstr)
+{
+	const int	x = n / 10;
+
+	if (x)
+		place_digit(x, pstr);
+	*(*pstr)++ = '0' + n % 10;
+}
+
+static char	*sem_name(char *sname, int n, const char *suffix)
+{
+	char *const	sname0 = sname;
+
+	place_digit(n, &sname);
+	*sname++ = '.';
+	while (*suffix)
+		*sname++ = *suffix++;
+	*sname = '\0';
+	return (sname0);
+}
+
 void	run_philo(t_philo *philo)
 {
 	t_contrl *const	contrl = philo->contrl;
-	t_data *const	pdata = contrl->pdata;
 	char			sname[2][20];
 
 	if (!philo->meals_left)
-		sem_post(pdata->shared_sems[MLSOK]);
+		sem_post(contrl->pdata->shared_sems[MLSOK]);
 	philo->access = sem_open(sem_name(sname[0], philo->n, "ACCESS"),
 			S_OFLAG, S_MODE, 1);
 	philo->read_time = sem_open(sem_name(sname[1], philo->n, "RDTIME"),
 			S_OFLAG, S_MODE, 1);
 	contrl->ret = (philo->access == SEM_FAILED || sem_unlink(sname[0]));
 	contrl->ret = (philo->read_time == SEM_FAILED || sem_unlink(sname[1])
-			|| contrl->ret);
-	contrl->ret = (contrl->ret || pthread_create(&contrl->thread_controller,
+			|| contrl->ret || pthread_create(&contrl->thread_controller,
 				NULL, (void *)run_contrl, contrl)
 			|| pthread_create(&contrl->thread_cleaner, NULL,
-				(void *)run_cleaner, pdata)
-			|| sem_wait(pdata->shared_sems[MASTR])
-			|| sem_post(pdata->shared_sems[MASTR]));
+				(void *)run_cleaner, contrl->pdata)
+			|| sem_wait(contrl->pdata->shared_sems[MASTR])
+			|| sem_post(contrl->pdata->shared_sems[MASTR]));
 	loop_philo(philo);
-	sem_post(pdata->shared_sems[TERMN]);
+	sem_post(contrl->pdata->shared_sems[TERMN]);
 	if (philo->access != SEM_FAILED)
 		sem_close(philo->access);
 	if (philo->read_time != SEM_FAILED)
