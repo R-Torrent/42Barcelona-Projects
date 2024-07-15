@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 15:05:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 15:13:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	place_digit(unsigned int n, char **pstr)
 
 	if (x)
 		place_digit(x, pstr);
-	*(*pstr)++ = '0' + n % 10L;
+	*(*pstr)++ = '0' + n % 10;
 }
 
 int	tstamp(t_contrl *contrl)
