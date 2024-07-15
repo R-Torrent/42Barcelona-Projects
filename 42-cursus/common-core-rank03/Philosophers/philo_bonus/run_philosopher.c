@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 20:34:10 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 02:26:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,20 @@ void	run_philo(t_philo *philo)
 {
 	t_contrl *const		contrl = philo->contrl;
 	t_data *const		pdata = contrl->pdata;
+	char				sname[2][20];
 	const t_philo_func	pfunc[] = {think, pick_forks, eat, philo_sleep};
 	enum e_philo_action	act;
 
 	act = THINK;
 	if (!pdata->philo->meals_left)
 		sem_post(pdata->shared_sems[MLSOK]);
+	philo->access = sem_open(sem_name(sname[0], philo->n, "ACCESS"),
+			S_OFLAG, S_MODE, 1);
+	philo->read_time = sem_open(sem_name(sname[1], philo->n, "RDTIME"),
+			S_OFLAG, S_MODE, 1);
+	contrl->ret = (philo->access == SEM_FAILED || sem_unlink(sname[0]));
+	contrl->ret = (philo->read_time == SEM_FAILED || sem_unlink(sname[1])
+			|| contrl->ret);
 	contrl->ret = (contrl->ret || pthread_create(&contrl->thread_controller,
 				NULL, (void *)run_contrl, contrl)
 			|| pthread_create(&contrl->thread_cleaner, NULL,
@@ -71,6 +79,10 @@ void	run_philo(t_philo *philo)
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
 	sem_post(pdata->shared_sems[TERMN]);
+	if (philo->access != SEM_FAILED)
+		sem_close(philo->access);
+	if (philo->read_time != SEM_FAILED)
+		sem_close(philo->read_time);
 	pthread_join(contrl->thread_controller, NULL);
 	pthread_join(contrl->thread_cleaner, NULL);
 }

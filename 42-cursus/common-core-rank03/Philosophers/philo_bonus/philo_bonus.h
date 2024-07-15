@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 20:18:09 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 02:00:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ typedef struct s_philo
 	int				n;
 	int				meals_left;
 	unsigned int	last_meal;
+	sem_t			*access;
+	sem_t			*read_time;
 	struct s_contrl	*contrl;
 }	t_philo;
 
@@ -124,6 +126,7 @@ int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void	run_cleaner(t_data *pdata);
 void	run_contrl(t_contrl *contrl);
 void	run_philo(t_philo *philo);
+char	*sem_name(char *sname, int n, const char *suffix);
 int		tstamp(t_contrl *contrl);
 int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
 
