@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 15:26:53 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 15:05:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,11 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 
 static void	place_digit(unsigned int n, char **pstr)
 {
-	long	x;
+	const unsigned int	x = n / 10;
 
-	x = n / 10L;
 	if (x)
 		place_digit(x, pstr);
-	x = '0' + n % 10L;
-	*(*pstr)++ = x;
+	*(*pstr)++ = '0' + n % 10L;
 }
 
 int	tstamp(t_contrl *contrl)
