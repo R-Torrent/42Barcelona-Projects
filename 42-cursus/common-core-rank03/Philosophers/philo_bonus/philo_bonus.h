@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 14:36:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 15:17:41 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ typedef int	(*t_philo_func)(struct s_philo *);
 
 int		load_sim(t_data *pdata, int params, char **args);
 void	loop_philo(t_philo *philo);
+void	place_digit(unsigned int n, char **pstr);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void	run_cleaner(t_data *pdata);
 void	run_philo(t_philo *philo);

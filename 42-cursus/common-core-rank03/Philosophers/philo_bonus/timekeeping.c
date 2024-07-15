@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 17:34:55 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 16:00:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,28 +27,35 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
 	t_contrl *const	contrl = philo->contrl;
 	char			timestamp[12];
+	int				ret;
 
-	if (philo->contrl->elapsed - philo->last_meal
-		>= philo->contrl->pdata->time_to_die)
-		return (1);
-	if (dst)
-		*dst = philo->contrl->elapsed;
-	(void)ft_strcpy(timestamp, contrl->timestamp);
-	if (sem_wait(contrl->pdata->shared_sems[PRINT]))
-		return (1);
-	printf("%s %i %s\n", timestamp, philo->n, str);
-	return (sem_post(contrl->pdata->shared_sems[PRINT]));
+	ret = (sem_wait(philo->access) || sem_wait(philo->read_time)
+			|| contrl->elapsed - philo->last_meal
+			>= contrl->pdata->time_to_die);
+	if (!ret)
+	{
+		if (dst)
+			*dst = contrl->elapsed;
+		(void)ft_strcpy(timestamp, contrl->timestamp);
+	}
+	ret = (sem_post(philo->read_time) || sem_post(philo->access) || ret);
+	if (!ret)
+		ret = sem_wait(contrl->pdata->shared_sems[PRINT]);
+	if (!ret)
+	{
+		printf("%s %i %s\n", timestamp, philo->n, str);
+		ret = sem_post(contrl->pdata->shared_sems[PRINT]);
+	}
+	return (ret);
 }
 
-static void	place_digit(unsigned int n, char **pstr)
+void	place_digit(unsigned int n, char **pstr)
 {
-	long	x;
+	const unsigned int	x = n / 10;
 
-	x = n / 10L;
 	if (x)
 		place_digit(x, pstr);
-	x = '0' + n % 10L;
-	*(*pstr)++ = x;
+	*(*pstr)++ = '0' + n % 10;
 }
 
 int	tstamp(t_contrl *contrl)
@@ -77,18 +84,22 @@ int	tstamp(t_contrl *contrl)
 // desired intermission, 'lapse' in microseconds, is followed through
 int	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 {
+	sem_t *const	read_time = contrl->pdata->philo->read_time;
 	unsigned int	reveille;
 	int				err;
 
+	err = sem_wait(read_time);
 	reveille = contrl->elapsed + lapse;
-	err = 0;
 	while (!err)
 	{
 		if (is_contrl)
 			err = tstamp(contrl);
-		if (err || contrl->elapsed >= reveille)
+		lapse = contrl->elapsed;
+		err = (sem_post(read_time) || err);
+		if (err || lapse >= reveille)
 			break ;
 		usleep(50U);
+		err = sem_wait(read_time);
 	}
 	return (err);
 }

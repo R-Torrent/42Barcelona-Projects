@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 14:44:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 15:59:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,17 @@
 static int	print_obituary(t_contrl *contrl, t_philo *philo)
 {
 	t_data *const	pdata = contrl->pdata;
+	int				ret;
 
+	ret = sem_wait(philo->access);
 	if (contrl->elapsed - philo->last_meal >= pdata->time_to_die)
 	{
 		sem_wait(pdata->shared_sems[PRINT]);
 		printf("%s %i died\n", contrl->timestamp, philo->n);
 		sem_post(pdata->shared_sems[PRINT]);
-		return (1);
+		ret = 1;
 	}
-	return (0);
+	return (sem_post(philo->access) || ret);
 }
 
 // main loop runs once every millisecond
@@ -43,20 +45,11 @@ static void	run_contrl(t_contrl *contrl)
 	sem_post(pdata->shared_sems[TERMN]);
 }
 
-static void	place_digit(int n, char **pstr)
-{
-	const int	x = n / 10;
-
-	if (x)
-		place_digit(x, pstr);
-	*(*pstr)++ = '0' + n % 10;
-}
-
 static char	*sem_name(char *sname, int n, const char *suffix)
 {
 	char *const	sname0 = sname;
 
-	place_digit(n, &sname);
+	place_digit((unsigned int)n, &sname);
 	*sname++ = '.';
 	while (*suffix)
 		*sname++ = *suffix++;
