@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 15:13:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/15 15:54:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 		if (is_contrl)
 			err = tstamp(contrl);
 		lapse = contrl->elapsed;
-		err = pthread_mutex_unlock(time_lock);
+		err = (pthread_mutex_unlock(time_lock) || err);
 		if (err || lapse >= reveille)
 			break ;
 		usleep(50U);
