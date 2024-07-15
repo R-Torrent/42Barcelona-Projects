@@ -5,60 +5,51 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 02:26:53 by rtorrent         ###   ########.fr       */
+/*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
+/*   Updated: 2024/07/15 14:08:02 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static int	philo_sleep(t_philo *philo)
+static int	print_obituary(t_contrl *contrl, t_philo *philo)
 {
-	return (print_stamp(NULL, philo, "is sleeping")
-		|| wait_usec(philo->contrl, philo->contrl->pdata->time_to_sleep, 0));
-}
+	t_data *const	pdata = contrl->pdata;
 
-static int	eat(t_philo *philo)
-{
-	t_data *const	pdata = philo->contrl->pdata;
-	int				err;
-
-	if (print_stamp(&philo->last_meal, philo, "is eating")
-		|| wait_usec(philo->contrl, pdata->time_to_eat, 0))
+	if (contrl->elapsed - philo->last_meal >= pdata->time_to_die)
+	{
+		sem_wait(pdata->shared_sems[PRINT]);
+		printf("%s %i died\n", contrl->timestamp, philo->n);
+		sem_post(pdata->shared_sems[PRINT]);
 		return (1);
-	err = (sem_post(pdata->shared_sems[FORKS])
-			|| sem_post(pdata->shared_sems[FORKS]));
-	if (!err && !--philo->meals_left)
-		err = sem_post(pdata->shared_sems[MLSOK]);
-	return (err);
+	}
+	return (0);
 }
 
-static int	pick_forks(t_philo *philo)
+// main loop runs once every millisecond
+static void	run_contrl(t_contrl *contrl)
 {
-	t_data *const	pdata = philo->contrl->pdata;
+	struct timeval	t[2];
+	t_data *const	pdata = contrl->pdata;
 
-	return (sem_wait(pdata->shared_sems[FORKS])
-		|| print_stamp(NULL, philo, "has taken a fork")
-		|| sem_wait(pdata->shared_sems[FORKS])
-		|| print_stamp(NULL, philo, "has taken a fork"));
-}
-
-static int	think(t_philo *philo)
-{
-	return (print_stamp(NULL, philo, "is thinking")
-		|| wait_usec(philo->contrl, philo->contrl->pdata->time_to_think, 0));
+	contrl->t = t;
+	contrl->ret = (contrl->ret || sem_wait(pdata->shared_sems[MASTR])
+			|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL));
+	while (!contrl->ret)
+		contrl->ret = (print_obituary(contrl, pdata->philo)
+				|| tstamp(contrl)
+				|| wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1)
+				|| contrl->ret);
+	sem_post(pdata->shared_sems[TERMN]);
 }
 
 void	run_philo(t_philo *philo)
 {
-	t_contrl *const		contrl = philo->contrl;
-	t_data *const		pdata = contrl->pdata;
-	char				sname[2][20];
-	const t_philo_func	pfunc[] = {think, pick_forks, eat, philo_sleep};
-	enum e_philo_action	act;
+	t_contrl *const	contrl = philo->contrl;
+	t_data *const	pdata = contrl->pdata;
+	char			sname[2][20];
 
-	act = THINK;
-	if (!pdata->philo->meals_left)
+	if (!philo->meals_left)
 		sem_post(pdata->shared_sems[MLSOK]);
 	philo->access = sem_open(sem_name(sname[0], philo->n, "ACCESS"),
 			S_OFLAG, S_MODE, 1);
@@ -73,11 +64,7 @@ void	run_philo(t_philo *philo)
 				(void *)run_cleaner, pdata)
 			|| sem_wait(pdata->shared_sems[MASTR])
 			|| sem_post(pdata->shared_sems[MASTR]));
-	while (!contrl->ret)
-	{
-		contrl->ret = pfunc[act](philo);
-		act = (act + 1) % NUMBER_OF_ACTIONS;
-	}
+	loop_philo(philo);
 	sem_post(pdata->shared_sems[TERMN]);
 	if (philo->access != SEM_FAILED)
 		sem_close(philo->access);
