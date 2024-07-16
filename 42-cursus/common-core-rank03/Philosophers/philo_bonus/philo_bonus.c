@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 20:17:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:15:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ void	run_cleaner(t_data *pdata)
 		*err = ((sem != SEM_FAILED && sem_close(sem)) || *err);
 		sem++;
 	}
-	if (pdata->shared_sems)
-		free(pdata->shared_sems);
+	free(pdata->shared_sems);
 }
 
 static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
@@ -39,8 +38,7 @@ static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 	pid = pdata->pid;
 	while (pid < pid_last)
 		*err = (waitpid(*pid++, NULL, 0) == -1 || *err);
-	if (pdata->pid)
-		free(pdata->pid);
+	free(pdata->pid);
 }
 
 static void	run_terminator(t_data *pdata)
@@ -80,6 +78,7 @@ int	main(int argc, char *argv[])
 	struct s_contrl	contrl;
 	int				i;
 
+	data.number_of_philos = 0;
 	data.philo = &philo;
 	philo.contrl = &contrl;
 	contrl.pdata = &data;

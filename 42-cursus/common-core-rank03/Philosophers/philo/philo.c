@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/04/24 00:59:37 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:06:33 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	main(int argc, char *argv[])
 	struct s_data	data;
 	struct s_contrl	contrl;
 
+	data.number_of_philos = 0;
 	data.contrl = &contrl;
 	if (!load_sim(&data, --argc, ++argv))
 	{
