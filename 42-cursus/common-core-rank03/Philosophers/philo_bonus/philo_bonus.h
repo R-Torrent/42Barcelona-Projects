@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/16 18:59:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:44:43 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ typedef struct s_contrl
 	unsigned int	elapsed;
 	int				ret;
 	pthread_t		thread_controller;
-	pthread_t		thread_cleaner;
 	struct timeval	*t;
 	struct s_data	*pdata;
 }	t_contrl;
@@ -122,11 +121,11 @@ typedef struct s_data
 // philosopher actions
 typedef int	(*t_philo_func)(struct s_philo *);
 
+void	destroy_shared_sems(t_data *pdata, int *err);
 void	load_philo(t_philo *philo);
 int		load_sim(t_data *pdata, int params, char **args);
 void	place_digit(unsigned int n, char **pstr);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
-void	run_cleaner(t_data *pdata);
 void	run_philo(t_philo *philo);
 int		tstamp(t_contrl *contrl);
 int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);

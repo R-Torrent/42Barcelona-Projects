@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/16 19:10:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:43:41 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,14 @@ void	load_philo(t_philo *philo)
 				NULL, (void *)run_philo, philo)
 			|| pthread_create(&philo->contrl->thread_controller,
 				NULL, (void *)run_contrl, philo->contrl)
-			|| pthread_detach(philo->thread_philo)
-			|| pthread_create(&philo->contrl->thread_cleaner, NULL,
-				(void *)run_cleaner, philo->contrl->pdata));
-	sem_post(philo->contrl->pdata->shared_sems[TERMN]);
+			|| pthread_detach(philo->thread_philo));
+	sem_wait(philo->contrl->pdata->shared_sems[TERMN]);
+	contrl->ret = 1;
+	destroy_shared_sems(philo->contrl->pdata, &contrl->ret);
 	if (philo->access != SEM_FAILED)
 		sem_close(philo->access);
 	if (philo->read_time != SEM_FAILED)
 		sem_close(philo->read_time);
 	pthread_join(philo->contrl->thread_controller, NULL);
-	pthread_join(philo->contrl->thread_cleaner, NULL);
 	exit(philo->contrl->ret);
 }
