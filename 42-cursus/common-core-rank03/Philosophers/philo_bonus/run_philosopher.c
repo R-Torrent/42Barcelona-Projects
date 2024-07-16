@@ -5,83 +5,62 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 15:59:15 by rtorrent         ###   ########.fr       */
+/*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
+/*   Updated: 2024/07/16 18:57:59 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static int	print_obituary(t_contrl *contrl, t_philo *philo)
+static int	philo_sleep(t_philo *philo)
 {
-	t_data *const	pdata = contrl->pdata;
-	int				ret;
-
-	ret = sem_wait(philo->access);
-	if (contrl->elapsed - philo->last_meal >= pdata->time_to_die)
-	{
-		sem_wait(pdata->shared_sems[PRINT]);
-		printf("%s %i died\n", contrl->timestamp, philo->n);
-		sem_post(pdata->shared_sems[PRINT]);
-		ret = 1;
-	}
-	return (sem_post(philo->access) || ret);
+	return (print_stamp(NULL, philo, "is sleeping")
+		|| wait_usec(philo->contrl, philo->contrl->pdata->time_to_sleep, 0));
 }
 
-// main loop runs once every millisecond
-static void	run_contrl(t_contrl *contrl)
+static int	eat(t_philo *philo)
 {
-	struct timeval	t[2];
-	t_data *const	pdata = contrl->pdata;
+	t_data *const	pdata = philo->contrl->pdata;
+	int				err;
 
-	contrl->t = t;
-	contrl->ret = (contrl->ret || sem_wait(pdata->shared_sems[MASTR])
-			|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL));
-	while (!contrl->ret)
-		contrl->ret = (print_obituary(contrl, pdata->philo)
-				|| tstamp(contrl)
-				|| wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1)
-				|| contrl->ret);
-	sem_post(pdata->shared_sems[TERMN]);
+	if (print_stamp(&philo->last_meal, philo, "is eating")
+		|| wait_usec(philo->contrl, pdata->time_to_eat, 0))
+		return (1);
+	err = (sem_post(pdata->shared_sems[FORKS])
+			|| sem_post(pdata->shared_sems[FORKS]));
+	if (!err && !--philo->meals_left)
+		err = sem_post(pdata->shared_sems[MLSOK]);
+	return (err);
 }
 
-static char	*sem_name(char *sname, int n, const char *suffix)
+static int	pick_forks(t_philo *philo)
 {
-	char *const	sname0 = sname;
+	t_data *const	pdata = philo->contrl->pdata;
 
-	place_digit((unsigned int)n, &sname);
-	*sname++ = '.';
-	while (*suffix)
-		*sname++ = *suffix++;
-	*sname = '\0';
-	return (sname0);
+	return (sem_wait(pdata->shared_sems[FORKS])
+		|| print_stamp(NULL, philo, "has taken a fork")
+		|| sem_wait(pdata->shared_sems[FORKS])
+		|| print_stamp(NULL, philo, "has taken a fork"));
+}
+
+static int	think(t_philo *philo)
+{
+	return (print_stamp(NULL, philo, "is thinking")
+		|| wait_usec(philo->contrl, philo->contrl->pdata->time_to_think, 0));
 }
 
 void	run_philo(t_philo *philo)
 {
-	t_contrl *const	contrl = philo->contrl;
-	char			sname[2][20];
+	t_contrl *const		contrl = philo->contrl;
+	const t_philo_func	pfunc[] = {think, pick_forks, eat, philo_sleep};
+	enum e_philo_action	act;
 
-	if (!philo->meals_left)
-		sem_post(contrl->pdata->shared_sems[MLSOK]);
-	philo->access = sem_open(sem_name(sname[0], philo->n, "ACCESS"),
-			S_OFLAG, S_MODE, 1);
-	philo->read_time = sem_open(sem_name(sname[1], philo->n, "RDTIME"),
-			S_OFLAG, S_MODE, 1);
-	contrl->ret = (philo->access == SEM_FAILED || sem_unlink(sname[0]));
-	contrl->ret = (philo->read_time == SEM_FAILED || sem_unlink(sname[1])
-			|| contrl->ret || pthread_create(&contrl->thread_controller,
-				NULL, (void *)run_contrl, contrl)
-			|| pthread_create(&contrl->thread_cleaner, NULL,
-				(void *)run_cleaner, contrl->pdata)
-			|| sem_wait(contrl->pdata->shared_sems[MASTR])
-			|| sem_post(contrl->pdata->shared_sems[MASTR]));
-	loop_philo(philo);
-	sem_post(contrl->pdata->shared_sems[TERMN]);
-	if (philo->access != SEM_FAILED)
-		sem_close(philo->access);
-	if (philo->read_time != SEM_FAILED)
-		sem_close(philo->read_time);
-	pthread_join(contrl->thread_controller, NULL);
-	pthread_join(contrl->thread_cleaner, NULL);
+	act = THINK;
+	control->ret = (contrl->re || sem_wait(contrl->pdata->shared_sems[MASTR])
+		|| sem_post(contrl->pdata->shared_sems[MASTR]));
+	while (!contrl->ret)
+	{
+		contrl->ret = pfunc[act](philo);
+		act = (act + 1) % NUMBER_OF_ACTIONS;
+	}
 }

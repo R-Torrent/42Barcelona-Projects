@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 15:17:41 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 18:59:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct s_philo
 	int				n;
 	int				meals_left;
 	unsigned int	last_meal;
+	pthread_t		thread_philo;
 	sem_t			*access;
 	sem_t			*read_time;
 	struct s_contrl	*contrl;
@@ -121,8 +122,8 @@ typedef struct s_data
 // philosopher actions
 typedef int	(*t_philo_func)(struct s_philo *);
 
+void	load_philo(t_philo *philo);
 int		load_sim(t_data *pdata, int params, char **args);
-void	loop_philo(t_philo *philo);
 void	place_digit(unsigned int n, char **pstr);
 int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void	run_cleaner(t_data *pdata);

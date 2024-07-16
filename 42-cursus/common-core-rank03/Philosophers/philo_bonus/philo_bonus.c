@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/16 14:15:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 18:42:04 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	spawn_philos(t_data *pdata, int *i)
 		else if (!child_pid)
 		{
 			free(pdata->pid);
-			run_philo(pdata->philo);
+			load_philo(pdata->philo);
 		}
 		pdata->pid[(*i)++] = child_pid;
 	}
