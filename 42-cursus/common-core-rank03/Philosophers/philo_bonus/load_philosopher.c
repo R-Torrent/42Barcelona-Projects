@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/16 19:52:34 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 23:02:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,11 @@ void	load_philo(t_philo *philo)
 			|| pthread_detach(philo->thread_philo));
 	sem_wait(contrl->pdata->shared_sems[TERMN]);
 	contrl->ret = 1;
+	pthread_join(contrl->thread_controller, NULL);
 	destroy_shared_sems(contrl->pdata, &contrl->ret);
 	if (philo->access != SEM_FAILED)
 		sem_close(philo->access);
 	if (philo->read_time != SEM_FAILED)
 		sem_close(philo->read_time);
-	pthread_join(contrl->thread_controller, NULL);
 	exit(contrl->ret);
 }

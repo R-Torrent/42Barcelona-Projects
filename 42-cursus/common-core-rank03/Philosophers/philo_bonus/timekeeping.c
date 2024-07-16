@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/15 16:00:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 23:08:25 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,10 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 	ret = (sem_post(philo->read_time) || sem_post(philo->access) || ret);
 	if (!ret)
 		ret = sem_wait(contrl->pdata->shared_sems[PRINT]);
-	if (!ret)
-	{
+	if (!ret && !contrl->ret)
 		printf("%s %i %s\n", timestamp, philo->n, str);
+	if (!ret)	
 		ret = sem_post(contrl->pdata->shared_sems[PRINT]);
-	}
 	return (ret);
 }
 
