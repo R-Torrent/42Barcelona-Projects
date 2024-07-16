@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/16 18:57:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:02:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	run_philo(t_philo *philo)
 	enum e_philo_action	act;
 
 	act = THINK;
-	control->ret = (contrl->re || sem_wait(contrl->pdata->shared_sems[MASTR])
+	contrl->ret = (contrl->ret || sem_wait(contrl->pdata->shared_sems[MASTR])
 		|| sem_post(contrl->pdata->shared_sems[MASTR]));
 	while (!contrl->ret)
 	{
