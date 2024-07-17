@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/17 14:02:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/17 14:45:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,12 @@ static void	spawn_philos(t_data *pdata, int *i)
 			break ;
 		else if (!child_pid)
 		{
+			if (!pdata->philo->meals_left)
+				pdata->exit_status = (sem_post(pdata->shared_sems[MLSOK])
+						|| pdata->exit_status);
 			free(pdata->pid);
 			load_philo(pdata->philo);
+			exit(pdata->philo->contrl->ret & PHILO_ERR);
 		}
 		pdata->pid[(*i)++] = child_pid;
 	}
