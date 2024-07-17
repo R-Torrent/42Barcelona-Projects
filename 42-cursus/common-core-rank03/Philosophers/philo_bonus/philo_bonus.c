@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/16 23:10:27 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/17 14:02:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,14 @@ void	destroy_shared_sems(t_data *pdata, int *err)
 static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 {
 	pid_t	*pid;
+	int		wstatus;
 
 	if (pdata->shared_sems[TERMN] != SEM_FAILED)
 		*err = (sem_post(pdata->shared_sems[TERMN]) || *err);
 	pid = pdata->pid;
 	while (pid < pid_last)
-		*err = (waitpid(*pid++, NULL, 0) == -1 || *err);
+		*err = (waitpid(*pid++, &wstatus, 0) == -1 || !WIFEXITED(wstatus)
+				|| WEXITSTATUS(wstatus) || *err);
 	free(pdata->pid);
 	destroy_shared_sems(pdata, err);
 }

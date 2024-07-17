@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 14:19:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/16 19:45:14 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/17 13:45:17 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,10 @@ enum e_philo_action
 	NUMBER_OF_ACTIONS
 };
 
+// philosopher ret flags
+# define PHILO_ERR 01
+# define TERMINATE 02
+
 // O_CREAT = 0100
 # define S_OFLAG 0100
 // S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH = 0644
@@ -87,10 +91,10 @@ typedef struct s_philo
 	int				n;
 	int				meals_left;
 	unsigned int	last_meal;
-	pthread_t		thread_philo;
 	sem_t			*access;
 	sem_t			*read_time;
 	struct s_contrl	*contrl;
+	pthread_t		thread_philo;
 }	t_philo;
 
 typedef struct s_contrl
@@ -98,9 +102,9 @@ typedef struct s_contrl
 	char			timestamp[12];
 	unsigned int	elapsed;
 	int				ret;
-	pthread_t		thread_controller;
 	struct timeval	*t;
 	struct s_data	*pdata;
+	pthread_t		thread_controller;
 }	t_contrl;
 
 // NOTE: all times stored in microseconds
@@ -112,10 +116,10 @@ typedef struct s_data
 	unsigned int	time_to_sleep;
 	unsigned int	time_to_think;
 	int				exit_status;
-	pthread_t		terminator;
 	sem_t			**shared_sems;
 	struct s_philo	*philo;
 	pid_t			*pid;
+	pthread_t		terminator;
 }	t_data;
 
 // philosopher actions
