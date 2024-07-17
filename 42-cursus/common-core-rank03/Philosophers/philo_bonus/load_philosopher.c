@@ -6,26 +6,28 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/17 15:34:16 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/17 20:09:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static int	print_obituary(t_contrl *contrl, t_philo *philo)
+static void	print_obituary(t_contrl *contrl, t_philo *philo)
 {
 	t_data *const	pdata = contrl->pdata;
-	int				ret;
 
-	ret = sem_wait(philo->access);
-	if (contrl->elapsed - philo->last_meal >= pdata->time_to_die)
+	if (sem_wait(philo->access))
+		contrl->ret |= PHILO_ERR;
+	else if (contrl->elapsed - philo->last_meal >= pdata->time_to_die)
 	{
-		sem_wait(pdata->shared_sems[PRINT]);
-		printf("%s %i died\n", contrl->timestamp, philo->n);
-		sem_post(pdata->shared_sems[PRINT]);
-		ret = 1;
+		if (sem_wait(pdata->shared_sems[PRINT])
+			|| !printf("%s %i died\n", contrl->timestamp, philo->n)
+			|| sem_post(pdata->shared_sems[PRINT]))
+			contrl->ret |= PHILO_ERR;
+		contrl->ret |= TERMINATE;
 	}
-	return (sem_post(philo->access) || ret);
+	if (sem_post(philo->access))
+		contrl->ret |= PHILO_ERR;
 }
 
 // main loop runs once every millisecond
@@ -36,13 +38,14 @@ static void	run_contrl(t_contrl *contrl)
 
 	contrl->t = t;
 	if (sem_wait(pdata->shared_sems[MASTR])
-			|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL))
+		|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL))
 		contrl->ret |= PHILO_ERR;
 	while (!contrl->ret)
-		contrl->ret = (print_obituary(contrl, pdata->philo)
-				|| tstamp(contrl)
-				|| wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1)
-				|| contrl->ret);
+	{
+		print_obituary(contrl, pdata->philo);
+		tstamp(contrl);
+		wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1);
+	}
 }
 
 static char	*sem_name(char *sname, int n, const char *suffix)
@@ -72,10 +75,10 @@ void	load_philo(t_philo *philo)
 		|| pthread_create(&philo->contrl->thread_controller,
 			NULL, (void *)run_contrl, philo->contrl)
 		|| pthread_detach(philo->thread_philo)
-		|| sem_wait(contrl->pdata->shared_sems[TERMN]))
+		|| sem_wait(philo->contrl->pdata->shared_sems[TERMN]))
 		philo->contrl->ret |= PHILO_ERR;
 	philo->contrl->ret |= TERMINATE;
-	if (sem_post(pdata->shared_sems[TERMN])
+	if (sem_post(philo->contrl->pdata->shared_sems[TERMN])
 		|| pthread_join(philo->contrl->thread_controller, NULL))
 		philo->contrl->ret |= PHILO_ERR;
 	destroy_shared_sems(philo->contrl->pdata, &philo->contrl->ret);

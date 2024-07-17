@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 14:19:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/17 13:45:17 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/17 19:32:54 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,16 +123,16 @@ typedef struct s_data
 }	t_data;
 
 // philosopher actions
-typedef int	(*t_philo_func)(struct s_philo *);
+typedef void	(*t_philo_func)(struct s_philo *);
 
 void	destroy_shared_sems(t_data *pdata, int *err);
 void	load_philo(t_philo *philo);
 int		load_sim(t_data *pdata, int params, char **args);
 void	place_digit(unsigned int n, char **pstr);
-int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
+void	print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void	run_philo(t_philo *philo);
-int		tstamp(t_contrl *contrl);
-int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
+void	tstamp(t_contrl *contrl);
+void	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
 
 /* ************************************************************************** */
 
