@@ -6,23 +6,26 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/17 14:45:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/18 14:11:03 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	destroy_shared_sems(t_data *pdata, int *err)
+int	destroy_shared_sems(t_data *pdata)
 {
-	sem_t		*sem;
+	sem_t	*sem;
+	int		err;
 
 	sem = *pdata->shared_sems;
+	err = 0;
 	while (sem - *pdata->shared_sems < NUMBS)
 	{
-		*err = ((sem != SEM_FAILED && sem_close(sem)) || *err);
+		err = (sem == SEM_FAILED || sem_close(sem) || err);
 		sem++;
 	}
 	free(pdata->shared_sems);
+	return (err);
 }
 
 static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
@@ -37,7 +40,7 @@ static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 		*err = (waitpid(*pid++, &wstatus, 0) == -1 || !WIFEXITED(wstatus)
 				|| WEXITSTATUS(wstatus) || *err);
 	free(pdata->pid);
-	destroy_shared_sems(pdata, err);
+	*err = (destroy_shared_sems(pdata) || *err);
 }
 
 static void	run_terminator(t_data *pdata)
