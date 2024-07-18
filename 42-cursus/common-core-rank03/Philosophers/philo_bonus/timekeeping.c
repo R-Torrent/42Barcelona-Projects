@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/17 20:05:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/18 20:53:32 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,12 @@ void	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 	if (sem_wait(read_time))
 		contrl->ret |= PHILO_ERR;
 	reveille = contrl->elapsed + lapse;
+	if (sem_post(read_time))
+		contrl->ret |= PHILO_ERR;
 	while (!contrl->ret)
 	{
+		if (sem_wait(read_time))
+			contrl->ret |= PHILO_ERR;
 		if (is_contrl)
 			tstamp(contrl);
 		lapse = contrl->elapsed;
@@ -95,7 +99,7 @@ void	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 			contrl->ret |= PHILO_ERR;
 		if (contrl->ret || lapse >= reveille)
 			break ;
-		if (usleep(50U) || sem_wait(read_time))
+		if (usleep(50U))
 			contrl->ret |= PHILO_ERR;
 	}
 }
