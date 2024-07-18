@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/18 14:14:16 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:03:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ static void	print_obituary(t_contrl *contrl, t_philo *philo)
 			|| sem_post(pdata->shared_sems[PRINT]))
 			contrl->ret |= PHILO_ERR;
 		contrl->ret |= TERMINATE;
+		if (sem_post(pdata->shared_sems[TERMN]))
+			contrl->ret |= PHILO_ERR;
 	}
 	if (sem_post(philo->access))
 		contrl->ret |= PHILO_ERR;
