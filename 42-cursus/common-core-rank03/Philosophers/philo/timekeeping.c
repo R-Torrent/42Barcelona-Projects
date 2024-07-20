@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/20 19:47:05 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/20 19:50:54 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	wait_usec(t_contrl *contrl, unsigned int lapse, int id)
 	err = pthread_mutex_lock(time_lock);
 	reveille = contrl->elapsed + lapse;
 	err = (pthread_mutex_unlock(time_lock) || err);
-	while (!err && !(id && (contrl->pdata->philo + i - 1)->flags))
+	while (!err && !(id && (contrl->pdata->philo + id - 1)->flags))
 	{
 		err = pthread_mutex_lock(time_lock);
 		if (!id)
