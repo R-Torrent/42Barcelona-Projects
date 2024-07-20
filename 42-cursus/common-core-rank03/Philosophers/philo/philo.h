@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 15:34:38 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/20 19:37:37 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int		print_stamp(unsigned int *dst, t_philo *philo, const char *str);
 void	run_contrl(t_data *pdata);
 void	run_philo(t_philo *philo);
 int		tstamp(t_contrl *contrl);
-int		wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl);
+int		wait_usec(t_contrl *contrl, unsigned int lapse, int id);
 
 /* ************************************************************************** */
 

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 02:29:22 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/14 14:44:21 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/20 19:41:28 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	run_contrl(t_data *pdata)
 			|| gettimeofday(t, NULL));
 	while (!err && !contrl->flags)
 		err = (print_obituaries(pdata->philo, contrl)
-				|| wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1) || err);
+				|| wait_usec(contrl, 1000 - contrl->elapsed % 1000, 0) || err);
 	philo = pdata->philo;
 	while (philo < pdata->philo + pdata->number_of_philos)
 	{

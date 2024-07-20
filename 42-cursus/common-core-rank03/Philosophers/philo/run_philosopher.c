@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/11 22:36:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/20 19:40:48 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	philo_sleep(t_philo *philo)
 {
 	return (print_stamp(NULL, philo, "is sleeping")
-		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_sleep, 0));
+		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_sleep, philo->n));
 }
 
 static int	eat(t_philo *philo)
@@ -23,7 +23,7 @@ static int	eat(t_philo *philo)
 	int	err;
 
 	if (print_stamp(&philo->last_meal, philo, "is eating")
-		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_eat, 0))
+		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_eat, philo->n))
 		return (1);
 	err = pthread_mutex_unlock(&philo->fork[LEFT]->lock);
 	err = (pthread_mutex_unlock(&philo->fork[RIGHT]->lock) || err);
@@ -59,7 +59,7 @@ static int	pick_forks(t_philo *philo)
 static int	think(t_philo *philo)
 {
 	return (print_stamp(NULL, philo, "is thinking")
-		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_think, 0));
+		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_think, philo->n));
 }
 
 void	run_philo(t_philo *philo)
