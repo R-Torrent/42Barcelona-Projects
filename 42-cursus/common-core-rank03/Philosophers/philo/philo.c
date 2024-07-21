@@ -6,17 +6,12 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/21 15:50:56 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/21 16:02:59 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// NOTE: Error analysis is suspended for the 'pthread_mutex_destroy' calls to
-// the fork mutexes. These calls are made from the main thread, not the actual
-// holders of the lock--which are frozen in place grasping at one fork as they
-// wait for the second fork to be freed--. As such, the behaviour here of the
-// 'pthread_mutex_destroy' function is undefined.
 void	destroy_locks(t_data *pdata, t_fork *fork, int error)
 {
 	t_fork *const	lastf = pdata->fork + pdata->number_of_philos;
@@ -28,7 +23,7 @@ void	destroy_locks(t_data *pdata, t_fork *fork, int error)
 	while (i < NUMBER_OF_LOCKS)
 		error = (pthread_mutex_destroy(pdata->shared_locks + i++) || error);
 	while (fork < lastf)
-		pthread_mutex_destroy(&fork++->lock);
+		error = (pthread_mutex_destroy(&fork++->lock) || error);
 	philo = pdata->philo;
 	while (philo < lastp)
 		error = (pthread_mutex_destroy(&philo++->access) || error);
