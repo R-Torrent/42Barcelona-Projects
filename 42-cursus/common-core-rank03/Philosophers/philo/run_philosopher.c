@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/21 02:17:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/21 02:40:26 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	run_philo(t_philo *philo)
 	{
 		if (pthread_mutex_lock(&philo->access))
 			break ;
-		ret = philo->flags & TERMINATE;
+		ret = philo->flags & TERMINATE && act != EAT;
 		if (pthread_mutex_unlock(&philo->access))
 			break ;
 		if (ret)
