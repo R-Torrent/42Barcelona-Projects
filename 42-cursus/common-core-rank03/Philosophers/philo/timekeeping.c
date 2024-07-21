@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/20 19:50:54 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/21 02:19:58 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	tstamp(t_contrl *contrl)
 
 // this function runs a loop that executes usleep every 50 us until the
 // desired intermission, 'lapse' in microseconds, is followed through
-int	wait_usec(t_contrl *contrl, unsigned int lapse, int id)
+int	wait_usec(t_contrl *contrl, unsigned int lapse, t_philo *philo)
 {
 	unsigned int			reveille;
 	pthread_mutex_t *const	time_lock = contrl->pdata->shared_locks + READ_TIME;
@@ -94,16 +94,21 @@ int	wait_usec(t_contrl *contrl, unsigned int lapse, int id)
 	err = pthread_mutex_lock(time_lock);
 	reveille = contrl->elapsed + lapse;
 	err = (pthread_mutex_unlock(time_lock) || err);
-	while (!err && !(id && (contrl->pdata->philo + id - 1)->flags))
+	while (!err)
 	{
-		err = pthread_mutex_lock(time_lock);
-		if (!id)
+		if (philo)
+		{
+			err = pthread_mutex_lock(&philo->access);
+			if (philo->flags)
+				reveille = 0U;
+			err = (pthread_mutex_unlock(&philo->access) || err);
+		}
+		err = (pthread_mutex_lock(time_lock) || err);
+		if (!philo)
 			err = (tstamp(contrl) || err);
-		lapse = contrl->elapsed;
-		err = (pthread_mutex_unlock(time_lock) || err);
-		if (err || lapse >= reveille)
-			break ;
-		err = usleep(50U);
+		if (err || contrl->elapsed >= reveille)
+			return (pthread_mutex_unlock(time_lock) || err);
+		err = (pthread_mutex_unlock(time_lock) || usleep(50U));
 	}
 	return (err);
 }
