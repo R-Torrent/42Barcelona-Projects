@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 18:26:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/18 19:12:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:50:56 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	main(int argc, char *argv[])
 {
 	struct s_data	data;
 	struct s_contrl	contrl;
+	struct s_philo	*pphilo;
 
 	data.number_of_philos = 0;
 	data.contrl = &contrl;
@@ -46,6 +47,10 @@ int	main(int argc, char *argv[])
 	{
 		data.exit_status = (pthread_join(contrl.thread, NULL)
 				|| contrl.flags & PHILO_ERR);
+		pphilo = data.philo;
+		while (pphilo - data.philo < data.number_of_philos)
+			data.exit_status = (pthread_join(pphilo++->thread, NULL)
+					|| data.exit_status);
 		destroy_locks(&data, data.fork, 0);
 	}
 	free(data.shared_locks);
