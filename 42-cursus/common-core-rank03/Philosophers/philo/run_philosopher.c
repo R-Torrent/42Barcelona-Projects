@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/22 11:16:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/22 18:45:31 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ static int	eat(t_philo *philo)
 		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_eat, philo))
 		return (1);
 	err = pthread_mutex_unlock(&philo->fork[LEFT]->lock);
+	if (philo->fork[LEFT]->n == philo->fork[RIGHT]->n)
+		return (err);
 	err = (pthread_mutex_unlock(&philo->fork[RIGHT]->lock) || err);
 	if (!err && !--philo->meals_left)
 	{
@@ -39,21 +41,28 @@ static int	eat(t_philo *philo)
 	return (err);
 }
 
-// even-numbered philosophers pick the left fork first
-// odd-numbered philosophers pick the right fork first
+// even-numbered philosophers pick the left (= same-numbered) fork first
+// odd-numbered philosophers pick the right (= succesor) fork next
 static int	pick_forks(t_philo *philo)
 {
 	const int	first = philo->n % 2;
 	const int	second = first ^ 1;
+	int			err;
 
-	if (!(pthread_mutex_lock(&philo->fork[first]->lock)
-			|| print_stamp(NULL, philo, "has taken a fork")
-			|| pthread_mutex_lock(&philo->fork[second]->lock)
-			|| print_stamp(NULL, philo, "has taken a fork")))
-		return (0);
-	pthread_mutex_unlock(&philo->fork[LEFT]->lock);
-	pthread_mutex_unlock(&philo->fork[RIGHT]->lock);
-	return (1);
+	err = 0;
+	if (pthread_mutex_lock(&philo->fork[first]->lock)
+		|| print_stamp(NULL, philo, "has taken a fork"))
+		err = (pthread_mutex_unlock(&philo->fork[first]->lock) || 1);
+	else if (philo->fork[first]->n == philo->fork[second]->n)
+	{
+		err = pthread_mutex_lock(&philo->access);
+		philo->flags |= TERMINATE;
+		err = (err || pthread_mutex_unlock(&philo->access));
+	}
+	else if (pthread_mutex_lock(&philo->fork[second]->lock)
+		|| print_stamp(NULL, philo, "has taken a fork"))
+		err = (pthread_mutex_unlock(&philo->fork[second]->lock) || 1);
+	return (err);
 }
 
 static int	think(t_philo *philo)
