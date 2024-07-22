@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/21 19:17:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/22 10:57:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int	wait_usec(t_contrl *contrl, unsigned int lapse, t_philo *philo)
 		if (philo)
 		{
 			err = pthread_mutex_lock(&philo->access);
-			if (philo->flags & (PHILO_ERR | TERMINATE))
+			if (philo->flags & ~MEALS__OK)
 				reveille = 0U;
 			err = (pthread_mutex_unlock(&philo->access) || err);
 		}
