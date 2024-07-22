@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/21 15:51:59 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/22 11:16:13 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ void	run_philo(t_philo *philo)
 	int					ret;
 
 	act = THINK;
-	ret = (pthread_detach(philo->thread)
-			|| pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
+	ret = (pthread_mutex_lock(philo->pdata->shared_locks + MASTER_LOCK)
 			|| pthread_mutex_unlock(philo->pdata->shared_locks + MASTER_LOCK));
 	while (!ret)
 	{
