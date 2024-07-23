@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/21 02:19:06 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/23 19:18:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ typedef struct s_philo
 	int				n;
 	int				meals_left;
 	unsigned int	last_meal;
+	unsigned int	not_first_thoughts;
 	int				flags;
 	struct s_fork	*fork[2];
 	struct s_data	*pdata;

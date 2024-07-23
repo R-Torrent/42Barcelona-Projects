@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/23 17:21:30 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/23 19:12:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int	load_philo(t_philo *philo)
 	philo->contrl->ret |= TERMINATE;
 	err = (sem_post(philo->access) || err);
 	err = (sem_post(philo->contrl->pdata->shared_sems[TERMN]) || err);
+	err = (sem_post(philo->contrl->pdata->shared_sems[FORKS]) || err);
 	err = (pthread_join(philo->thread_philo, NULL) || err);
 	return (pthread_join(philo->contrl->thread_controller, NULL) || err);
 }

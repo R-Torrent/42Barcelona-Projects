@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/22 18:45:31 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/23 19:34:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,13 @@ static int	pick_forks(t_philo *philo)
 
 static int	think(t_philo *philo)
 {
-	return (print_stamp(NULL, philo, "is thinking")
-		|| wait_usec(philo->pdata->contrl, philo->pdata->time_to_think, philo));
+	t_data *const	pdata = philo->pdata;
+	int				ret;
+
+	ret = print_stamp(NULL, philo, "is thinking");
+	if (!ret && philo->not_first_thoughts++)
+		ret = wait_usec(pdata->contrl, pdata->time_to_think, philo);
+	return (ret);
 }
 
 void	run_philo(t_philo *philo)
