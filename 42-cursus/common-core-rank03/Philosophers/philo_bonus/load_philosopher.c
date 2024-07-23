@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/23 15:54:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/23 17:21:30 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ static void	run_contrl(t_contrl *contrl)
 {
 	struct timeval	t[2];
 	t_data *const	pdata = contrl->pdata;
-	int 			err;
+	int				err;
 
 	contrl->t = t;
 	err = (sem_wait(pdata->shared_sems[MASTR])
-		|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL));
+			|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL));
 	err = (sem_wait(pdata->philo->access) || err);
 	if (err)
 		contrl->ret |= PHILO_ERR;
@@ -80,14 +80,19 @@ int	load_philo(t_philo *philo)
 			S_OFLAG, S_MODE, 1);
 	philo->read_time = sem_open(sem_name(sname[1], philo->n, "RDTIME"),
 			S_OFLAG, S_MODE, 1);
-	err = (philo->access == SEM_FAILED || sem_unlink(sname[0])
-			|| philo->read_time == SEM_FAILED || sem_unlink(sname[1])
-			|| pthread_create(&philo->contrl->thread_controller, NULL,
+	err = (philo->access == SEM_FAILED || sem_unlink(sname[0]));
+	err = (philo->read_time == SEM_FAILED || sem_unlink(sname[1]) || err);
+	if (!philo->meals_left)
+		err = (sem_post(philo->contrl->pdata->shared_sems[MLSOK]) || err);
+	err = (err || pthread_create(&philo->contrl->thread_controller, NULL,
 				(void *)run_contrl, philo->contrl)
+			|| pthread_create(&philo->thread_philo, NULL,
+				(void *)run_philo, philo)
 			|| sem_wait(philo->contrl->pdata->shared_sems[TERMN])
 			|| sem_wait(philo->access));
 	philo->contrl->ret |= TERMINATE;
 	err = (sem_post(philo->access) || err);
 	err = (sem_post(philo->contrl->pdata->shared_sems[TERMN]) || err);
+	err = (pthread_join(philo->thread_philo, NULL) || err);
 	return (pthread_join(philo->contrl->thread_controller, NULL) || err);
 }

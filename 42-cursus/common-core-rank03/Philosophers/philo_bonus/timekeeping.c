@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/18 20:53:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/23 17:12:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,14 @@ void	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
 	t_contrl *const	contrl = philo->contrl;
 	char			timestamp[12];
+	int				terminate;
 
 	if (sem_wait(philo->access) || sem_wait(philo->read_time))
 		contrl->ret |= PHILO_ERR;
 	if (contrl->elapsed - philo->last_meal >= contrl->pdata->time_to_die)
 		contrl->ret |= TERMINATE;
-	if (!contrl->ret)
+	terminate = contrl->ret & TERMINATE;
+	if (!terminate)
 	{
 		if (dst)
 			*dst = contrl->elapsed;
@@ -40,6 +42,8 @@ void	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 	}
 	if (sem_post(philo->read_time) || sem_post(philo->access))
 		contrl->ret |= PHILO_ERR;
+	if (terminate)
+		return ;
 	if (sem_wait(contrl->pdata->shared_sems[PRINT])
 		|| !printf("%s %i %s\n", timestamp, philo->n, str)
 		|| sem_post(contrl->pdata->shared_sems[PRINT]))
@@ -81,25 +85,28 @@ void	tstamp(t_contrl *contrl)
 void	wait_usec(t_contrl *contrl, unsigned int lapse, int is_contrl)
 {
 	sem_t *const	read_time = contrl->pdata->philo->read_time;
+	sem_t *const	access = contrl->pdata->philo->access;
 	unsigned int	reveille;
+	int				err;
+	int				ret;
 
-	if (sem_wait(read_time))
-		contrl->ret |= PHILO_ERR;
+	err = sem_wait(read_time);
 	reveille = contrl->elapsed + lapse;
-	if (sem_post(read_time))
-		contrl->ret |= PHILO_ERR;
-	while (!contrl->ret)
+	err = (sem_post(read_time) || err);
+	while (!err)
 	{
-		if (sem_wait(read_time))
-			contrl->ret |= PHILO_ERR;
+		err = sem_wait(read_time);
 		if (is_contrl)
 			tstamp(contrl);
 		lapse = contrl->elapsed;
-		if (sem_post(read_time))
-			contrl->ret |= PHILO_ERR;
-		if (contrl->ret || lapse >= reveille)
-			break ;
-		if (usleep(50U))
-			contrl->ret |= PHILO_ERR;
+		err = (sem_post(read_time) || sem_wait(access) || err);
+		ret = contrl->ret;
+		err = (sem_post(access) || err);
+		if (!err && (ret || lapse >= reveille))
+			return ;
+		err = (usleep(50U) || err);
 	}
+	sem_wait(access);
+	contrl->ret |= PHILO_ERR;
+	sem_post(access);
 }
