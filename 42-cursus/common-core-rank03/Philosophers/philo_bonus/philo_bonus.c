@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/18 15:38:39 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/23 15:35:34 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 		*err = (waitpid(*pid++, &wstatus, 0) == -1 || !WIFEXITED(wstatus)
 				|| WEXITSTATUS(wstatus) || *err);
 	free(pdata->pid);
-	*err = (destroy_shared_sems(pdata) || *err);
+	*err = (pthread_join(pdata->terminator, NULL) || destroy_shared_sems(pdata)
+			|| *err);
 }
 
 static void	run_terminator(t_data *pdata)
@@ -56,22 +57,27 @@ static void	run_terminator(t_data *pdata)
 
 static void	spawn_philos(t_data *pdata, int *i)
 {
-	pid_t	child_pid;
+	t_philo *const	philo = pdata->philo;
+	pid_t			child_pid;
+	int				err;
 
+	err = 0;
 	while (*i < pdata->number_of_philos)
 	{
-		pdata->philo->n = *i + 1;
+		philo->n = *i + 1;
 		child_pid = fork();
 		if (child_pid == -1)
 			break ;
 		else if (!child_pid)
 		{
-			if (!pdata->philo->meals_left)
-				pdata->exit_status = (sem_post(pdata->shared_sems[MLSOK])
-						|| pdata->exit_status);
+			if (!philo->meals_left)
+				err = sem_post(pdata->shared_sems[MLSOK]);
 			free(pdata->pid);
-			load_philo(pdata->philo);
-			exit(pdata->philo->contrl->ret & PHILO_ERR);
+			err = (load_philo(philo) || philo->contrl->ret & PHILO_ERR);
+			err = (sem_post(pdata->shared_sems[MLSOK]) || err);
+			err = (philo->access == SEM_FAILED || sem_close(philo->access) || err);
+			err = (philo->read_time == SEM_FAILED || sem_close(philo->read_time) || err);
+			exit(destroy_shared_sems(philo->contrl->pdata) || err);
 		}
 		pdata->pid[(*i)++] = child_pid;
 	}
@@ -95,7 +101,6 @@ int	main(int argc, char *argv[])
 		data.exit_status = (i != data.number_of_philos
 				|| pthread_create(&data.terminator, NULL,
 					(void *)run_terminator, &data)
-				|| pthread_detach(data.terminator)
 				|| sem_post(data.shared_sems[MASTR])
 				|| sem_wait(data.shared_sems[TERMN]));
 	}

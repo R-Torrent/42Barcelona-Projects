@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/18 14:13:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/23 14:26:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ typedef struct s_data
 typedef void	(*t_philo_func)(struct s_philo *);
 
 int		destroy_shared_sems(t_data *pdata);
-void	load_philo(t_philo *philo);
+int		load_philo(t_philo *philo);
 int		load_sim(t_data *pdata, int params, char **args);
 void	place_digit(unsigned int n, char **pstr);
 void	print_stamp(unsigned int *dst, t_philo *philo, const char *str);
