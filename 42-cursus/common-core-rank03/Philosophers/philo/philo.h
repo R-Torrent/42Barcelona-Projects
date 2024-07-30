@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 21:39:46 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/23 19:17:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:04:38 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ typedef struct s_contrl
 	char			timestamp[12];
 	unsigned int	elapsed;
 	int				flags;
+	int				first_death;
 	struct timeval	*t;
 	struct s_data	*pdata;
 	pthread_t		thread;

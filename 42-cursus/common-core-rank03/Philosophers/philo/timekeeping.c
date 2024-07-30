@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/22 10:57:13 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:05:18 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,10 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 	if (pthread_mutex_unlock(philo->pdata->shared_locks + READ_TIME)
 		|| pthread_mutex_unlock(&philo->access))
 		return (1);
-	if (terminate)
-		return (0);
 	if (pthread_mutex_lock(philo->pdata->shared_locks + PRINT_LOG))
 		return (1);
-	printf("%s %i %s\n", timestamp, philo->n, str);
+	if (!terminate && !philo->pdata->contrl->first_death)
+		printf("%s %i %s\n", timestamp, philo->n, str);
 	return (pthread_mutex_unlock(philo->pdata->shared_locks + PRINT_LOG));
 }
 

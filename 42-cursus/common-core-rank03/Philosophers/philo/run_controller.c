@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 02:29:22 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/21 02:24:08 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:04:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ static int	print_obituaries(t_philo *philo, t_contrl *contrl)
 		{
 			contrl->flags |= TERMINATE;
 			err = (pthread_mutex_lock(print_lock) || err);
-			printf("%s %i died\n", contrl->timestamp, philo->n);
+			if (!contrl->first_death++)
+				printf("%s %i died\n", contrl->timestamp, philo->n);
 			err = (pthread_mutex_unlock(print_lock) || err);
 		}
 		err = (pthread_mutex_unlock(&philo++->access) || err);
