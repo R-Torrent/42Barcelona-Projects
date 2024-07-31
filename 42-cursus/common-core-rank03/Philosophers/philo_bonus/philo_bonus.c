@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/23 17:17:36 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/31 10:13:08 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int	destroy_shared_sems(t_data *pdata)
 		err = (*sem == SEM_FAILED || sem_close(*sem) || err);
 		sem++;
 	}
-	free(pdata->shared_sems);
 	return (err);
 }
 

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/18 14:59:22 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/07/31 10:14:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,7 @@ int	load_sim(t_data *pdata, int params, char **args)
 	pdata->philo->contrl->timestamp[1] = '\0';
 	pdata->philo->contrl->elapsed = 0;
 	pdata->philo->contrl->ret = 0;
-	pdata->shared_sems = malloc(NUMBS * sizeof(sem_t *));
 	pdata->pid = malloc(pdata->number_of_philos * sizeof(pid_t));
-	pdata->exit_status = (check_args || !pdata->shared_sems || !pdata->pid
-			|| create_sems(pdata));
+	pdata->exit_status = (check_args || !pdata->pid || create_sems(pdata));
 	return (pdata->exit_status);
 }
