@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/31 10:14:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 01:02:35 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,11 @@ int	load_sim(t_data *pdata, int params, char **args)
 		|| atoi4(*args++, (int *)&pdata->time_to_eat, 0, 1000)
 		|| atoi4(*args++, (int *)&pdata->time_to_sleep, 0, 1000)
 		|| (params == 5 && atoi4(*args, &pdata->philo->meals_left, 0, 1));
-	const int	tthink = SLEEP_N_THINK + (int)pdata->time_to_eat
-		- (int)pdata->time_to_sleep;
 
 	if (params != 5)
 		pdata->philo->meals_left = -1;
 	pdata->philo->last_meal = 0;
-	pdata->time_to_think = 0;
-	if (tthink > 0)
-		pdata->time_to_think = (unsigned int)tthink;
+	pdata->delay_to_think = pdata->time_to_eat;
 	pdata->philo->contrl->timestamp[0] = '0';
 	pdata->philo->contrl->timestamp[1] = '\0';
 	pdata->philo->contrl->elapsed = 0;
