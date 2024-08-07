@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 20:08:04 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:28:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 		|| sem_wait(contrl->pdata->shared_sems[PRINT])
 		|| sem_wait(philo->read_time))
 		contrl->err = 1;
-	if (!contrl->err &&
-		contrl->elapsed - philo->last_meal < contrl->pdata->time_to_die)
+	if (!contrl->err
+		&& contrl->elapsed - philo->last_meal < contrl->pdata->time_to_die)
 	{
 		if (dst)
 			*dst = contrl->elapsed;

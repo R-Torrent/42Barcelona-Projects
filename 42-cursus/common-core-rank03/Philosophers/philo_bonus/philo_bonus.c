@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 19:39:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:28:39 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 	pid = pdata->pid;
 	while (pid < pid_last)
 		*err = (kill(*pid, SIGTERM)
-			|| waitpid(*pid++, NULL, 0) == -1 || *err);
+				|| waitpid(*pid++, NULL, 0) == -1 || *err);
 	free(pdata->pid);
 	*err = (destroy_shared_sems(pdata) || *err);
 }
@@ -48,7 +48,7 @@ static void	run_terminator(t_data *pdata)
 	meals_ok = pdata->number_of_philos;
 	while (meals_ok-- && !pdata->exit_status)
 		pdata->exit_status = (sem_wait(pdata->shared_sems[MLSOK])
-			|| pdata->exit_status);
+				|| pdata->exit_status);
 	pdata->exit_status = (sem_post(pdata->shared_sems[TERMN])
 			|| pdata->exit_status);
 }

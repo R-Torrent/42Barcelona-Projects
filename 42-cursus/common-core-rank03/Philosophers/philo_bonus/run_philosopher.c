@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 19:51:15 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:27:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ static void	eat(t_philo *philo)
 	print_stamp(&philo->last_meal, philo, "is eating");
 	wait_usec(philo->contrl, pdata->time_to_eat, 0);
 	err = (sem_post(pdata->shared_sems[FORKS])
-		|| sem_post(pdata->shared_sems[FORKS]));
-		err = 1;
+			|| sem_post(pdata->shared_sems[FORKS]));
 	if (!--philo->meals_left && sem_post(pdata->shared_sems[MLSOK]) && !err)
 		err = 1;
 	if (err)
