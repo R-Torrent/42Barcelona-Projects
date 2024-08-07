@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 14:34:07 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:51:15 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,39 @@ static void	philo_sleep(t_philo *philo)
 static void	eat(t_philo *philo)
 {
 	t_data *const	pdata = philo->contrl->pdata;
+	int				err;
 
 	print_stamp(&philo->last_meal, philo, "is eating");
 	wait_usec(philo->contrl, pdata->time_to_eat, 0);
-	if (sem_post(pdata->shared_sems[FORKS])
-		|| sem_post(pdata->shared_sems[FORKS]))
-		philo->contrl->ret |= PHILO_ERR;
-	if (!--philo->meals_left && sem_post(pdata->shared_sems[MLSOK]))
-		philo->contrl->ret |= PHILO_ERR;
+	err = (sem_post(pdata->shared_sems[FORKS])
+		|| sem_post(pdata->shared_sems[FORKS]));
+		err = 1;
+	if (!--philo->meals_left && sem_post(pdata->shared_sems[MLSOK]) && !err)
+		err = 1;
+	if (err)
+	{
+		sem_wait(philo->access);
+		philo->contrl->err = 1;
+		sem_post(philo->access);
+	}
 }
 
 static void	pick_forks(t_philo *philo)
 {
 	t_data *const	pdata = philo->contrl->pdata;
+	int				err;
 
-	if (sem_wait(pdata->shared_sems[FORKS]))
-		philo->contrl->ret |= PHILO_ERR;
+	err = sem_wait(pdata->shared_sems[FORKS]);
 	print_stamp(NULL, philo, "has taken a fork");
-	if (sem_wait(pdata->shared_sems[FORKS]))
-		philo->contrl->ret |= PHILO_ERR;
+	if (sem_wait(pdata->shared_sems[FORKS]) && !err)
+		err = 1;
 	print_stamp(NULL, philo, "has taken a fork");
+	if (err)
+	{
+		sem_wait(philo->access);
+		philo->contrl->err = 1;
+		sem_post(philo->access);
+	}
 }
 
 static void	think(t_philo *philo)

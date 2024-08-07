@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 19:24:44 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:39:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ static void	spawn_philos(t_data *pdata, int *i)
 				sem_close(philo->access);
 			if (philo->read_time != SEM_FAILED)
 				sem_close(philo->read_time);
-			destroy_shared_sems(philo->contrl->pdata);
 			force_kill_signal(pdata);
 		}
 		pdata->pid[(*i)++] = child_pid;

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 16:14:37 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:42:53 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ void	force_kill_signal(t_data *pdata)
 	n = pdata->number_of_philos;
 	while (n--)
 		sem_post(pdata->shared_sems[MLSOK]);
+	sem_wait(pdata->shared_sems[MASTR]);
+	sem_wait(pdata->shared_sems[MASTR]);
 }
 
 static void	print_obituary(t_contrl *contrl, t_philo *philo)
@@ -32,7 +34,7 @@ static void	print_obituary(t_contrl *contrl, t_philo *philo)
 		if (sem_wait(pdata->shared_sems[PRINT]))
 			contrl->err = 1;
 		printf("%s %i died\n", contrl->timestamp, philo->n);
-		force_kill_signal();
+		force_kill_signal(pdata);
 	}
 	if (sem_post(philo->access))
 		contrl->err = 1;
