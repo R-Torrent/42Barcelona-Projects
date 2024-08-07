@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 01:02:35 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:03:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,7 @@ int	load_sim(t_data *pdata, int params, char **args)
 		pdata->philo->meals_left = -1;
 	pdata->philo->last_meal = 0;
 	pdata->delay_to_think = pdata->time_to_eat;
-	pdata->philo->contrl->timestamp[0] = '0';
-	pdata->philo->contrl->timestamp[1] = '\0';
+	(void)ft_strcpy(pdata->philo->contrl->timestamp, "0");
 	pdata->philo->contrl->elapsed = 0;
 	pdata->philo->contrl->ret = 0;
 	pdata->pid = malloc(pdata->number_of_philos * sizeof(pid_t));

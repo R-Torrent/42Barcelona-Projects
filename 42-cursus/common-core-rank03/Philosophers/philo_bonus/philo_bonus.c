@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 01:55:46 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:07:50 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ int	main(int argc, char *argv[])
 	i = 0;
 	if (!load_sim(&data, --argc, ++argv))
 	{
-		spawn_philos(&data, &i);
+		if (!gettimeofday(contrl.t, NULL))
+			spawn_philos(&data, &i);
 		data.exit_status = (i != data.number_of_philos
 				|| pthread_create(&data.terminator, NULL,
 					(void *)run_terminator, &data)

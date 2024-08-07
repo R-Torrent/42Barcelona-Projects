@@ -6,20 +6,19 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/23 17:12:19 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:18:32 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static char	*ft_strcpy(char *dest, char *src)
+char	*ft_strcpy(char *dst, const char *src)
 {
-	char	*dst0;
+	char *const	dst0 = dst;
 
-	dst0 = dest;
 	while (*src)
-		*dest++ = *src++;
-	*dest = '\0';
+		*dst++ = *src++;
+	*dst = '\0';
 	return (dst0);
 }
 

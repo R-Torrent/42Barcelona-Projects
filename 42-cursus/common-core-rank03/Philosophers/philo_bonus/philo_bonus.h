@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 00:15:16 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:06:22 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,9 @@ typedef struct s_contrl
 	char			timestamp[12];
 	unsigned int	elapsed;
 	int				ret;
-	struct timeval	*t;
 	struct s_data	*pdata;
 	pthread_t		thread_controller;
+	struct timeval	t[2];
 }	t_contrl;
 
 // NOTE: all times stored in microseconds
@@ -123,6 +123,7 @@ typedef struct s_data
 typedef void	(*t_philo_func)(struct s_philo *);
 
 int		destroy_shared_sems(t_data *pdata);
+char	*ft_strcpy(char *dst, const char *src);
 int		load_philo(t_philo *philo);
 int		load_sim(t_data *pdata, int params, char **args);
 void	place_digit(unsigned int n, char **pstr);

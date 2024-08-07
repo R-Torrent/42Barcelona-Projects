@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/23 19:12:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:07:46 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,11 @@ static void	print_obituary(t_contrl *contrl, t_philo *philo)
 // main loop runs once every millisecond
 static void	run_contrl(t_contrl *contrl)
 {
-	struct timeval	t[2];
 	t_data *const	pdata = contrl->pdata;
 	int				err;
 
-	contrl->t = t;
 	err = (sem_wait(pdata->shared_sems[MASTR])
-			|| sem_post(pdata->shared_sems[MASTR]) || gettimeofday(t, NULL));
+			|| sem_post(pdata->shared_sems[MASTR]));
 	err = (sem_wait(pdata->philo->access) || err);
 	if (err)
 		contrl->ret |= PHILO_ERR;
