@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 16:15:24 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:24:44 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,8 @@ static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 		*err = (sem_post(pdata->shared_sems[TERMN]) || *err);
 	pid = pdata->pid;
 	while (pid < pid_last)
-	{
-		// kill signal goes here
-		*err = (waitpid(*pid++, NULL, 0) == -1 || *err);
-	}
+		*err = (kill(*pid, SIGTERM)
+			|| waitpid(*pid++, NULL, 0) == -1 || *err);
 	free(pdata->pid);
 	*err = (destroy_shared_sems(pdata) || *err);
 }
@@ -49,7 +47,8 @@ static void	run_terminator(t_data *pdata)
 
 	meals_ok = pdata->number_of_philos;
 	while (meals_ok-- && !pdata->exit_status)
-		pdata->exit_status = sem_wait(pdata->shared_sems[MLSOK]);
+		pdata->exit_status = (sem_wait(pdata->shared_sems[MLSOK])
+			|| pdata->exit_status);
 	pdata->exit_status = (sem_post(pdata->shared_sems[TERMN])
 			|| pdata->exit_status);
 }
@@ -74,7 +73,7 @@ static void	spawn_philos(t_data *pdata, int *i)
 			if (philo->read_time != SEM_FAILED)
 				sem_close(philo->read_time);
 			destroy_shared_sems(philo->contrl->pdata);
-			force_kill_signal();
+			force_kill_signal(pdata);
 		}
 		pdata->pid[(*i)++] = child_pid;
 	}

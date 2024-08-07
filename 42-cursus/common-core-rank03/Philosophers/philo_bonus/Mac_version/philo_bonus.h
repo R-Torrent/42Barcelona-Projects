@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 14:19:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 15:58:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:29:05 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
 
+// delay to stop waking philos from jumping the queue, in microseconds
+# define SLEEP_N_THINK 200U
+
 enum e_philo_action
 {
 	THINK,
@@ -54,10 +57,6 @@ enum e_philo_action
 	SLEEP,
 	NUMBER_OF_ACTIONS
 };
-
-// philosopher ret flags
-# define PHILO_ERR 01
-# define TERMINATE 02
 
 // O_CREAT = 0100
 # define S_OFLAG 0100
@@ -99,9 +98,9 @@ typedef struct s_contrl
 	char			timestamp[12];
 	unsigned int	elapsed;
 	int				err;
-	struct timeval	*t;
 	struct s_data	*pdata;
 	pthread_t		thread_controller;
+	struct timeval	t[2];
 }	t_contrl;
 
 // NOTE: all times stored in microseconds
