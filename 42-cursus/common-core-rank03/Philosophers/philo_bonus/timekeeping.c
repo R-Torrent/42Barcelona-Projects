@@ -6,46 +6,34 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:00:00 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 03:18:32 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 04:13:12 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-char	*ft_strcpy(char *dst, const char *src)
-{
-	char *const	dst0 = dst;
-
-	while (*src)
-		*dst++ = *src++;
-	*dst = '\0';
-	return (dst0);
-}
-
 void	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
 	t_contrl *const	contrl = philo->contrl;
-	char			timestamp[12];
-	int				terminate;
 
-	if (sem_wait(philo->access) || sem_wait(philo->read_time))
+	if (sem_wait(contrl->pdata->shared_sems[PRINT])
+		|| sem_wait(philo->access)
+		|| sem_wait(philo->read_time))
 		contrl->ret |= PHILO_ERR;
-	if (contrl->elapsed - philo->last_meal >= contrl->pdata->time_to_die)
-		contrl->ret |= TERMINATE;
-	terminate = contrl->ret & TERMINATE;
-	if (!terminate)
+	if (!(contrl->ret & PHILO_ERR))
 	{
+		if (contrl->elapsed - philo->last_meal >= contrl->pdata->time_to_die)
+			contrl->ret |= TERMINATE;
 		if (dst)
 			*dst = contrl->elapsed;
-		(void)ft_strcpy(timestamp, contrl->timestamp);
+		if (!(contrl->ret & TERMINATE))
+			printf("%s %i %s\n", contrl->timestamp, philo->n, str);
 	}
-	if (sem_post(philo->read_time) || sem_post(philo->access))
+	if (sem_post(philo->read_time))
 		contrl->ret |= PHILO_ERR;
-	if (terminate)
-		return ;
-	if (sem_wait(contrl->pdata->shared_sems[PRINT])
-		|| !printf("%s %i %s\n", timestamp, philo->n, str)
-		|| sem_post(contrl->pdata->shared_sems[PRINT]))
+	if (sem_post(philo->access))
+		contrl->ret |= PHILO_ERR;
+	if (sem_post(contrl->pdata->shared_sems[PRINT]))
 		contrl->ret |= PHILO_ERR;
 }
 

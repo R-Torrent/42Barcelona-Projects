@@ -6,49 +6,32 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/30 14:05:18 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:52:21 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static char	*ft_strcpy(char *dest, char *src)
-{
-	char	*dst0;
-
-	dst0 = dest;
-	while (*src)
-		*dest++ = *src++;
-	*dest = '\0';
-	return (dst0);
-}
-
 int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 {
-	char	timestamp[12];
-	int		terminate;
+	t_data *const	pdata = philo->pdata;
+	int				err;
 
-	if (pthread_mutex_lock(&philo->access)
-		|| pthread_mutex_lock(philo->pdata->shared_locks + READ_TIME))
-		return (1);
-	if (philo->pdata->contrl->elapsed - philo->last_meal
-		>= philo->pdata->time_to_die)
-		philo->flags |= TERMINATE;
-	terminate = philo->flags & TERMINATE;
-	if (!terminate)
+	err = (pthread_mutex_lock(pdata->shared_locks + PRINT_LOG)
+			|| pthread_mutex_lock(&philo->access)
+			|| pthread_mutex_lock(pdata->shared_locks + READ_TIME));
+	if (!err)
 	{
+		if (pdata->contrl->elapsed - philo->last_meal >= pdata->time_to_die)
+			philo->flags |= TERMINATE;
 		if (dst)
-			*dst = philo->pdata->contrl->elapsed;
-		(void)ft_strcpy(timestamp, philo->pdata->contrl->timestamp);
+			*dst = pdata->contrl->elapsed;
+		if (!(philo->flags & TERMINATE) && !pdata->contrl->first_death)
+			printf("%s %i %s\n", pdata->contrl->timestamp, philo->n, str);
 	}
-	if (pthread_mutex_unlock(philo->pdata->shared_locks + READ_TIME)
-		|| pthread_mutex_unlock(&philo->access))
-		return (1);
-	if (pthread_mutex_lock(philo->pdata->shared_locks + PRINT_LOG))
-		return (1);
-	if (!terminate && !philo->pdata->contrl->first_death)
-		printf("%s %i %s\n", timestamp, philo->n, str);
-	return (pthread_mutex_unlock(philo->pdata->shared_locks + PRINT_LOG));
+	err = (pthread_mutex_unlock(pdata->shared_locks + READ_TIME) || err);
+	err = (pthread_mutex_unlock(&philo->access) || err);
+	return (pthread_mutex_unlock(pdata->shared_locks + PRINT_LOG) || err);
 }
 
 static void	place_digit(unsigned int n, char **pstr)
