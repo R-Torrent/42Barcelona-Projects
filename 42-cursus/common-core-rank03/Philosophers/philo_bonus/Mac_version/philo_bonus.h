@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 14:19:53 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/07/31 10:10:28 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 15:58:45 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,6 @@ pid_t	waitpid(pid_t pid, int *wstatus, int options);
 ssize_t	write(int fildes, const void *buf, size_t nbyte);
 
 /* ************************************************************************** */
-
-// delay to stop waking philos from jumping the queue, in microseconds
-# define SLEEP_N_THINK 200U
 
 enum e_philo_action
 {
@@ -101,7 +98,7 @@ typedef struct s_contrl
 {
 	char			timestamp[12];
 	unsigned int	elapsed;
-	int				ret;
+	int				err;
 	struct timeval	*t;
 	struct s_data	*pdata;
 	pthread_t		thread_controller;
@@ -126,7 +123,8 @@ typedef struct s_data
 typedef void	(*t_philo_func)(struct s_philo *);
 
 int		destroy_shared_sems(t_data *pdata);
-int		load_philo(t_philo *philo);
+void	force_kill_signal(t_data *pdata);
+void	load_philo(t_philo *philo);
 int		load_sim(t_data *pdata, int params, char **args);
 void	place_digit(unsigned int n, char **pstr);
 void	print_stamp(unsigned int *dst, t_philo *philo, const char *str);

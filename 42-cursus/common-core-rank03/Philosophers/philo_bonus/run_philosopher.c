@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 13:47:49 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:34:07 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,26 +58,13 @@ void	run_philo(t_philo *philo)
 {
 	const t_philo_func	pfunc[] = {think, pick_forks, eat, philo_sleep};
 	enum e_philo_action	act;
-	int					ret;
 
 	act = THINK;
-	ret = 0;
-	while (!ret)
+	while (!(sem_wait(philo->access)
+			|| philo->contrl->err
+			|| sem_post(philo->access)))
 	{
-		if (sem_wait(philo->access))
-			break ;
-		ret = (philo->contrl->ret & TERMINATE);
-		if (sem_post(philo->access))
-			break ;
-		if (ret)
-			return ;
 		pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
-		sem_wait(philo->access);
-		ret = philo->contrl->ret & PHILO_ERR;
-		sem_post(philo->access);
 	}
-	sem_wait(philo->access);
-	philo->contrl->ret |= PHILO_ERR;
-	sem_post(philo->access);
 }

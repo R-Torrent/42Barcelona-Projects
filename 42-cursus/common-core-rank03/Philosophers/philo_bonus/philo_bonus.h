@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:10:13 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 04:33:47 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 15:58:27 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,6 @@ enum e_philo_action
 	NUMBER_OF_ACTIONS
 };
 
-// philosopher ret flags
-# define PHILO_ERR 01
-# define TERMINATE 02
-
 // O_CREAT = 0100
 # define S_OFLAG 0100
 // S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH = 0644
@@ -101,7 +97,7 @@ typedef struct s_contrl
 {
 	char			timestamp[12];
 	unsigned int	elapsed;
-	int				ret;
+	int				err;
 	struct s_data	*pdata;
 	pthread_t		thread_controller;
 	struct timeval	t[2];
@@ -126,7 +122,8 @@ typedef struct s_data
 typedef void	(*t_philo_func)(struct s_philo *);
 
 int		destroy_shared_sems(t_data *pdata);
-int		load_philo(t_philo *philo);
+void	force_kill_signal(t_data *pdata);
+void	load_philo(t_philo *philo);
 int		load_sim(t_data *pdata, int params, char **args);
 void	place_digit(unsigned int n, char **pstr);
 void	print_stamp(unsigned int *dst, t_philo *philo, const char *str);

@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:12:38 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 03:07:50 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:15:24 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ int	destroy_shared_sems(t_data *pdata)
 static void	destroy_sems_philos(t_data *pdata, pid_t *pid_last, int *err)
 {
 	pid_t	*pid;
-	int		wstatus;
 
 	if (pdata->shared_sems[TERMN] != SEM_FAILED)
 		*err = (sem_post(pdata->shared_sems[TERMN]) || *err);
 	pid = pdata->pid;
 	while (pid < pid_last)
-		*err = (waitpid(*pid++, &wstatus, 0) == -1 || !WIFEXITED(wstatus)
-				|| WEXITSTATUS(wstatus) || *err);
+	{
+		// kill signal goes here
+		*err = (waitpid(*pid++, NULL, 0) == -1 || *err);
+	}
 	free(pdata->pid);
 	*err = (destroy_shared_sems(pdata) || *err);
 }
@@ -57,7 +58,6 @@ static void	spawn_philos(t_data *pdata, int *i)
 {
 	t_philo *const	philo = pdata->philo;
 	pid_t			child_pid;
-	int				err;
 
 	while (*i < pdata->number_of_philos)
 	{
@@ -68,13 +68,13 @@ static void	spawn_philos(t_data *pdata, int *i)
 		else if (!child_pid)
 		{
 			free(pdata->pid);
-			err = (load_philo(philo) || philo->contrl->ret & PHILO_ERR);
-			err = (sem_post(pdata->shared_sems[MLSOK]) || err);
-			err = (philo->access == SEM_FAILED
-					|| sem_close(philo->access) || err);
-			err = (philo->read_time == SEM_FAILED
-					|| sem_close(philo->read_time) || err);
-			exit(destroy_shared_sems(philo->contrl->pdata) || err);
+			load_philo(philo);
+			if (philo->access != SEM_FAILED)
+				sem_close(philo->access);
+			if (philo->read_time != SEM_FAILED)
+				sem_close(philo->read_time);
+			destroy_shared_sems(philo->contrl->pdata);
+			force_kill_signal();
 		}
 		pdata->pid[(*i)++] = child_pid;
 	}
