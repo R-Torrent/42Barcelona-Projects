@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 01:03:01 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 04:45:01 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ static void	think(t_philo *philo)
 	static unsigned int	not_first_thoughts;
 
 	print_stamp(NULL, philo, "is thinking");
-	if (!(not_first_thoughts++ || philo->n % 2))
-		wait_usec(philo->contrl, philo->contrl->pdata->delay_to_think, 0);
+	if (not_first_thoughts++ || !(philo->n % 2))
+		wait_usec(philo->contrl, philo->contrl->pdata->time_to_think, 0);
 }
 
 void	run_philo(t_philo *philo)

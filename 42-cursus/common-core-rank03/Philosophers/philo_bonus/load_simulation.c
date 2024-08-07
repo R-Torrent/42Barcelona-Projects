@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 13:48:30 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 04:04:48 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 04:38:19 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ static int	atoi4(const char *str, int *n, int min, int scale)
 
 int	load_sim(t_data *pdata, int params, char **args)
 {
+	int			t;
 	const int	check_args = params < 4 || params > 5
 		|| atoi4(*args++, &pdata->number_of_philos, 1, 1)
 		|| atoi4(*args++, (int *)&pdata->time_to_die, 0, 1000)
@@ -78,7 +79,11 @@ int	load_sim(t_data *pdata, int params, char **args)
 	if (params != 5)
 		pdata->philo->meals_left = -1;
 	pdata->philo->last_meal = 0;
-	pdata->delay_to_think = pdata->time_to_eat;
+	t = SLEEP_N_THINK + (int)pdata->time_to_eat - (int)pdata->time_to_sleep;
+	if (t > 0)
+		pdata->time_to_think = (unsigned int)t;
+	else
+		pdata->time_to_think = 0;
 	pdata->philo->contrl->timestamp[0] = '0';
 	pdata->philo->contrl->timestamp[1] = '\0';
 	pdata->philo->contrl->elapsed = 0;
