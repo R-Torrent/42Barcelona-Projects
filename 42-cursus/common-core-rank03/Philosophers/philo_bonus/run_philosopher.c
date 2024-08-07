@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 13:23:02 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/07 13:47:49 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,7 @@ void	run_philo(t_philo *philo)
 	int					ret;
 
 	act = THINK;
-	ret = (sem_wait(philo->contrl->pdata->shared_sems[MASTR])
-			|| sem_post(philo->contrl->pdata->shared_sems[MASTR]));
+	ret = 0;
 	while (!ret)
 	{
 		if (sem_wait(philo->access))
