@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 16:11:50 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 20:27:45 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/08 16:57:37 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,5 @@ void	run_philo(t_philo *philo)
 		pfunc[act](philo);
 		act = (act + 1) % NUMBER_OF_ACTIONS;
 	}
+	sem_post(philo->access);
 }

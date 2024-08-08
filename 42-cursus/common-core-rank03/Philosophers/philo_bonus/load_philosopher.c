@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 17:06:51 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 19:42:53 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/08 17:00:14 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static void	run_contrl(t_contrl *contrl)
 	{
 		err = sem_post(pdata->philo->access);
 		print_obituary(contrl, pdata->philo);
-		tstamp(contrl);
 		wait_usec(contrl, 1000 - contrl->elapsed % 1000, 1);
 		err = (sem_wait(pdata->philo->access) || err);
 		if (err)
