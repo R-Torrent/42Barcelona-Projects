@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 19:53:27 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 03:52:21 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/08 19:38:59 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 	t_data *const	pdata = philo->pdata;
 	int				err;
 
-	err = (pthread_mutex_lock(pdata->shared_locks + PRINT_LOG)
-			|| pthread_mutex_lock(&philo->access)
+	err = (pthread_mutex_lock(&philo->access)
+			|| pthread_mutex_lock(pdata->shared_locks + PRINT_LOG)
 			|| pthread_mutex_lock(pdata->shared_locks + READ_TIME));
 	if (!err)
 	{
@@ -30,8 +30,8 @@ int	print_stamp(unsigned int *dst, t_philo *philo, const char *str)
 			printf("%s %i %s\n", pdata->contrl->timestamp, philo->n, str);
 	}
 	err = (pthread_mutex_unlock(pdata->shared_locks + READ_TIME) || err);
-	err = (pthread_mutex_unlock(&philo->access) || err);
-	return (pthread_mutex_unlock(pdata->shared_locks + PRINT_LOG) || err);
+	err = (pthread_mutex_unlock(pdata->shared_locks + PRINT_LOG) || err);
+	return (pthread_mutex_unlock(&philo->access) || err);
 }
 
 static void	place_digit(unsigned int n, char **pstr)

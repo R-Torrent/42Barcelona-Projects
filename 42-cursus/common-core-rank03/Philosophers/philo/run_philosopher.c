@@ -6,7 +6,7 @@
 /*   By: rtorrent <rtorrent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:26:11 by rtorrent          #+#    #+#             */
-/*   Updated: 2024/08/07 13:41:03 by rtorrent         ###   ########.fr       */
+/*   Updated: 2024/08/08 20:49:06 by rtorrent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	pick_forks(t_philo *philo)
 	{
 		err = pthread_mutex_lock(&philo->access);
 		philo->flags |= TERMINATE;
-		err = (err || pthread_mutex_unlock(&philo->access));
+		err = (pthread_mutex_unlock(&philo->access) || err);
 	}
 	else if (pthread_mutex_lock(&philo->fork[second]->lock)
 		|| print_stamp(NULL, philo, "has taken a fork"))
